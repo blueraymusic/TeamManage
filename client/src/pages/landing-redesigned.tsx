@@ -44,7 +44,7 @@ export default function Landing() {
         {/* Header Content */}
         <div className="relative">
           <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-            <div className="flex justify-between items-center h-20 lg:h-24">
+            <div className="flex justify-between items-center h-16 lg:h-18">
               
               {/* Logo Section */}
               <div className="flex items-center space-x-4">
@@ -53,17 +53,17 @@ export default function Landing() {
                   <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
                   
                   {/* Logo Container */}
-                  <div className="relative bg-gradient-to-br from-blue-600 to-indigo-700 p-3 rounded-xl shadow-lg transform group-hover:scale-102 transition-transform duration-300">
-                    <AdelLogo size="lg" className="filter brightness-0 invert" />
+                  <div className="relative bg-gradient-to-br from-blue-600 to-indigo-700 p-2.5 rounded-lg shadow-lg transform group-hover:scale-102 transition-transform duration-300">
+                    <AdelLogo size="md" className="filter brightness-0 invert" />
                   </div>
                 </div>
                 
                 {/* Brand Text */}
                 <div className="flex flex-col">
-                  <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
+                  <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
                     ADEL
                   </h1>
-                  <p className="text-sm text-slate-600 font-medium -mt-0.5">
+                  <p className="text-xs lg:text-sm text-slate-600 font-medium -mt-0.5">
                     For NGOs & Non-Profits
                   </p>
                 </div>
@@ -72,21 +72,21 @@ export default function Landing() {
               {/* Navigation Links */}
               <nav className="hidden lg:flex items-center">
                 <div className="flex items-center space-x-2 mr-8">
-                  <a href="#features" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
+                  <a href="#features" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
                     <span className="relative z-10">Features</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
                   
-                  <a href="#workflow" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
+                  <a href="#workflow" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
                     <span className="relative z-10">How it Works</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
                   
-                  <a href="#about" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
+                  <a href="#about" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
                     <span className="relative z-10">About</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
                 </div>
@@ -101,14 +101,14 @@ export default function Landing() {
                   <Button
                     onClick={() => setShowAuthModal("login")}
                     variant="outline"
-                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-8 py-2.5 font-semibold text-lg rounded-xl"
+                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
                   >
                     Log In
                   </Button>
                   
                   <Button
                     onClick={() => setShowAuthModal("register")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-10 py-2.5 font-semibold text-lg rounded-xl"
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-7 py-2 font-semibold rounded-lg"
                   >
                     Get Started
                   </Button>
