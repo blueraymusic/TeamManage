@@ -361,9 +361,31 @@ export default function AdminDashboard() {
                           {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                         </div>
                         {project.budget && (
-                          <div className="flex items-center mt-1 text-xs text-gray-500">
-                            <DollarSign className="w-3 h-3 mr-1" />
-                            Budget: ${parseFloat(project.budget).toLocaleString()}
+                          <div className="mt-2 space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">Budget</span>
+                              <span className="text-gray-700">
+                                ${parseFloat(project.budgetUsed || "0").toLocaleString()} / ${parseFloat(project.budget).toLocaleString()}
+                              </span>
+                            </div>
+                            <Progress 
+                              value={
+                                parseFloat(project.budget) > 0 
+                                  ? Math.min((parseFloat(project.budgetUsed || "0") / parseFloat(project.budget)) * 100, 100)
+                                  : 0
+                              } 
+                              className="h-1.5"
+                            />
+                            <div className="flex justify-between text-xs text-gray-500">
+                              <span>
+                                {parseFloat(project.budget) > 0 
+                                  ? Math.round((parseFloat(project.budgetUsed || "0") / parseFloat(project.budget)) * 100)
+                                  : 0}% used
+                              </span>
+                              <span>
+                                ${Math.max(0, parseFloat(project.budget) - parseFloat(project.budgetUsed || "0")).toFixed(2)} remaining
+                              </span>
+                            </div>
                           </div>
                         )}
                       </div>

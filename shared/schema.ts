@@ -29,6 +29,7 @@ export const projects = pgTable("projects", {
   name: text("name").notNull(),
   description: text("description"),
   budget: decimal("budget", { precision: 10, scale: 2 }),
+  budgetUsed: decimal("budget_used", { precision: 10, scale: 2 }).default("0"), // Amount spent so far
   deadline: timestamp("deadline"),
   goals: text("goals"),
   status: text("status").notNull().default("active"), // 'active', 'on-hold', 'completed', 'cancelled'

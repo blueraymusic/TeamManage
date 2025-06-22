@@ -285,6 +285,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         deadline: req.body.deadline ? new Date(req.body.deadline) : null,
         budget: req.body.budget ? String(req.body.budget) : null,
+        budgetUsed: req.body.budgetUsed ? String(req.body.budgetUsed) : "0",
         organizationId: req.session.organizationId,
         createdBy: req.session.userId,
       });
@@ -321,6 +322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         deadline: req.body.deadline ? new Date(req.body.deadline) : null,
         budget: req.body.budget ? String(req.body.budget) : null,
+        budgetUsed: req.body.budgetUsed ? String(req.body.budgetUsed) : undefined,
         progress: req.body.progress !== undefined ? parseInt(req.body.progress) : undefined,
       };
 

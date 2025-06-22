@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
+import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -17,6 +18,7 @@ const projectSchema = z.object({
   name: z.string().min(3, "Project name must be at least 3 characters"),
   description: z.string().optional(),
   budget: z.string().optional(),
+  budgetUsed: z.string().optional(),
   deadline: z.string().optional(),
   goals: z.string().optional(),
   progress: z.number().min(0).max(100).optional(),
@@ -38,6 +40,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
       name: project?.name || "",
       description: project?.description || "",
       budget: project?.budget?.toString() || "",
+      budgetUsed: project?.budgetUsed?.toString() || "0",
       deadline: project?.deadline ? new Date(project.deadline).toISOString().split('T')[0] : "",
       goals: project?.goals || "",
       progress: project?.progress || 0,
@@ -50,6 +53,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
       const response = await apiRequest("POST", "/api/projects", {
         ...data,
         budget: data.budget ? parseFloat(data.budget) : null,
+        budgetUsed: data.budgetUsed ? parseFloat(data.budgetUsed) : 0,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
         progress: data.progress || 0,
       });
@@ -82,6 +86,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
       const response = await apiRequest("PUT", `/api/projects/${project.id}`, {
         ...data,
         budget: data.budget ? parseFloat(data.budget) : null,
+        budgetUsed: data.budgetUsed ? parseFloat(data.budgetUsed) : 0,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
         progress: data.progress || 0,
       });
@@ -152,7 +157,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="budget">Budget ($)</Label>
+              <Label htmlFor="budget">Total Budget ($)</Label>
               <Input
                 id="budget"
                 type="number"
@@ -170,6 +175,47 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
               />
             </div>
           </div>
+
+          {project && (
+            <div className="space-y-2">
+              <Label htmlFor="budgetUsed">Amount Spent ($)</Label>
+              <Input
+                id="budgetUsed"
+                type="number"
+                step="0.01"
+                {...form.register("budgetUsed")}
+                placeholder="0.00"
+              />
+              {form.watch("budget") && (
+                <div className="mt-3">
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Budget Usage</span>
+                    <span>
+                      ${form.watch("budgetUsed") || 0} / ${form.watch("budget") || 0}
+                    </span>
+                  </div>
+                  <Progress 
+                    value={
+                      form.watch("budget") && parseFloat(form.watch("budget")) > 0
+                        ? Math.min((parseFloat(form.watch("budgetUsed") || "0") / parseFloat(form.watch("budget"))) * 100, 100)
+                        : 0
+                    } 
+                    className="h-2"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>
+                      {form.watch("budget") && parseFloat(form.watch("budget")) > 0
+                        ? Math.round((parseFloat(form.watch("budgetUsed") || "0") / parseFloat(form.watch("budget"))) * 100)
+                        : 0}% used
+                    </span>
+                    <span>
+                      ${Math.max(0, parseFloat(form.watch("budget") || "0") - parseFloat(form.watch("budgetUsed") || "0")).toFixed(2)} remaining
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="goals">Goals & Objectives</Label>
