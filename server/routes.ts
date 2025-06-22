@@ -266,9 +266,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Project routes
   app.post("/api/projects", requireAuth, async (req: any, res) => {
     try {
-      // Check if user is admin
-      const user = await storage.getUserById(req.session.userId);
-      if (!user || user.role !== "admin") {
+      console.log("Project creation attempt - userId:", req.session.userId, "userRole:", req.session.userRole);
+      
+      // Check if user is admin using session role
+      if (req.session.userRole !== "admin") {
+        console.log("Project creation denied - user role:", req.session.userRole);
         return res.status(403).json({ message: "Admin access required" });
       }
 
@@ -278,7 +280,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdBy: req.session.userId,
       });
 
+      console.log("Creating project with data:", projectData);
       const project = await storage.createProject(projectData);
+      console.log("Project created successfully:", project.id);
       res.json(project);
     } catch (error) {
       console.error("Create project error:", error);

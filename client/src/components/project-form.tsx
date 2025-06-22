@@ -45,11 +45,13 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
 
   const createProjectMutation = useMutation({
     mutationFn: async (data: z.infer<typeof projectSchema>) => {
+      console.log("Creating project with data:", data);
       const response = await apiRequest("POST", "/api/projects", {
         ...data,
         budget: data.budget ? parseFloat(data.budget) : null,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
       });
+      console.log("Project creation response:", response.status);
       return response.json();
     },
     onSuccess: () => {

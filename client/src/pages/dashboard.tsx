@@ -28,15 +28,18 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className={`shadow-sm border-b ${user.role === "admin" ? "bg-red-50 border-red-200" : "bg-blue-50 border-blue-200"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${user.role === "admin" ? "bg-red-500" : "bg-blue-500"}`}>
                   <span className="text-white font-bold text-lg">A</span>
                 </div>
                 <span className="text-2xl font-bold text-gray-900">ADEL</span>
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${user.role === "admin" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
+                  {user.role === "admin" ? "Admin Panel" : "Officer Panel"}
+                </div>
               </div>
             </div>
             
@@ -47,8 +50,11 @@ export default function Dashboard() {
                 <span className="text-sm text-gray-700">
                   {user.firstName} {user.lastName}
                 </span>
-                <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                  {user.role}
+                <Badge 
+                  variant={user.role === "admin" ? "default" : "secondary"}
+                  className={user.role === "admin" ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}
+                >
+                  {user.role === "admin" ? "Administrator" : "Officer"}
                 </Badge>
               </div>
               <Button
