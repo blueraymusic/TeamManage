@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -36,9 +37,10 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
     defaultValues: {
       name: project?.name || "",
       description: project?.description || "",
-      budget: project?.budget || "",
+      budget: project?.budget?.toString() || "",
       deadline: project?.deadline ? new Date(project.deadline).toISOString().split('T')[0] : "",
       goals: project?.goals || "",
+      progress: project?.progress || 0,
     },
   });
 
@@ -49,6 +51,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
         ...data,
         budget: data.budget ? parseFloat(data.budget) : null,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
+        progress: data.progress || 0,
       });
       return response;
     },
@@ -80,6 +83,7 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
         ...data,
         budget: data.budget ? parseFloat(data.budget) : null,
         deadline: data.deadline ? new Date(data.deadline).toISOString() : null,
+        progress: data.progress || 0,
       });
       return response;
     },
@@ -176,6 +180,25 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
               rows={3}
             />
           </div>
+
+          {project && (
+            <div className="space-y-2">
+              <Label htmlFor="progress">Progress: {form.watch("progress")}%</Label>
+              <Slider
+                value={[form.watch("progress") || 0]}
+                onValueChange={(value) => form.setValue("progress", value[0])}
+                max={100}
+                min={0}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>0%</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button
