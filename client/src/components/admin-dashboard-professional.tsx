@@ -245,7 +245,7 @@ export default function AdminDashboard() {
                 <Users className="w-8 h-8 text-purple-600" />
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {(stats as any)?.totalMembers || 0}
+                    {(stats as any)?.teamMembers || 0}
                   </p>
                   <p className="text-gray-600">Team Members</p>
                 </div>
