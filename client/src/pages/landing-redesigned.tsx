@@ -43,7 +43,7 @@ export default function Landing() {
         
         {/* Header Content */}
         <div className="relative">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
+          <div className="max-w-full mx-auto px-6 lg:px-8 xl:px-12">
             <div className="flex justify-between items-center h-16 lg:h-18">
               
               {/* Logo Section */}
