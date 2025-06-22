@@ -37,7 +37,8 @@ import {
   Edit2,
   Trash2,
   MoreHorizontal,
-  CheckCircle2
+  CheckCircle2,
+  LogOut
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import OrganizationInfo from "./organization-info";
@@ -175,39 +176,49 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header with Logo */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-3">
-          <AdelLogo size="lg" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">ADEL</span>
-        </div>
-        <Button
-          onClick={() => window.location.href = '/api/auth/logout'}
-          variant="outline"
-          className="text-sm"
-        >
-          Logout
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-gray-200">
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Projector className="w-5 h-5 text-blue-600" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="space-y-8">
+        {/* Elegant Header with Glass Effect */}
+        <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                <AdelLogo size="lg" className="filter brightness-0 invert" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {(stats as any)?.activeProjects || 0}
-                </p>
-                <p className="text-sm text-gray-600">Active Projects</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  ADEL
+                </h1>
+                <p className="text-slate-600 text-sm font-medium">Admin Portal</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <Button
+              onClick={() => window.location.href = '/api/auth/logout'}
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        </div>
+
+        {/* Beautiful Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold">
+                    {(stats as any)?.activeProjects || 0}
+                  </p>
+                  <p className="text-blue-100 font-medium">Active Projects</p>
+                </div>
+                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                  <Projector className="w-6 h-6" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
         <Card className="border border-gray-200">
           <CardContent className="p-4">
@@ -688,6 +699,7 @@ export default function AdminDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
