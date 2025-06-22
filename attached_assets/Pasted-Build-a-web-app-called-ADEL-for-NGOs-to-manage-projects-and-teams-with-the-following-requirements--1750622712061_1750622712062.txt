@@ -1,0 +1,32 @@
+Build a web app called ADEL for NGOs to manage projects and teams with the following requirements:
+* User Roles: Admin and Officer
+* Organization Registration:
+    * Admins register their organization with a unique organization name.
+    * Upon registration, generate and provide a unique organization code.
+* Officer Registration:
+    * Officers register by entering the organization code to join their organization’s workspace.
+* Workspace Features:
+    * Admins can:
+        * Create and manage projects.
+        * Set budgets, deadlines, and goals per project.
+        * Invite officers via shareable links.
+        * Approve or reject officers’ submitted reports.
+        * View progress charts and reports based on approved data.
+    * Officers can:
+        * Upload progress reports (text, photos, files) linked to projects.
+        * View progress charts once reports are approved.
+* Workflow:
+    * Officers upload reports which remain pending until approved by an admin.
+    * Only approved reports contribute to the project progress and visualized data.
+* Other Requirements:
+    * Role-based access control (admins vs officers).
+    * Secure session management linked to the organization.
+    * Ability to generate and view progress charts based on stored data.
+    * User-friendly UI with multilingual support (English and French).
+    * File uploads supported for report attachments.
+    * Mobile-friendly and optimized for low-bandwidth environments.
+    * Optional: Offline report submission with sync when online.
+
+İdea:  Be very Careful!
+admin create an account with their organization name and gets a specific number when officer create an account he would be required to type in that number or code so as for hşs session to belong to his org, now inside the session, the admin can set budgets and everything, the officer only can upload reports, and when they upload the admin would have to approve it in order for the progress to be recorded, and when recorded it would go in the data which either the admin or officer could use to generate progression charts. the admin can invite officers through links and so on. When the officer uploads, the admin has to be able to see it and also preview or even download the report file he uploaded, upon approval, the the admin can estimate the progress amount and enter it so as to move progress bar towards the goal.
+The app landing page has to be very good looking, ill provide you with a logo picture every button has to work.
