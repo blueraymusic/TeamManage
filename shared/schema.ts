@@ -54,6 +54,17 @@ export const reports = pgTable("reports", {
   reviewedAt: timestamp("reviewed_at"),
 });
 
+// Messages table for admin-to-team communication
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  senderId: integer("sender_id").references(() => users.id).notNull(),
+  recipientId: integer("recipient_id").references(() => users.id).notNull(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   users: many(users),
@@ -68,6 +79,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   createdProjects: many(projects),
   submittedReports: many(reports, { relationName: "submittedReports" }),
   reviewedReports: many(reports, { relationName: "reviewedReports" }),
+  sentMessages: many(messages, { relationName: "sentMessages" }),
+  receivedMessages: many(messages, { relationName: "receivedMessages" }),
 }));
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
@@ -96,6 +109,23 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.reviewedBy],
     references: [users.id],
     relationName: "reviewedReports",
+  }),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+    relationName: "sentMessages",
+  }),
+  recipient: one(users, {
+    fields: [messages.recipientId],
+    references: [users.id],
+    relationName: "receivedMessages",
+  }),
+  organization: one(organizations, {
+    fields: [messages.organizationId],
+    references: [organizations.id],
   }),
 }));
 
@@ -133,3 +163,12 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 
 export type Report = typeof reports.$inferSelect;
 export type InsertReport = z.infer<typeof insertReportSchema>;
+
+export const insertMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  isRead: true,
+  createdAt: true,
+});
+
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;

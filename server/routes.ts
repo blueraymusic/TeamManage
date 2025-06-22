@@ -7,7 +7,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { z } from "zod";
-import { insertUserSchema, insertProjectSchema, insertReportSchema } from "@shared/schema";
+import { insertUserSchema, insertProjectSchema, insertReportSchema, insertMessageSchema } from "@shared/schema";
 
 // Extend session types
 declare module "express-session" {
@@ -619,6 +619,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get dashboard stats error:", error);
       res.status(500).json({ message: "Failed to get dashboard stats" });
+    }
+  });
+
+  // Messaging routes
+  app.post("/api/messages", requireAuth, async (req: any, res) => {
+    try {
+      // Only admin can send messages
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Only admin can send messages" });
+      }
+
+      const messageData = insertMessageSchema.parse({
+        ...req.body,
+        senderId: req.session.userId,
+        organizationId: req.session.organizationId,
+      });
+
+      const message = await storage.sendMessage(messageData);
+      res.json(message);
+    } catch (error) {
+      console.error("Send message error:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/messages/:userId", requireAuth, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      
+      // Admin can view messages with any user, users can only view messages with admin
+      let senderId = req.session.userId;
+      let recipientId = parseInt(userId);
+      
+      if (req.session.userRole !== "admin") {
+        // Non-admin users can only view messages between themselves and admin
+        // Find admin of the organization
+        const users = await storage.getUsersByOrganization(req.session.organizationId);
+        const admin = users.find(user => user.role === "admin");
+        if (!admin) {
+          return res.status(404).json({ message: "Admin not found" });
+        }
+        senderId = admin.id;
+        recipientId = req.session.userId;
+      }
+
+      const messages = await storage.getMessagesBetweenUsers(senderId, recipientId, req.session.organizationId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Get messages error:", error);
+      res.status(500).json({ message: "Failed to get messages" });
+    }
+  });
+
+  app.get("/api/messages/unread/count", requireAuth, async (req: any, res) => {
+    try {
+      const unreadMessages = await storage.getUnreadMessagesForUser(req.session.userId, req.session.organizationId);
+      res.json({ count: unreadMessages.length });
+    } catch (error) {
+      console.error("Get unread messages error:", error);
+      res.status(500).json({ message: "Failed to get unread messages" });
+    }
+  });
+
+  app.patch("/api/messages/:id/read", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.markMessageAsRead(parseInt(id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Mark message as read error:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
     }
   });
 

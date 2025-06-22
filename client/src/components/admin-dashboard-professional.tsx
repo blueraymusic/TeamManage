@@ -49,6 +49,7 @@ import OrganizationInfo from "./organization-info";
 import ProjectForm from "./project-form";
 import ReportApproval from "./report-approval";
 import ProgressChart from "./progress-chart";
+import TeamMessaging from "./team-messaging";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 import AdelLogo from "./adel-logo";
 
@@ -268,11 +269,11 @@ export default function AdminDashboard() {
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
+                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Messages
+                </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
-                </TabsTrigger>
-                <TabsTrigger value="settings" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
-                  Settings
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -370,6 +371,10 @@ export default function AdminDashboard() {
                 <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
               </div>
               <ReportApproval />
+            </TabsContent>
+
+            <TabsContent value="messages" className="p-6">
+              <TeamMessaging />
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">

@@ -3,14 +3,17 @@ import {
   users,
   projects,
   reports,
+  messages,
   type Organization,
   type User,
   type Project,
   type Report,
+  type Message,
   type InsertOrganization,
   type InsertUser,
   type InsertProject,
   type InsertReport,
+  type InsertMessage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, inArray, sql } from "drizzle-orm";
@@ -40,6 +43,12 @@ export interface IStorage {
   getPendingReports(organizationId: number): Promise<Report[]>;
   getReportById(id: number): Promise<Report | undefined>;
   updateReportStatus(id: number, status: string, reviewedBy: number, reviewNotes?: string): Promise<Report>;
+
+  // Message operations
+  sendMessage(message: InsertMessage): Promise<Message>;
+  getMessagesBetweenUsers(senderId: number, recipientId: number, organizationId: number): Promise<Message[]>;
+  getUnreadMessagesForUser(userId: number, organizationId: number): Promise<Message[]>;
+  markMessageAsRead(messageId: number): Promise<void>;
 
   // Bulk operations
   bulkDeleteProjects(projectIds: number[], organizationId: number): Promise<void>;
@@ -171,6 +180,49 @@ export class DatabaseStorage implements IStorage {
       .where(eq(reports.id, id))
       .returning();
     return updated;
+  }
+
+  // Message operations
+  async sendMessage(message: InsertMessage): Promise<Message> {
+    const [created] = await db.insert(messages).values(message).returning();
+    return created;
+  }
+
+  async getMessagesBetweenUsers(senderId: number, recipientId: number, organizationId: number): Promise<Message[]> {
+    return await db
+      .select()
+      .from(messages)
+      .where(
+        and(
+          eq(messages.organizationId, organizationId),
+          and(
+            eq(messages.senderId, senderId),
+            eq(messages.recipientId, recipientId)
+          )
+        )
+      )
+      .orderBy(desc(messages.createdAt));
+  }
+
+  async getUnreadMessagesForUser(userId: number, organizationId: number): Promise<Message[]> {
+    return await db
+      .select()
+      .from(messages)
+      .where(
+        and(
+          eq(messages.recipientId, userId),
+          eq(messages.organizationId, organizationId),
+          eq(messages.isRead, false)
+        )
+      )
+      .orderBy(desc(messages.createdAt));
+  }
+
+  async markMessageAsRead(messageId: number): Promise<void> {
+    await db
+      .update(messages)
+      .set({ isRead: true })
+      .where(eq(messages.id, messageId));
   }
 
   // Bulk operations
