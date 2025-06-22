@@ -20,12 +20,18 @@ interface AuthResponse {
 }
 
 export function useAuth() {
-  const { data: user, isLoading, error } = useQuery<User | null>({
+  const { data, isLoading, error } = useQuery<{ user: User } | null>({
     queryKey: ["/api/auth/me"],
     retry: false,
     staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: true,
   });
+
+  const user = data?.user || null;
+  
+  console.log("useAuth - Raw data:", data);
+  console.log("useAuth - Extracted user:", user);
+  console.log("useAuth - User role:", user?.role);
 
   return {
     user,
