@@ -32,10 +32,12 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${user.role === "admin" ? "bg-red-500" : "bg-blue-500"}`}>
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
+              <div className="flex items-center space-x-3">
+                <img 
+                  src="@assets/logoO_1750625487699.png" 
+                  alt="ADEL Logo" 
+                  className="w-10 h-10 object-contain"
+                />
                 <span className="text-2xl font-bold text-gray-900">ADEL</span>
                 <div className={`px-3 py-1 rounded-full text-xs font-medium ${user.role === "admin" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
                   {user.role === "admin" ? "Admin Panel" : "Officer Panel"}

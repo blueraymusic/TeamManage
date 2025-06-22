@@ -43,10 +43,12 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
+              <div className="flex items-center space-x-3">
+                <img 
+                  src="@assets/logoO_1750625487699.png" 
+                  alt="ADEL Logo" 
+                  className="w-10 h-10 object-contain"
+                />
                 <span className="text-2xl font-bold text-gray-900">ADEL</span>
               </div>
             </div>
@@ -86,11 +88,18 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-                {t('hero.title').split('NGO')[0]}
-                <span className="text-blue-500">NGO</span>
-                {t('hero.title').split('NGO')[1]}
-              </h1>
+              <div className="flex items-center mb-6">
+                <img 
+                  src="@assets/logoO_1750625487699.png" 
+                  alt="ADEL Logo" 
+                  className="w-16 h-16 object-contain mr-4"
+                />
+                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900">
+                  {t('hero.title').split('NGO')[0]}
+                  <span className="text-blue-500">NGO</span>
+                  {t('hero.title').split('NGO')[1]}
+                </h1>
+              </div>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 {t('hero.subtitle')}
               </p>
