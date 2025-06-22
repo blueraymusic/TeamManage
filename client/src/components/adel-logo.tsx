@@ -14,13 +14,10 @@ export default function AdelLogo({ size = "md", className = "" }: AdelLogoProps)
   };
 
   return (
-    <div className={`flex items-center space-x-3 ${className}`}>
-      <img 
-        src={logoImage} 
-        alt="ADEL Logo"
-        className={`${sizeClasses[size]} object-contain`}
-      />
-      <div className="text-2xl font-bold text-blue-600">ADEL</div>
-    </div>
+    <img 
+      src={logoImage} 
+      alt="ADEL Logo"
+      className={`${sizeClasses[size]} object-contain ${className}`}
+    />
   );
 }

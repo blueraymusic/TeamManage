@@ -56,8 +56,11 @@ export default function OfficerDashboard() {
       {/* Header with Logo */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <AdelLogo size="lg" />
-          <div>
+          <div className="flex items-center space-x-3">
+            <AdelLogo size="lg" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">ADEL</span>
+          </div>
+          <div className="ml-4">
             <h1 className="text-2xl font-bold text-gray-900">Officer Dashboard</h1>
             <p className="text-gray-600">Submit reports and track project progress</p>
           </div>
