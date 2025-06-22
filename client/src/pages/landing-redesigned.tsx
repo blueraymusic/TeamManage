@@ -36,60 +36,87 @@ export default function Landing() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
       {/* Navigation Header */}
-      <header className="bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b border-white/20">
-        <div className="w-full px-8 lg:px-16 xl:px-20">
-          <div className="flex justify-between items-center h-24 lg:h-28">
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-5">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl blur-md opacity-75"></div>
-                  <div className="relative p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-xl">
+      <header className="relative sticky top-0 z-50">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-blue-900/95 to-indigo-900/95 backdrop-blur-2xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/10"></div>
+        <div className="relative border-b border-white/10 shadow-2xl">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
+            <div className="flex justify-between items-center h-20 lg:h-24">
+              {/* Logo Section */}
+              <div className="flex items-center space-x-6">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative p-3 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
                     <AdelLogo size="lg" className="filter brightness-0 invert" />
                   </div>
                 </div>
-                <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  ADEL
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-emerald-100 bg-clip-text text-transparent">
+                    ADEL
+                  </span>
+                  <span className="text-xs lg:text-sm text-blue-200 font-medium -mt-1">
+                    NGO Management Platform
+                  </span>
+                </div>
+              </div>
+              
+              {/* Navigation */}
+              <nav className="hidden lg:flex items-center space-x-8">
+                <div className="flex items-center space-x-8">
+                  <a href="#features" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+                    <span className="relative z-10">Features</span>
+                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </a>
+                  <a href="#workflow" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+                    <span className="relative z-10">How it Works</span>
+                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </a>
+                  <a href="#about" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+                    <span className="relative z-10">About</span>
+                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </a>
+                </div>
+                
+                <div className="flex items-center space-x-1">
+                  <LanguageSwitcher />
+                </div>
+                
+                <div className="flex items-center space-x-4 ml-6">
+                  <Button
+                    onClick={() => setShowAuthModal("login")}
+                    variant="outline"
+                    className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all duration-300 px-6 py-2.5 font-semibold"
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    onClick={() => setShowAuthModal("register")}
+                    className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 hover:from-emerald-600 hover:via-blue-600 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 px-8 py-2.5 font-semibold"
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              </nav>
+
+              {/* Mobile Menu Button */}
+              <div className="lg:hidden">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
+                  Menu
+                </Button>
               </div>
             </div>
-            
-            <nav className="hidden md:flex items-center space-x-12">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
-                Features
-              </a>
-              <a href="#workflow" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
-                How it Works
-              </a>
-              <a href="#about" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
-                About
-              </a>
-              <LanguageSwitcher />
-              <div className="flex space-x-4">
-                <Button
-                  onClick={() => setShowAuthModal("login")}
-                  variant="outline"
-                  size="lg"
-                  className="bg-white/50 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 px-8 py-3 text-lg font-semibold"
-                >
-                  Log In
-                </Button>
-                <Button
-                  onClick={() => setShowAuthModal("register")}
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 px-8 py-3 text-lg font-semibold"
-                >
-                  Get Started
-                </Button>
-              </div>
-            </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32">
+      <section className="relative py-24 lg:py-32 mt-8 lg:mt-12">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10"></div>
-        <div className="relative w-full px-6 lg:px-12">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center max-w-5xl mx-auto">
             <div className="mb-8">
               <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 text-lg font-medium mb-8 inline-block">
@@ -149,8 +176,8 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 lg:py-32">
-        <div className="w-full px-6 lg:px-12">
+      <section id="features" className="py-24 lg:py-32 mt-16 lg:mt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               Powerful Features for{" "}
@@ -259,8 +286,8 @@ export default function Landing() {
       </section>
 
       {/* How It Works Section */}
-      <section id="workflow" className="py-24 lg:py-32 bg-white/30 backdrop-blur-sm">
-        <div className="w-full px-6 lg:px-12">
+      <section id="workflow" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-white/30 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               How{" "}
@@ -324,8 +351,8 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 lg:py-32">
-        <div className="w-full px-6 lg:px-12">
+      <section className="py-24 lg:py-32 mt-16 lg:mt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-12 lg:p-16 text-center text-white max-w-5xl mx-auto">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
               Ready to Transform Your NGO?
@@ -355,8 +382,8 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16">
-        <div className="w-full px-6 lg:px-12">
+      <footer className="bg-slate-900 text-white py-16 mt-16 lg:mt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center space-x-4 mb-8">
               <div className="relative">
