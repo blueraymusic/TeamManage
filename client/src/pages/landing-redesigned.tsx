@@ -37,44 +37,46 @@ export default function Landing() {
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
       {/* Navigation Header */}
       <header className="bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b border-white/20">
-        <div className="w-full px-6 lg:px-12">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-4">
+        <div className="w-full px-8 lg:px-16 xl:px-20">
+          <div className="flex justify-between items-center h-24 lg:h-28">
+            <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-5">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl blur-md opacity-75"></div>
-                  <div className="relative p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-xl">
-                    <AdelLogo size="md" className="filter brightness-0 invert" />
+                  <div className="relative p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-xl">
+                    <AdelLogo size="lg" className="filter brightness-0 invert" />
                   </div>
                 </div>
-                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   ADEL
                 </span>
               </div>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium text-lg">
+            <nav className="hidden md:flex items-center space-x-12">
+              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
                 Features
               </a>
-              <a href="#workflow" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium text-lg">
+              <a href="#workflow" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
                 How it Works
               </a>
-              <a href="#about" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium text-lg">
+              <a href="#about" className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-semibold text-xl px-2 py-1">
                 About
               </a>
               <LanguageSwitcher />
-              <div className="flex space-x-3">
+              <div className="flex space-x-4">
                 <Button
                   onClick={() => setShowAuthModal("login")}
                   variant="outline"
-                  className="bg-white/50 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300"
+                  size="lg"
+                  className="bg-white/50 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 px-8 py-3 text-lg font-semibold"
                 >
                   Log In
                 </Button>
                 <Button
                   onClick={() => setShowAuthModal("register")}
-                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 px-8 py-3 text-lg font-semibold"
                 >
                   Get Started
                 </Button>
