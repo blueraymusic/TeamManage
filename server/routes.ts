@@ -430,6 +430,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const reportData = insertReportSchema.parse({
         ...req.body,
+        projectId: parseInt(req.body.projectId),
         files,
         submittedBy: req.session.userId,
       });
