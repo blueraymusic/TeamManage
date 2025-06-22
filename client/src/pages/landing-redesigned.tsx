@@ -36,7 +36,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
       {/* Navigation Header */}
-      <header className="relative sticky top-0 z-50">
+      <header className="relative sticky top-0 z-50 mt-4">
         {/* Background with Glass Effect */}
         <div className="absolute inset-0 bg-white/95 backdrop-blur-xl border-b border-slate-200/60"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50"></div>
