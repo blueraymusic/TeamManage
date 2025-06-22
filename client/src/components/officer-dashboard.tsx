@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ReportForm from "@/components/report-form";
 import ProgressChart from "@/components/progress-chart";
+import AdelLogo from "@/components/adel-logo";
 import { useToast } from "@/hooks/use-toast";
 import { t } from "@/lib/i18n";
 import {
@@ -52,6 +53,24 @@ export default function OfficerDashboard() {
 
   return (
     <div className="space-y-8">
+      {/* Header with Logo */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <AdelLogo size="lg" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Officer Dashboard</h1>
+            <p className="text-gray-600">Submit reports and track project progress</p>
+          </div>
+        </div>
+        <Button
+          onClick={() => window.location.href = '/api/auth/logout'}
+          variant="outline"
+          className="text-sm"
+        >
+          Logout
+        </Button>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>

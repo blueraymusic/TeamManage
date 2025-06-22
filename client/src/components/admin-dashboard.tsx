@@ -36,7 +36,8 @@ import {
   BarChart3,
   Edit2,
   Trash2,
-  MoreHorizontal
+  MoreHorizontal,
+  CheckCircle2
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import OrganizationInfo from "./organization-info";
@@ -44,6 +45,7 @@ import ProjectForm from "./project-form";
 import ReportApproval from "./report-approval";
 import ProgressChart from "./progress-chart";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
+import AdelLogo from "./adel-logo";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -169,19 +171,53 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-4">
+      {/* Header with Logo */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <AdelLogo size="lg" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+            <p className="text-gray-600">Manage your organization's projects and reports</p>
+          </div>
+        </div>
+        <Button
+          onClick={() => window.location.href = '/api/auth/logout'}
+          variant="outline"
+          className="text-sm"
+        >
+          Logout
+        </Button>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border border-gray-200">
           <CardContent className="p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <Projector className="w-5 h-5 text-red-600" />
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Projector className="w-5 h-5 text-blue-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">
                   {(stats as any)?.activeProjects || 0}
                 </p>
                 <p className="text-sm text-gray-600">Active Projects</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-gray-200">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {(stats as any)?.completedProjects || 0}
+                </p>
+                <p className="text-sm text-gray-600">Completed Projects</p>
               </div>
             </div>
           </CardContent>

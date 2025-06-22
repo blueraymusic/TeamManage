@@ -561,8 +561,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return sum + (parseFloat(project.budget?.toString() || "0"));
       }, 0);
 
+      // Calculate active projects (not completed) and completed projects
+      const completedProjects = projects.filter(project => project.progress === 100).length;
+      const activeProjects = projects.length - completedProjects;
+
       res.json({
-        activeProjects: projects.length,
+        activeProjects,
+        completedProjects,
+        totalProjects: projects.length,
         totalReports: reports.length,
         pendingReports: pendingReports.length,
         teamMembers: users.length,
