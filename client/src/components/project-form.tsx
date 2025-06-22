@@ -18,6 +18,7 @@ const projectSchema = z.object({
   budget: z.string().optional(),
   deadline: z.string().optional(),
   goals: z.string().optional(),
+  progress: z.number().min(0).max(100).optional(),
 });
 
 interface ProjectFormProps {
