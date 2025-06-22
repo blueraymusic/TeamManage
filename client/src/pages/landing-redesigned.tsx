@@ -37,63 +37,82 @@ export default function Landing() {
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
       {/* Navigation Header */}
       <header className="relative sticky top-0 z-50">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-blue-900/95 to-indigo-900/95 backdrop-blur-2xl"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/10"></div>
-        <div className="relative border-b border-white/10 shadow-2xl">
+        {/* Background with Glass Effect */}
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl border-b border-slate-200/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50"></div>
+        
+        {/* Header Content */}
+        <div className="relative">
           <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
             <div className="flex justify-between items-center h-20 lg:h-24">
+              
               {/* Logo Section */}
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative p-3 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
+                  {/* Animated Background Circles */}
+                  <div className="absolute -inset-2 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-xl opacity-50 group-hover:opacity-75 transition-all duration-300 blur-sm"></div>
+                  
+                  {/* Logo Container */}
+                  <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-3 rounded-xl shadow-xl transform group-hover:scale-105 transition-transform duration-300">
                     <AdelLogo size="lg" className="filter brightness-0 invert" />
                   </div>
                 </div>
+                
+                {/* Brand Text */}
                 <div className="flex flex-col">
-                  <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-emerald-100 bg-clip-text text-transparent">
+                  <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
                     ADEL
-                  </span>
-                  <span className="text-xs lg:text-sm text-blue-200 font-medium -mt-1">
-                    NGO Management Platform
-                  </span>
+                  </h1>
+                  <p className="text-sm text-slate-600 font-medium -mt-0.5">
+                    For NGOs & Non-Profits
+                  </p>
                 </div>
               </div>
               
-              {/* Navigation */}
-              <nav className="hidden lg:flex items-center space-x-8">
-                <div className="flex items-center space-x-8">
-                  <a href="#features" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+              {/* Navigation Links */}
+              <nav className="hidden lg:flex items-center">
+                <div className="flex items-center space-x-2 mr-8">
+                  <a href="#features" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
                     <span className="relative z-10">Features</span>
-                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
-                  <a href="#workflow" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+                  
+                  <a href="#workflow" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
                     <span className="relative z-10">How it Works</span>
-                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
-                  <a href="#about" className="relative group px-4 py-2 text-white/80 hover:text-white transition-all duration-300 font-medium text-lg">
+                  
+                  <a href="#about" className="relative group px-6 py-3 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold text-lg">
                     <span className="relative z-10">About</span>
-                    <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                   </a>
                 </div>
                 
-                <div className="flex items-center space-x-1">
+                {/* Language Switcher */}
+                <div className="mr-6">
                   <LanguageSwitcher />
                 </div>
                 
-                <div className="flex items-center space-x-4 ml-6">
+                {/* Action Buttons */}
+                <div className="flex items-center space-x-3">
                   <Button
                     onClick={() => setShowAuthModal("login")}
                     variant="outline"
-                    className="border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all duration-300 px-6 py-2.5 font-semibold"
+                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-8 py-2.5 font-semibold text-lg rounded-xl"
                   >
                     Log In
                   </Button>
+                  
                   <Button
                     onClick={() => setShowAuthModal("register")}
-                    className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 hover:from-emerald-600 hover:via-blue-600 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 px-8 py-2.5 font-semibold"
+                    className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 px-10 py-2.5 font-semibold text-lg rounded-xl"
                   >
-                    Get Started
+                    <span className="relative z-10">Get Started</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                   </Button>
                 </div>
               </nav>
@@ -103,9 +122,9 @@ export default function Landing() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
                 >
-                  Menu
+                  <Layers className="w-5 h-5" />
                 </Button>
               </div>
             </div>
