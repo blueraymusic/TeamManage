@@ -270,6 +270,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get team members
+  app.get("/api/organization/members", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUserById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const members = await storage.getUsersByOrganization(user.organizationId);
+      res.json(members.map(member => ({
+        id: member.id,
+        email: member.email,
+        firstName: member.firstName,
+        lastName: member.lastName,
+        role: member.role,
+        createdAt: member.createdAt,
+      })));
+    } catch (error) {
+      console.error("Get team members error:", error);
+      res.status(500).json({ message: "Failed to get team members" });
+    }
+  });
+
   // Project routes
   app.post("/api/projects", requireAuth, async (req: any, res) => {
     try {
