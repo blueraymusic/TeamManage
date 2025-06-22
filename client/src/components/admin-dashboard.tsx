@@ -51,6 +51,8 @@ export default function AdminDashboard() {
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [viewingProject, setViewingProject] = useState<any>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
   const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
@@ -112,7 +114,14 @@ export default function AdminDashboard() {
     },
   });
 
+  const handleViewDetails = (project: any) => {
+    console.log("View details clicked:", project);
+    setViewingProject(project);
+    setIsViewDialogOpen(true);
+  };
+
   const handleEditProject = (project: any) => {
+    console.log("Edit project clicked:", project);
     setEditingProject(project);
     setEditName(project.name);
     setEditProgress([project.progress || 0]);
@@ -137,6 +146,7 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteProject = (projectId: number) => {
+    console.log("Delete project clicked:", projectId);
     if (confirm("Are you sure you want to delete this project?")) {
       deleteProjectMutation.mutate(projectId);
     }
@@ -365,26 +375,35 @@ export default function AdminDashboard() {
                           <div className="text-xs text-gray-600 mb-1">{project.progress || 0}%</div>
                           <Progress value={project.progress || 0} className="w-16 h-1.5" />
                         </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditProject(project)}>
-                              <Edit2 className="mr-2 h-4 w-4" />
-                              Edit Project
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => handleDeleteProject(project.id)}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete Project
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex space-x-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetails(project)}
+                            className="h-8 px-2 text-xs"
+                          >
+                            <FileText className="w-3 h-3 mr-1" />
+                            View Details
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditProject(project)}
+                            className="h-8 px-2 text-xs"
+                          >
+                            <Edit2 className="w-3 h-3 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteProject(project.id)}
+                            className="h-8 px-2 text-xs text-red-600 hover:text-red-700 hover:border-red-300"
+                          >
+                            <Trash2 className="w-3 h-3 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -471,6 +490,94 @@ export default function AdminDashboard() {
               disabled={updateProjectMutation.isPending}
             >
               {updateProjectMutation.isPending ? "Updating..." : "Update Project"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Project Details Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Project Details</DialogTitle>
+            <DialogDescription>
+              Complete information about {viewingProject?.name}
+            </DialogDescription>
+          </DialogHeader>
+          {viewingProject && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Project Name</Label>
+                  <p className="text-sm text-gray-600 mt-1">{viewingProject.name}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Status</Label>
+                  <Badge variant="secondary" className="mt-1">
+                    {viewingProject.status || 'Active'}
+                  </Badge>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Description</Label>
+                <p className="text-sm text-gray-600 mt-1">
+                  {viewingProject.description || 'No description provided'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Budget</Label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {viewingProject.budget ? `$${parseFloat(viewingProject.budget).toLocaleString()}` : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Deadline</Label>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {viewingProject.deadline ? new Date(viewingProject.deadline).toLocaleDateString() : 'No deadline set'}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">Progress</Label>
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-gray-600">Overall Progress</span>
+                    <span className="text-sm font-medium">{viewingProject.progress || 0}%</span>
+                  </div>
+                  <Progress value={viewingProject.progress || 0} className="h-2" />
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">Goals & Objectives</Label>
+                <p className="text-sm text-gray-600 mt-1">
+                  {viewingProject.goals || 'No goals specified'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+                <div>
+                  <Label className="text-sm font-medium">Created</Label>
+                  <p className="mt-1">
+                    {viewingProject.createdAt ? new Date(viewingProject.createdAt).toLocaleDateString() : 'Unknown'}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Last Updated</Label>
+                  <p className="mt-1">
+                    {viewingProject.updatedAt ? new Date(viewingProject.updatedAt).toLocaleDateString() : 'Unknown'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end">
+            <Button onClick={() => setIsViewDialogOpen(false)}>
+              Close
             </Button>
           </div>
         </DialogContent>
