@@ -32,6 +32,7 @@ export const projects = pgTable("projects", {
   deadline: timestamp("deadline"),
   goals: text("goals"),
   status: text("status").notNull().default("active"), // 'active', 'on-hold', 'completed', 'cancelled'
+  progress: integer("progress").default(0), // Progress percentage 0-100
   organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
