@@ -10,8 +10,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useState } from "react";
 import { 
   Users, 
   Projector, 
@@ -35,6 +47,10 @@ import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [editName, setEditName] = useState("");
+  const [editProgress, setEditProgress] = useState([0]);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   
   const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
@@ -50,6 +66,29 @@ export default function AdminDashboard() {
 
   const { data: stats } = useQuery({
     queryKey: ["/api/dashboard/stats"],
+  });
+
+  // Update project mutation
+  const updateProjectMutation = useMutation({
+    mutationFn: async ({ projectId, data }: { projectId: number; data: any }) => {
+      await apiRequest("PUT", `/api/projects/${projectId}`, data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Project updated successfully",
+      });
+      setIsEditDialogOpen(false);
+      setEditingProject(null);
+      refetch();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update project",
+        variant: "destructive",
+      });
+    },
   });
 
   // Delete project mutation
@@ -72,6 +111,30 @@ export default function AdminDashboard() {
       });
     },
   });
+
+  const handleEditProject = (project: any) => {
+    setEditingProject(project);
+    setEditName(project.name);
+    setEditProgress([project.progress || 0]);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateProject = () => {
+    if (!editingProject) return;
+    
+    updateProjectMutation.mutate({
+      projectId: editingProject.id,
+      data: {
+        name: editName,
+        progress: editProgress[0],
+        description: editingProject.description,
+        deadline: editingProject.deadline,
+        budget: editingProject.budget,
+        status: editingProject.status,
+        goals: editingProject.goals,
+      },
+    });
+  };
 
   const handleDeleteProject = (projectId: number) => {
     if (confirm("Are you sure you want to delete this project?")) {
@@ -309,7 +372,7 @@ export default function AdminDashboard() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEditProject(project)}>
                               <Edit2 className="mr-2 h-4 w-4" />
                               Edit Project
                             </DropdownMenuItem>
@@ -359,6 +422,59 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Edit Project Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+            <DialogDescription>
+              Update the project name and progress percentage.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="edit-name">Project Name</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter project name"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-progress">
+                Progress: {editProgress[0]}%
+              </Label>
+              <Slider
+                id="edit-progress"
+                min={0}
+                max={100}
+                step={1}
+                value={editProgress}
+                onValueChange={setEditProgress}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>0%</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleUpdateProject}
+              disabled={updateProjectMutation.isPending}
+            >
+              {updateProjectMutation.isPending ? "Updating..." : "Update Project"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
