@@ -68,6 +68,16 @@ const translations: Record<string, Translations> = {
     'auth.alreadyHaveAccount': 'Already have an account?',
     'auth.signInHere': 'Sign in here',
     
+    // Organization
+    'organizationInfo': 'Organization Information',
+    'manageYourOrganization': 'Manage your organization details',
+    'invitationCode': 'Invitation Code',
+    'shareThisCodeWithTeam': 'Share this code with your team members to join',
+    'createdDate': 'Created Date',
+    'organizationCodeCopied': 'Organization code copied to clipboard!',
+    'success': 'Success',
+    'error': 'Error',
+    
     // Dashboard
     'dashboard.activeProjects': 'Active Projects',
     'dashboard.pendingReports': 'Pending Reports',

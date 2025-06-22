@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectForm from "@/components/project-form";
 import ReportApproval from "@/components/report-approval";
 import ProgressChart from "@/components/progress-chart";
+import OrganizationInfo from "@/components/organization-info";
 import { t } from "@/lib/i18n";
 import {
   Projector,
@@ -19,15 +20,15 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {}, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: projects, isLoading: projectsLoading } = useQuery({
+  const { data: projects = [], isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
   });
 
-  const { data: pendingReports, isLoading: reportsLoading } = useQuery({
+  const { data: pendingReports = [], isLoading: reportsLoading } = useQuery({
     queryKey: ["/api/reports/pending"],
   });
 
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats?.activeProjects || 0}
+                  {(stats as any)?.activeProjects || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.activeProjects')}</p>
               </div>
@@ -62,7 +63,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats?.pendingReports || 0}
+                  {(stats as any)?.pendingReports || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.pendingReports')}</p>
               </div>
@@ -76,7 +77,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats?.teamMembers || 0}
+                  {(stats as any)?.teamMembers || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.teamMembers')}</p>
               </div>
@@ -90,7 +91,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${stats?.totalBudget?.toLocaleString() || 0}
+                  ${(stats as any)?.totalBudget?.toLocaleString() || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.totalBudget')}</p>
               </div>
@@ -110,6 +111,9 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Organization Info */}
+          <OrganizationInfo />
+          
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Recent Projects */}
             <Card>
@@ -132,7 +136,7 @@ export default function AdminDashboard() {
                       </div>
                     ))}
                   </div>
-                ) : projects?.length === 0 ? (
+                ) : (projects as any[])?.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <Projector className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p>No projects created yet</p>
@@ -140,7 +144,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {projects?.slice(0, 3).map((project: any) => (
+                    {(projects as any[])?.slice(0, 3).map((project: any) => (
                       <div key={project.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-gray-900">{project.name}</div>
@@ -177,7 +181,7 @@ export default function AdminDashboard() {
                       </div>
                     ))}
                   </div>
-                ) : pendingReports?.length === 0 ? (
+                ) : (pendingReports as any[])?.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <Clock className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p>No pending reports</p>
@@ -185,7 +189,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {pendingReports?.slice(0, 3).map((report: any) => (
+                    {(pendingReports as any[])?.slice(0, 3).map((report: any) => (
                       <div key={report.id} className="p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-start justify-between mb-3">
                           <div>

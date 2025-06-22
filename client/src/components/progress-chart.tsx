@@ -30,40 +30,59 @@ import {
 } from "lucide-react";
 
 export default function ProgressChart() {
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {}, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: projects, isLoading: projectsLoading } = useQuery({
+  const { data: projects = [], isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
   });
 
-  const { data: reports, isLoading: reportsLoading } = useQuery({
+  const { data: reports = [], isLoading: reportsLoading } = useQuery({
     queryKey: ["/api/reports"],
   });
 
-  // Generate mock data for demonstration (in real app, this would come from API)
-  const projectProgressData = projects?.map((project: any, index: number) => ({
-    name: project.name.length > 15 ? project.name.substring(0, 15) + "..." : project.name,
-    progress: Math.floor(Math.random() * 100),
+  // Use real project data 
+  const projectProgressData = (projects as any[]).map((project: any, index: number) => ({
+    name: project.name && project.name.length > 15 ? project.name.substring(0, 15) + "..." : project.name || `Project ${index + 1}`,
+    progress: 0, // Real progress would be calculated from reports
     budget: parseFloat(project.budget || "0"),
-    reports: Math.floor(Math.random() * 20),
-  })) || [];
+    reports: (reports as any[]).filter((r: any) => r.projectId === project.id).length,
+  }));
 
   const reportStatusData = [
-    { name: "Approved", value: reports?.filter((r: any) => r.status === "approved").length || 0, color: "#10B981" },
-    { name: "Pending", value: reports?.filter((r: any) => r.status === "pending").length || 0, color: "#F59E0B" },
-    { name: "Rejected", value: reports?.filter((r: any) => r.status === "rejected").length || 0, color: "#EF4444" },
+    { name: "Approved", value: (reports as any[]).filter((r: any) => r.status === "approved").length || 0, color: "#10B981" },
+    { name: "Pending", value: (reports as any[]).filter((r: any) => r.status === "pending").length || 0, color: "#F59E0B" },
+    { name: "Rejected", value: (reports as any[]).filter((r: any) => r.status === "rejected").length || 0, color: "#EF4444" },
   ];
 
-  const monthlyProgressData = [
-    { month: "Jan", reports: 12, approved: 10, projects: 3 },
-    { month: "Feb", reports: 18, approved: 15, projects: 4 },
-    { month: "Mar", reports: 25, approved: 22, projects: 5 },
-    { month: "Apr", reports: 20, approved: 18, projects: 6 },
-    { month: "May", reports: 28, approved: 25, projects: 7 },
-    { month: "Jun", reports: 32, approved: 30, projects: 8 },
-  ];
+  // Generate real monthly data based on actual reports
+  const monthlyProgressData = (() => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const currentMonth = new Date().getMonth();
+    
+    return months.map((month, index) => {
+      if (index > currentMonth) {
+        return { month, reports: 0, approved: 0, projects: 0 };
+      }
+      
+      // For past months, calculate based on actual data only
+      const monthReports = (reports as any[]).filter((r: any) => {
+        const reportDate = new Date(r.submittedAt);
+        return reportDate.getMonth() === index;
+      });
+      
+      const monthApproved = monthReports.filter((r: any) => r.status === "approved");
+      const monthProjects = index <= currentMonth ? Math.min((projects as any[]).length || 0, index + 1) : 0;
+      
+      return {
+        month,
+        reports: monthReports.length,
+        approved: monthApproved.length,
+        projects: monthProjects
+      };
+    });
+  })();
 
   const budgetUtilizationData = projects?.map((project: any) => ({
     name: project.name.length > 12 ? project.name.substring(0, 12) + "..." : project.name,

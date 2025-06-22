@@ -9,6 +9,15 @@ import fs from "fs";
 import { z } from "zod";
 import { insertUserSchema, insertProjectSchema, insertReportSchema } from "@shared/schema";
 
+// Extend session types
+declare module "express-session" {
+  interface SessionData {
+    userId: number;
+    userRole: string;
+    organizationId: number;
+  }
+}
+
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -225,6 +234,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get user error:", error);
       res.status(500).json({ message: "Failed to get user" });
+    }
+  });
+
+  // Get organization details
+  app.get("/api/organization", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUserById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const organization = await storage.getOrganizationById(user.organizationId);
+      if (!organization) {
+        return res.status(404).json({ message: "Organization not found" });
+      }
+
+      res.json({
+        id: organization.id,
+        name: organization.name,
+        code: organization.code,
+        createdAt: organization.createdAt,
+      });
+    } catch (error) {
+      console.error("Get organization error:", error);
+      res.status(500).json({ message: "Failed to get organization" });
     }
   });
 

@@ -100,9 +100,16 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
       {
         onSuccess: (response) => {
           toast({
-            title: "Success",
-            description: `Organization created! Your code is: ${response.organization?.code}`,
+            title: "Organization Created Successfully!",
+            description: `Your organization code is: ${response.organization?.code}. Share this code with your team members so they can join.`,
+            duration: 10000, // Show for 10 seconds
           });
+          
+          // Show a separate alert with the code
+          setTimeout(() => {
+            alert(`🎉 Welcome to ADEL!\n\nYour Organization: ${response.organization?.name}\nOrganization Code: ${response.organization?.code}\n\nShare this code with your team members so they can register as officers and join your workspace.`);
+          }, 1000);
+          
           onClose();
         },
         onError: (error) => {
