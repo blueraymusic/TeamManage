@@ -30,6 +30,7 @@ import {
 import { t } from "@/lib/i18n";
 import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
+import OfficerMessages from "./officer-messages";
 import AdelLogo from "./adel-logo";
 
 export default function OfficerDashboard() {
@@ -154,7 +155,7 @@ export default function OfficerDashboard() {
         <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs defaultValue="overview" className="w-full">
             <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-3 bg-transparent h-12">
+              <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
@@ -163,6 +164,9 @@ export default function OfficerDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
+                </TabsTrigger>
+                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Messages
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -281,6 +285,10 @@ export default function OfficerDashboard() {
                   </div>
                 )}
               </div>
+            </TabsContent>
+
+            <TabsContent value="messages" className="p-6">
+              <OfficerMessages />
             </TabsContent>
           </Tabs>
         </div>
