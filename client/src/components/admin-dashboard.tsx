@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -47,61 +47,69 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-gray-900">
                   {(stats as any)?.activeProjects || 0}
                 </p>
-                <p className="text-sm text-gray-600">{t('dashboard.activeProjects')}</p>
+                <p className="text-sm font-medium text-gray-600 mt-1">Active Projects</p>
               </div>
-              <Projector className="w-8 h-8 text-blue-500" />
+              <div className="p-3 bg-red-50 rounded-full">
+                <Projector className="w-6 h-6 text-red-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-gray-900">
                   {(stats as any)?.pendingReports || 0}
                 </p>
-                <p className="text-sm text-gray-600">{t('dashboard.pendingReports')}</p>
+                <p className="text-sm font-medium text-gray-600 mt-1">Pending Reports</p>
               </div>
-              <Clock className="w-8 h-8 text-orange-500" />
+              <div className="p-3 bg-orange-50 rounded-full">
+                <Clock className="w-6 h-6 text-orange-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {(stats as any)?.teamMembers || 0}
+                <p className="text-3xl font-bold text-gray-900">
+                  {(stats as any)?.teamMembers || 1}
                 </p>
-                <p className="text-sm text-gray-600">{t('dashboard.teamMembers')}</p>
+                <p className="text-sm font-medium text-gray-600 mt-1">Team Members</p>
               </div>
-              <Users className="w-8 h-8 text-green-500" />
+              <div className="p-3 bg-green-50 rounded-full">
+                <Users className="w-6 h-6 text-green-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-gray-900">
                   ${(stats as any)?.totalBudget?.toLocaleString() || 0}
                 </p>
-                <p className="text-sm text-gray-600">{t('dashboard.totalBudget')}</p>
+                <p className="text-sm font-medium text-gray-600 mt-1">Total Budget</p>
               </div>
-              <DollarSign className="w-8 h-8 text-blue-500" />
+              <div className="p-3 bg-blue-50 rounded-full">
+                <DollarSign className="w-6 h-6 text-blue-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -109,11 +117,31 @@ export default function AdminDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="projects">Projects</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsList className="bg-white border border-gray-200 shadow-sm p-1 rounded-lg">
+          <TabsTrigger 
+            value="overview" 
+            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger 
+            value="projects" 
+            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
+          >
+            Projects
+          </TabsTrigger>
+          <TabsTrigger 
+            value="reports" 
+            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
+          >
+            Reports
+          </TabsTrigger>
+          <TabsTrigger 
+            value="analytics" 
+            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
+          >
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -121,15 +149,21 @@ export default function AdminDashboard() {
           <OrganizationInfo />
           
           <div className="grid lg:grid-cols-2 gap-6">
-            {/* Recent Projects */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  {t('dashboard.recentProjects')}
+            {/* Project Management */}
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader className="bg-red-50 border-b border-red-100">
+                <CardTitle className="flex items-center justify-between text-red-800">
+                  <div className="flex items-center gap-2">
+                    <Projector className="h-5 w-5 text-red-600" />
+                    Project Management
+                  </div>
                   <ProjectForm />
                 </CardTitle>
+                <CardDescription className="text-red-600">
+                  Create and manage your organization's projects
+                </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 {projectsLoading ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
@@ -140,41 +174,53 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (projects as any[])?.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <Projector className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p>No projects created yet</p>
-                    <p className="text-sm">Create your first project to get started</p>
+                  <div className="text-center py-12">
+                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                      <Projector className="w-10 h-10 text-red-500" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No projects yet</h3>
+                    <p className="text-gray-600 mb-6">Create your first project to start tracking progress and managing team reports.</p>
+                    <ProjectForm />
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {(projects as any[])?.slice(0, 3).map((project: any) => (
-                      <div key={project.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
-                          <div className="font-medium text-gray-900">{project.name}</div>
+                      <div key={project.id} className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg hover:shadow-sm transition-shadow">
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-900 mb-1">{project.name}</div>
                           <div className="text-sm text-gray-600 flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
+                            <Calendar className="w-4 h-4 mr-2 text-red-500" />
                             Due: {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-medium text-green-500">
-                            {Math.floor(Math.random() * 100)}%
+                          <div className="text-sm font-semibold text-red-600 mb-1">
+                            {project.progress || 0}%
                           </div>
-                          <Progress value={Math.floor(Math.random() * 100)} className="w-16 h-2 mt-1" />
+                          <Progress value={project.progress || 0} className="w-20 h-2" />
                         </div>
                       </div>
                     ))}
+                    <div className="pt-4 border-t border-red-100">
+                      <ProjectForm />
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* Pending Approvals */}
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('dashboard.pendingApprovals')}</CardTitle>
+            <Card className="bg-white shadow-sm border border-gray-200">
+              <CardHeader className="bg-orange-50 border-b border-orange-100">
+                <CardTitle className="flex items-center gap-2 text-orange-800">
+                  <Clock className="h-5 w-5 text-orange-600" />
+                  Pending Approvals
+                </CardTitle>
+                <CardDescription className="text-orange-600">
+                  Review and approve team reports
+                </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 {reportsLoading ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
@@ -185,10 +231,12 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (pendingReports as any[])?.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <Clock className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p>No pending reports</p>
-                    <p className="text-sm">All reports are up to date</p>
+                  <div className="text-center py-12">
+                    <div className="bg-orange-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                      <Clock className="w-10 h-10 text-orange-500" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No pending reports</h3>
+                    <p className="text-gray-600">All reports are up to date</p>
                   </div>
                 ) : (
                   <div className="space-y-4">

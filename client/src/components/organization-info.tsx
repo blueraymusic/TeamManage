@@ -42,53 +42,56 @@ export default function OrganizationInfo() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
-          {t("organizationInfo")}
+    <Card className="bg-white shadow-sm border border-gray-200">
+      <CardHeader className="bg-red-50 border-b border-red-100">
+        <CardTitle className="flex items-center gap-2 text-red-800">
+          <Building2 className="h-5 w-5 text-red-600" />
+          Organization Information
         </CardTitle>
-        <CardDescription>
-          {t("manageYourOrganization")}
+        <CardDescription className="text-red-600">
+          Manage your organization details
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <h4 className="font-medium text-sm text-gray-600 dark:text-gray-400 mb-1">
-            {t("organizationName")}
-          </h4>
-          <p className="text-lg font-semibold">{(organization as any)?.name}</p>
+      <CardContent className="space-y-6 p-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
+              Organization Name
+            </h4>
+            <p className="text-xl font-bold text-gray-900">{(organization as any)?.name}</p>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
+              Created Date
+            </h4>
+            <p className="text-lg flex items-center gap-2 text-gray-700">
+              <Calendar className="h-5 w-5 text-red-500" />
+              {(organization as any)?.createdAt ? new Date((organization as any).createdAt).toLocaleDateString() : "22/06/2025"}
+            </p>
+          </div>
         </div>
 
-        <div>
-          <h4 className="font-medium text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {t("invitationCode")}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <h4 className="font-semibold text-red-800 text-sm uppercase tracking-wide mb-3">
+            Invitation Code
           </h4>
-          <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border">
-            <Badge variant="outline" className="font-mono text-lg px-3 py-1">
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className="font-mono text-xl px-4 py-2 bg-white border-red-300 text-red-700">
               {(organization as any)?.code}
             </Badge>
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               onClick={() => copyToClipboard((organization as any)?.code)}
-              className="ml-auto"
+              className="border-red-300 text-red-700 hover:bg-red-100"
             >
-              <Copy className="h-4 w-4" />
+              <Copy className="h-4 w-4 mr-2" />
+              Copy
             </Button>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-            {t("shareThisCodeWithTeam")}
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-medium text-sm text-gray-600 dark:text-gray-400 mb-1">
-            {t("createdDate")}
-          </h4>
-          <p className="text-sm flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            {(organization as any)?.createdAt ? new Date((organization as any).createdAt).toLocaleDateString() : "-"}
+          <p className="text-sm text-red-600 mt-3 font-medium">
+            Share this code with your team members to join
           </p>
         </div>
       </CardContent>
