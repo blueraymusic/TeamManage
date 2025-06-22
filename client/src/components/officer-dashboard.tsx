@@ -55,13 +55,13 @@ export default function OfficerDashboard() {
     <div className="space-y-8">
       {/* Header with Logo */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-3">
-            <AdelLogo size="lg" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">ADEL</span>
-          </div>
+        <div className="flex items-center space-x-4">
+          <AdelLogo size="lg" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Officer Panel</h1>
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">ADEL</span>
+              <span className="text-2xl font-bold text-gray-900">Officer Panel</span>
+            </div>
             <p className="text-gray-600">Submit reports and track project progress</p>
           </div>
         </div>
