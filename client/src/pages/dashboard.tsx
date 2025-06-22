@@ -10,10 +10,13 @@ import { t } from "@/lib/i18n";
 import { LogOut, User } from "lucide-react";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const logoutMutation = useLogout();
 
-  if (!user) {
+  console.log("Dashboard - User data:", user);
+  console.log("Dashboard - User role:", user?.role);
+
+  if (isLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>

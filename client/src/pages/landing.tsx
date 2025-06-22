@@ -103,22 +103,49 @@ export default function Landing() {
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 {t('hero.subtitle')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-lg transition-all transform hover:scale-105 material-shadow"
-                  onClick={() => setShowAuthModal("register")}
-                >
-                  <Rocket className="w-5 h-5 mr-2" />
-                  {t('hero.startTrial')}
-                </Button>
+              {/* Role Selection Cards */}
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200 hover:border-red-400 transition-all">
+                  <div className="text-center">
+                    <Crown className="w-10 h-10 mx-auto mb-3 text-red-600" />
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Administrator</h3>
+                    <p className="text-gray-600 text-sm mb-4">Create your NGO organization and manage everything</p>
+                    <Button
+                      size="lg"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold"
+                      onClick={() => setShowAuthModal("register")}
+                    >
+                      Create Organization
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 transition-all">
+                  <div className="text-center">
+                    <Users className="w-10 h-10 mx-auto mb-3 text-blue-600" />
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Officer</h3>
+                    <p className="text-gray-600 text-sm mb-4">Join your team and work on projects</p>
+                    <Button
+                      size="lg"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                      onClick={() => setShowAuthModal("register")}
+                    >
+                      Join Organization
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <p className="text-gray-600 mb-4">Already have an account?</p>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-8 py-4 text-lg"
+                  className="border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 px-8 py-3"
+                  onClick={() => setShowAuthModal("login")}
                 >
-                  <Play className="w-5 h-5 mr-2" />
-                  {t('hero.watchDemo')}
+                  <User className="w-5 h-5 mr-2" />
+                  Sign In
                 </Button>
               </div>
             </div>

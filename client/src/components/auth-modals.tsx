@@ -95,27 +95,30 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
   };
 
   const handleAdminRegister = (data: z.infer<typeof adminRegisterSchema>) => {
+    console.log("Admin registration data:", { type: "admin", ...data });
     registerMutation.mutate(
       { type: "admin", ...data },
       {
         onSuccess: (response) => {
+          console.log("Admin registration response:", response);
           toast({
-            title: "Organization Created Successfully!",
-            description: `Your organization code is: ${response.organization?.code}. Share this code with your team members so they can join.`,
-            duration: 10000, // Show for 10 seconds
+            title: "Admin Account Created Successfully!",
+            description: `Welcome Administrator! Your organization "${response.organization?.name}" has been created with code: ${response.organization?.code}`,
+            duration: 10000,
           });
           
-          // Show a separate alert with the code
+          // Show detailed success message
           setTimeout(() => {
-            alert(`🎉 Welcome to ADEL!\n\nYour Organization: ${response.organization?.name}\nOrganization Code: ${response.organization?.code}\n\nShare this code with your team members so they can register as officers and join your workspace.`);
+            alert(`Admin Account Created Successfully!\n\nWelcome to ADEL Administrator Panel!\n\nOrganization: ${response.organization?.name}\nOrganization Code: ${response.organization?.code}\nYour Role: Administrator\n\nShare the organization code with team members so they can join as officers.`);
           }, 1000);
           
           onClose();
         },
         onError: (error) => {
+          console.error("Admin registration error:", error);
           toast({
-            title: "Error",
-            description: error.message || "Registration failed",
+            title: "Admin Registration Failed",
+            description: error.message || "Failed to create admin account",
             variant: "destructive",
           });
         },
@@ -239,32 +242,34 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
           {/* Registration Type Selection */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <Card 
-              className={`cursor-pointer transition-colors ${
+              className={`cursor-pointer transition-all duration-200 ${
                 registrationType === "admin" 
-                  ? "border-blue-500 bg-blue-50" 
-                  : "border-gray-300 hover:border-blue-500"
+                  ? "border-red-500 bg-red-50 shadow-lg ring-2 ring-red-200" 
+                  : "border-gray-300 hover:border-red-400 hover:shadow-md"
               }`}
               onClick={() => setRegistrationType("admin")}
             >
-              <CardContent className="p-4 text-center">
-                <Crown className="w-8 h-8 mx-auto mb-2 text-blue-500" />
-                <div className="font-bold">{t('auth.admin')}</div>
-                <div className="text-sm text-gray-600">{t('auth.adminDesc')}</div>
+              <CardContent className="p-6 text-center">
+                <Crown className={`w-10 h-10 mx-auto mb-3 ${registrationType === "admin" ? "text-red-600" : "text-red-500"}`} />
+                <div className="font-bold text-lg text-gray-900">{t('auth.admin')}</div>
+                <div className="text-sm text-gray-600 mt-1">{t('auth.adminDesc')}</div>
+                <div className="text-xs font-medium text-red-600 mt-2">Create Organization</div>
               </CardContent>
             </Card>
             
             <Card 
-              className={`cursor-pointer transition-colors ${
+              className={`cursor-pointer transition-all duration-200 ${
                 registrationType === "officer" 
-                  ? "border-green-500 bg-green-50" 
-                  : "border-gray-300 hover:border-green-500"
+                  ? "border-blue-500 bg-blue-50 shadow-lg ring-2 ring-blue-200" 
+                  : "border-gray-300 hover:border-blue-400 hover:shadow-md"
               }`}
               onClick={() => setRegistrationType("officer")}
             >
-              <CardContent className="p-4 text-center">
-                <User className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                <div className="font-bold">{t('auth.officer')}</div>
-                <div className="text-sm text-gray-600">{t('auth.officerDesc')}</div>
+              <CardContent className="p-6 text-center">
+                <User className={`w-10 h-10 mx-auto mb-3 ${registrationType === "officer" ? "text-blue-600" : "text-blue-500"}`} />
+                <div className="font-bold text-lg text-gray-900">{t('auth.officer')}</div>
+                <div className="text-sm text-gray-600 mt-1">{t('auth.officerDesc')}</div>
+                <div className="text-xs font-medium text-blue-600 mt-2">Join Organization</div>
               </CardContent>
             </Card>
           </div>
@@ -352,11 +357,11 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
               
               <Button 
                 type="submit" 
-                className="w-full bg-blue-500 hover:bg-blue-600"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold"
                 disabled={registerMutation.isPending}
               >
-                <Rocket className="w-4 h-4 mr-2" />
-                {registerMutation.isPending ? "Creating..." : t('auth.createOrganization')}
+                <Crown className="w-4 h-4 mr-2" />
+                {registerMutation.isPending ? "Creating Admin Account..." : "Create Admin Account & Organization"}
               </Button>
             </form>
           )}
@@ -444,11 +449,11 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
               
               <Button 
                 type="submit" 
-                className="w-full bg-green-500 hover:bg-green-600"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 disabled={registerMutation.isPending}
               >
                 <Users className="w-4 h-4 mr-2" />
-                {registerMutation.isPending ? "Joining..." : t('auth.joinOrganization')}
+                {registerMutation.isPending ? "Creating Officer Account..." : "Create Officer Account & Join Organization"}
               </Button>
             </form>
           )}
