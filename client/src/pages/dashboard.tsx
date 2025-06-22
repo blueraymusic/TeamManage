@@ -34,7 +34,7 @@ export default function Dashboard() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <img 
-                  src="@assets/logoO_1750625487699.png" 
+                  src="@assets/logoO_1750625759438.png" 
                   alt="ADEL Logo" 
                   className="w-10 h-10 object-contain"
                 />
