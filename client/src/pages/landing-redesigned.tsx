@@ -49,12 +49,11 @@ export default function Landing() {
               {/* Logo Section */}
               <div className="flex items-center space-x-4">
                 <div className="relative group">
-                  {/* Animated Background Circles */}
-                  <div className="absolute -inset-2 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
-                  <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-xl opacity-50 group-hover:opacity-75 transition-all duration-300 blur-sm"></div>
+                  {/* Subtle Professional Glow */}
+                  <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
                   
                   {/* Logo Container */}
-                  <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-3 rounded-xl shadow-xl transform group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative bg-gradient-to-br from-blue-600 to-indigo-700 p-3 rounded-xl shadow-lg transform group-hover:scale-102 transition-transform duration-300">
                     <AdelLogo size="lg" className="filter brightness-0 invert" />
                   </div>
                 </div>
@@ -109,10 +108,9 @@ export default function Landing() {
                   
                   <Button
                     onClick={() => setShowAuthModal("register")}
-                    className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 px-10 py-2.5 font-semibold text-lg rounded-xl"
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-10 py-2.5 font-semibold text-lg rounded-xl"
                   >
-                    <span className="relative z-10">Get Started</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                    Get Started
                   </Button>
                 </div>
               </nav>
