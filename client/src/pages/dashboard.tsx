@@ -15,6 +15,7 @@ export default function Dashboard() {
 
   console.log("Dashboard - User data:", user);
   console.log("Dashboard - User role:", user?.role);
+  console.log("Dashboard - Is admin:", user?.role === "admin");
 
   if (isLoading || !user) {
     return (
@@ -24,6 +25,10 @@ export default function Dashboard() {
     );
   }
 
+  // Force proper role detection
+  const isAdmin = user.role === "admin";
+  console.log("Dashboard - Final isAdmin check:", isAdmin);
+
   const handleLogout = () => {
     logoutMutation.mutate();
   };
@@ -31,7 +36,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className={`shadow-sm border-b ${user.role === "admin" ? "bg-red-50 border-red-200" : "bg-blue-50 border-blue-200"}`}>
+      <header className={`shadow-sm border-b ${isAdmin ? "bg-red-50 border-red-200" : "bg-blue-50 border-blue-200"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -42,8 +47,8 @@ export default function Dashboard() {
                   className="w-10 h-10 object-contain"
                 />
                 <span className="text-2xl font-bold text-gray-900">ADEL</span>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${user.role === "admin" ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
-                  {user.role === "admin" ? "Admin Panel" : "Officer Panel"}
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${isAdmin ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
+                  {isAdmin ? "Admin Panel" : "Officer Panel"}
                 </div>
               </div>
             </div>
@@ -83,14 +88,14 @@ export default function Dashboard() {
             Welcome back, {user.firstName}!
           </h1>
           <p className="text-gray-600 mt-2">
-            {user.role === "admin" 
+            {isAdmin 
               ? "Manage your organization's projects and review team reports." 
               : "Submit reports and track your project contributions."}
           </p>
         </div>
 
         {/* Role-based Dashboard */}
-        {user.role === "admin" ? (
+        {isAdmin ? (
           <AdminDashboard />
         ) : (
           <OfficerDashboard />

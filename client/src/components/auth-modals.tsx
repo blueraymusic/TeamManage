@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@ interface AuthModalsProps {
 export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
   const [registrationType, setRegistrationType] = useState<"admin" | "officer">("admin");
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const loginMutation = useLogin();
   const registerMutation = useRegister();
@@ -107,12 +109,15 @@ export default function AuthModals({ showModal, onClose }: AuthModalsProps) {
             duration: 10000,
           });
           
-          // Show detailed success message
-          setTimeout(() => {
-            alert(`Admin Account Created Successfully!\n\nWelcome to ADEL Administrator Panel!\n\nOrganization: ${response.organization?.name}\nOrganization Code: ${response.organization?.code}\nYour Role: Administrator\n\nShare the organization code with team members so they can join as officers.`);
-          }, 1000);
+          // Show detailed success message immediately
+          alert(`Admin Account Created Successfully!\n\nWelcome to ADEL Administrator Panel!\n\nOrganization: ${response.organization?.name}\nOrganization Code: ${response.organization?.code}\nYour Role: Administrator\n\nShare the organization code with team members so they can join as officers.`);
           
           onClose();
+          
+          // Force page refresh to ensure admin interface loads
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         },
         onError: (error) => {
           console.error("Admin registration error:", error);
