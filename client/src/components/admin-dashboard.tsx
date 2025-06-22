@@ -1,53 +1,61 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProjectForm from "@/components/project-form";
-import ReportApproval from "@/components/report-approval";
-import ProgressChart from "@/components/progress-chart";
-import OrganizationInfo from "@/components/organization-info";
-import { BulkProjectOperations, BulkReportOperations } from "@/components/bulk-operations";
-import { t } from "@/lib/i18n";
-import {
-  Projector,
-  Clock,
-  Users,
+import { 
+  Users, 
+  Projector, 
+  Clock, 
+  Calendar, 
   DollarSign,
-  Plus,
-  Calendar,
-  TrendingUp,
   Target,
+  TrendingUp,
+  FileText,
+  BarChart3
 } from "lucide-react";
+import { t } from "@/lib/i18n";
+import OrganizationInfo from "./organization-info";
+import ProjectForm from "./project-form";
+import ReportApproval from "./report-approval";
+import ProgressChart from "./progress-chart";
+import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 
 export default function AdminDashboard() {
-  const { data: stats = {}, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
-  });
-
-  const { data: projects = [], isLoading: projectsLoading } = useQuery({
+  const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
   });
 
-  const { data: pendingReports = [], isLoading: reportsLoading } = useQuery({
-    queryKey: ["/api/reports/pending"],
-  });
-
-  const { data: reports = [], isLoading: allReportsLoading } = useQuery({
+  const { data: reports, isLoading: reportsLoading, refetch: refetchReports } = useQuery({
     queryKey: ["/api/reports"],
   });
 
-  if (statsLoading) {
+  const { data: pendingReports } = useQuery({
+    queryKey: ["/api/reports/pending"],
+  });
+
+  const { data: stats } = useQuery({
+    queryKey: ["/api/dashboard/stats"],
+  });
+
+  if (projectsLoading || reportsLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-24 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border border-gray-200">
@@ -115,85 +123,55 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="bg-white border border-gray-200 shadow-sm p-1 rounded-lg">
-          <TabsTrigger 
-            value="overview" 
-            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
-          >
-            Overview
-          </TabsTrigger>
-          <TabsTrigger 
-            value="projects" 
-            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
-          >
-            Projects
-          </TabsTrigger>
-          <TabsTrigger 
-            value="reports" 
-            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
-          >
-            Reports
-          </TabsTrigger>
-          <TabsTrigger 
-            value="analytics" 
-            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 px-6 py-2 font-medium"
-          >
-            Analytics
-          </TabsTrigger>
+      {/* Main Content */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4 h-9">
+          <TabsTrigger value="overview" className="text-sm">Overview</TabsTrigger>
+          <TabsTrigger value="projects" className="text-sm">Projects</TabsTrigger>
+          <TabsTrigger value="reports" className="text-sm">Reports</TabsTrigger>
+          <TabsTrigger value="team" className="text-sm">Team</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          {/* Organization Info */}
+        <TabsContent value="overview" className="space-y-4">
           <OrganizationInfo />
           
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Project Management */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Quick Actions */}
             <Card className="border border-gray-200">
-              <CardHeader className="bg-gray-50 pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Projector className="h-4 w-4 text-red-600" />
-                    Projects
-                  </CardTitle>
-                  <ProjectForm />
-                </div>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-700">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="p-4">
-                {projectsLoading ? (
-                  <div className="space-y-3">
-                    {[1, 2].map((i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
-                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (projects as any[])?.length === 0 ? (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <Projector className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600 mb-3">No projects created yet</p>
-                    <ProjectForm />
+              <CardContent className="p-3 pt-0 space-y-2">
+                <ProjectForm />
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs h-8">
+                  <Users className="w-3 h-3 mr-2" />
+                  View Team
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs h-8">
+                  <BarChart3 className="w-3 h-3 mr-2" />
+                  Analytics
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Recent Projects */}
+            <Card className="border border-gray-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-700">Recent Projects</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 pt-0">
+                {(projects as any[])?.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Projector className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500">No projects yet</p>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {(projects as any[])?.slice(0, 3).map((project: any) => (
-                      <div key={project.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 text-sm truncate">{project.name}</div>
-                          <div className="text-xs text-gray-500 flex items-center mt-1">
-                            <Calendar className="w-3 h-3 mr-1" />
-                            {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs font-medium text-gray-600">
-                            {project.progress || 0}%
-                          </span>
-                          <Progress value={project.progress || 0} className="w-16 h-1.5" />
+                      <div key={project.id} className="p-2 bg-gray-50 rounded text-xs">
+                        <div className="font-medium truncate">{project.name}</div>
+                        <div className="text-gray-500">
+                          {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                         </div>
                       </div>
                     ))}
@@ -202,51 +180,24 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* Pending Approvals */}
+            {/* Pending Reports */}
             <Card className="border border-gray-200">
-              <CardHeader className="bg-gray-50 pb-3">
-                <CardTitle className="flex items-center gap-2 text-gray-800">
-                  <Clock className="h-4 w-4 text-orange-600" />
-                  Pending Approvals
-                </CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-700">Pending Reports</CardTitle>
               </CardHeader>
-              <CardContent className="p-4">
-                {reportsLoading ? (
-                  <div className="space-y-3">
-                    {[1, 2].map((i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
-                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (pendingReports as any[])?.length === 0 ? (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <Clock className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600">No pending reports</p>
+              <CardContent className="p-3 pt-0">
+                {(pendingReports as any[])?.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Clock className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500">All clear</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     {(pendingReports as any[])?.slice(0, 3).map((report: any) => (
-                      <div key={report.id} className="p-4 border border-gray-200 rounded-lg">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <div className="font-medium text-gray-900">{report.title}</div>
-                            <div className="text-sm text-gray-600">by User #{report.submittedBy}</div>
-                          </div>
-                          <Badge variant="secondary" className="bg-orange-100 text-orange-600">
-                            Pending
-                          </Badge>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
-                            {t('dashboard.approve')}
-                          </Button>
-                          <Button size="sm" variant="destructive">
-                            {t('dashboard.reject')}
-                          </Button>
+                      <div key={report.id} className="p-2 bg-orange-50 rounded text-xs border border-orange-200">
+                        <div className="font-medium truncate">{report.title}</div>
+                        <div className="text-orange-600">
+                          {new Date(report.submittedAt).toLocaleDateString()}
                         </div>
                       </div>
                     ))}
@@ -255,6 +206,8 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
+
+          <ProgressChart />
         </TabsContent>
 
         <TabsContent value="projects" className="space-y-4">
@@ -266,16 +219,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           
-          {projectsLoading ? (
-            <div className="space-y-3">
-              {[1, 2].map((i) => (
-                <div key={i} className="animate-pulse p-4 border rounded-lg">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                </div>
-              ))}
-            </div>
-          ) : (projects as any[])?.length === 0 ? (
+          {(projects as any[])?.length === 0 ? (
             <Card className="border border-gray-200">
               <CardContent className="p-8">
                 <div className="text-center">
@@ -321,9 +265,9 @@ export default function AdminDashboard() {
           )}
         </TabsContent>
 
-        <TabsContent value="reports" className="space-y-6">
+        <TabsContent value="reports" className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Report Management</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Report Management</h2>
             <BulkReportOperations reports={reports as any[] || []} />
           </div>
           <ReportApproval />
