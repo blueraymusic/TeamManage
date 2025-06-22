@@ -99,9 +99,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           organizationId: organization.id,
         });
 
+        console.log("Admin user created:", { id: user.id, role: user.role, email: user.email });
+
         req.session.userId = user.id;
         req.session.userRole = user.role;
         req.session.organizationId = user.organizationId;
+
+        console.log("Session set:", { userId: req.session.userId, userRole: req.session.userRole });
 
         res.json({
           user: {
@@ -217,10 +221,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/auth/me", requireAuth, async (req: any, res) => {
     try {
+      console.log("Auth me request - sessionUserId:", req.session.userId, "sessionRole:", req.session.userRole);
       const user = await storage.getUserById(req.session.userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      console.log("User from database:", { id: user.id, role: user.role, email: user.email });
 
       res.json({
         user: {
