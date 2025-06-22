@@ -27,7 +27,7 @@ export default function TeamMessaging() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { recipientId: number; content: string }) => {
-      return await apiRequest("/api/messages", "POST", data);
+      return await apiRequest("POST", "/api/messages", data);
     },
     onSuccess: () => {
       toast({
