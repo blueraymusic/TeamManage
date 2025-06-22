@@ -1,9 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Users, 
   Projector, 
@@ -13,7 +21,10 @@ import {
   Target,
   TrendingUp,
   FileText,
-  BarChart3
+  BarChart3,
+  Edit2,
+  Trash2,
+  MoreHorizontal
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import OrganizationInfo from "./organization-info";
@@ -23,6 +34,8 @@ import ProgressChart from "./progress-chart";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 
 export default function AdminDashboard() {
+  const { toast } = useToast();
+  
   const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
   });
@@ -38,6 +51,33 @@ export default function AdminDashboard() {
   const { data: stats } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
+
+  // Delete project mutation
+  const deleteProjectMutation = useMutation({
+    mutationFn: async (projectId: number) => {
+      await apiRequest("DELETE", `/api/projects/${projectId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Project deleted successfully",
+      });
+      refetch();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete project",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteProject = (projectId: number) => {
+    if (confirm("Are you sure you want to delete this project?")) {
+      deleteProjectMutation.mutate(projectId);
+    }
+  };
 
   if (projectsLoading || reportsLoading) {
     return (
@@ -247,6 +287,12 @@ export default function AdminDashboard() {
                           <Calendar className="w-3 h-3 mr-1" />
                           {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                         </div>
+                        {project.budget && (
+                          <div className="flex items-center mt-1 text-xs text-gray-500">
+                            <DollarSign className="w-3 h-3 mr-1" />
+                            Budget: ${parseFloat(project.budget).toLocaleString()}
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-center space-x-3">
                         <Badge variant={project.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
@@ -256,6 +302,26 @@ export default function AdminDashboard() {
                           <div className="text-xs text-gray-600 mb-1">{project.progress || 0}%</div>
                           <Progress value={project.progress || 0} className="w-16 h-1.5" />
                         </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <Edit2 className="mr-2 h-4 w-4" />
+                              Edit Project
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => handleDeleteProject(project.id)}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete Project
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                   </CardContent>

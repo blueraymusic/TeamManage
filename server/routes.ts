@@ -284,6 +284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const projectData = insertProjectSchema.parse({
         ...req.body,
         deadline: req.body.deadline ? new Date(req.body.deadline) : null,
+        budget: req.body.budget ? String(req.body.budget) : null,
         organizationId: req.session.organizationId,
         createdBy: req.session.userId,
       });
@@ -305,6 +306,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get projects error:", error);
       res.status(500).json({ message: "Failed to get projects" });
+    }
+  });
+
+  // Update project
+  app.put("/api/projects/:id", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const projectId = parseInt(req.params.id);
+      const updateData = {
+        ...req.body,
+        deadline: req.body.deadline ? new Date(req.body.deadline) : null,
+        budget: req.body.budget ? String(req.body.budget) : null,
+      };
+
+      const project = await storage.updateProject(projectId, updateData);
+      res.json(project);
+    } catch (error) {
+      console.error("Update project error:", error);
+      res.status(500).json({ message: "Failed to update project" });
+    }
+  });
+
+  // Delete project
+  app.delete("/api/projects/:id", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const projectId = parseInt(req.params.id);
+      await storage.bulkDeleteProjects([projectId], req.session.organizationId);
+      res.json({ message: "Project deleted successfully" });
+    } catch (error) {
+      console.error("Delete project error:", error);
+      res.status(500).json({ message: "Failed to delete project" });
     }
   });
 
