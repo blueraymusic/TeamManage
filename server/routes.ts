@@ -56,6 +56,7 @@ function requireAuth(req: any, res: any, next: any) {
 }
 
 function requireAdmin(req: any, res: any, next: any) {
+  console.log("Admin check - userId:", req.session.userId, "userRole:", req.session.userRole);
   if (!req.session.userId || req.session.userRole !== "admin") {
     return res.status(403).json({ message: "Admin access required" });
   }
@@ -263,8 +264,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Project routes
-  app.post("/api/projects", requireAdmin, async (req: any, res) => {
+  app.post("/api/projects", requireAuth, async (req: any, res) => {
     try {
+      // Check if user is admin
+      const user = await storage.getUserById(req.session.userId);
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
       const projectData = insertProjectSchema.parse({
         ...req.body,
         organizationId: req.session.organizationId,
