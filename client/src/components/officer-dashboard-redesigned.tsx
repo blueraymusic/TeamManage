@@ -44,7 +44,7 @@ export default function OfficerDashboard() {
   });
 
   // Get user's submitted reports
-  const userReports = reports?.filter((report: any) => report.submittedBy) || [];
+  const userReports = (reports as any[])?.filter((report: any) => report.submittedBy) || [];
   const pendingReports = userReports.filter((report: any) => report.status === "pending");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
@@ -222,7 +222,7 @@ export default function OfficerDashboard() {
                 </div>
                 
                 <div className="grid gap-6">
-                  {projects && projects.length > 0 ? (
+                  {projects && (projects as any[]).length > 0 ? (
                     (projects as any[]).map((project: any) => (
                       <Card key={project.id} className="bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
                         <CardContent className="p-6">
@@ -243,7 +243,7 @@ export default function OfficerDashboard() {
                                 {project.budget && (
                                   <div>
                                     <p className="text-sm font-medium text-gray-500">Budget</p>
-                                    <p className="text-lg font-semibold text-gray-900">${project.budget.toFixed(2)}</p>
+                                    <p className="text-lg font-semibold text-gray-900">${parseFloat(project.budget).toFixed(2)}</p>
                                   </div>
                                 )}
                                 

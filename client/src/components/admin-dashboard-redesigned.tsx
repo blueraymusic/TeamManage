@@ -315,13 +315,13 @@ export default function AdminDashboard() {
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-bold text-gray-900">Project Management</h2>
                   <div className="flex space-x-3">
-                    <BulkProjectOperations projects={projects || []} onRefresh={refetch} />
+                    <BulkProjectOperations projects={(projects as any[]) || []} onRefresh={refetch} />
                     <ProjectForm onSuccess={refetch} />
                   </div>
                 </div>
                 
                 <div className="grid gap-6">
-                  {(projects as any)?.map((project: any) => (
+                  {(projects as any[])?.map((project: any) => (
                     <Card key={project.id} className="bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start">
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
                               {project.budget && (
                                 <div>
                                   <p className="text-sm font-medium text-gray-500">Budget</p>
-                                  <p className="text-lg font-semibold text-gray-900">${project.budget.toFixed(2)}</p>
+                                  <p className="text-lg font-semibold text-gray-900">${parseFloat(project.budget).toFixed(2)}</p>
                                 </div>
                               )}
                               
@@ -393,7 +393,7 @@ export default function AdminDashboard() {
               <TabsContent value="reports" className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-bold text-gray-900">Report Management</h2>
-                  <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+                  <BulkReportOperations reports={(reports as any[]) || []} onRefresh={refetchReports} />
                 </div>
                 <ReportApproval />
               </TabsContent>
@@ -539,7 +539,7 @@ export default function AdminDashboard() {
                   {viewingProject.budget && (
                     <div>
                       <p className="text-sm font-medium text-gray-500 mb-1">Budget</p>
-                      <p className="text-lg font-semibold">${viewingProject.budget.toFixed(2)}</p>
+                      <p className="text-lg font-semibold">${parseFloat(viewingProject.budget).toFixed(2)}</p>
                     </div>
                   )}
                 </div>
