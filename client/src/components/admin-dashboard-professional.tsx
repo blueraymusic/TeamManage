@@ -372,7 +372,24 @@ export default function AdminDashboard() {
               <ReportApproval />
             </TabsContent>
 
-            <TabsContent value="team" className="p-6">
+            <TabsContent value="team" className="p-6 space-y-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="text-gray-900">Add Team Member</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex space-x-4">
+                    <Input 
+                      placeholder="Enter team member email or phone number" 
+                      className="flex-1"
+                    />
+                    <Button>Send Invitation</Button>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Team members will receive an invitation to join your organization
+                  </p>
+                </CardContent>
+              </Card>
               <OrganizationInfo />
             </TabsContent>
 
