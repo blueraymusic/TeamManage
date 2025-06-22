@@ -52,6 +52,8 @@ export default function AdminDashboard() {
   const [editingProject, setEditingProject] = useState<any>(null);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
+  const [editBudget, setEditBudget] = useState("");
+  const [editBudgetUsed, setEditBudgetUsed] = useState("");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -127,6 +129,8 @@ export default function AdminDashboard() {
     setEditingProject(project);
     setEditName(project.name);
     setEditProgress([project.progress || 0]);
+    setEditBudget(project.budget?.toString() || "");
+    setEditBudgetUsed(project.budgetUsed?.toString() || "0");
     setIsEditDialogOpen(true);
   };
 
@@ -140,7 +144,8 @@ export default function AdminDashboard() {
         progress: editProgress[0],
         description: editingProject.description,
         deadline: editingProject.deadline,
-        budget: editingProject.budget,
+        budget: editBudget ? parseFloat(editBudget) : null,
+        budgetUsed: editBudgetUsed ? parseFloat(editBudgetUsed) : 0,
         status: editingProject.status,
         goals: editingProject.goals,
       },
@@ -503,7 +508,7 @@ export default function AdminDashboard() {
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>
             <DialogDescription>
-              Update the project name and progress percentage.
+              Update the project name, budget, and progress percentage.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -515,6 +520,52 @@ export default function AdminDashboard() {
                 onChange={(e) => setEditName(e.target.value)}
                 placeholder="Enter project name"
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-budget">Budget ($)</Label>
+              <Input
+                id="edit-budget"
+                type="number"
+                value={editBudget}
+                onChange={(e) => setEditBudget(e.target.value)}
+                placeholder="Enter budget amount"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-budget-used">Budget Used ($)</Label>
+              <Input
+                id="edit-budget-used"
+                type="number"
+                value={editBudgetUsed}
+                onChange={(e) => setEditBudgetUsed(e.target.value)}
+                placeholder="Enter amount spent"
+                min="0"
+                step="0.01"
+              />
+              {editBudget && parseFloat(editBudget) > 0 && (
+                <div className="space-y-2">
+                  <Progress 
+                    value={
+                      editBudgetUsed && parseFloat(editBudgetUsed) > 0
+                        ? Math.min((parseFloat(editBudgetUsed) / parseFloat(editBudget)) * 100, 100)
+                        : 0
+                    } 
+                    className="h-2"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>
+                      {editBudget && parseFloat(editBudget) > 0
+                        ? Math.round((parseFloat(editBudgetUsed || "0") / parseFloat(editBudget)) * 100)
+                        : 0}% used
+                    </span>
+                    <span>
+                      ${Math.max(0, parseFloat(editBudget || "0") - parseFloat(editBudgetUsed || "0")).toFixed(2)} remaining
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="edit-progress">
