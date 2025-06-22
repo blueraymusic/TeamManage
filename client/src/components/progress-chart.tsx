@@ -45,8 +45,9 @@ export default function ProgressChart() {
   // Use real project data 
   const projectProgressData = (projects as any[]).map((project: any, index: number) => ({
     name: project.name && project.name.length > 15 ? project.name.substring(0, 15) + "..." : project.name || `Project ${index + 1}`,
-    progress: 0, // Real progress would be calculated from reports
+    progress: project.progress || 0, // Use actual progress from database
     budget: parseFloat(project.budget || "0"),
+    budgetUsed: parseFloat(project.budgetUsed || "0"),
     reports: (reports as any[]).filter((r: any) => r.projectId === project.id).length,
   }));
 
@@ -87,7 +88,7 @@ export default function ProgressChart() {
   const budgetUtilizationData = projects?.map((project: any) => ({
     name: project.name.length > 12 ? project.name.substring(0, 12) + "..." : project.name,
     allocated: parseFloat(project.budget || "0"),
-    spent: Math.floor(Math.random() * parseFloat(project.budget || "1000")),
+    spent: parseFloat(project.budgetUsed || "0"),
   })) || [];
 
   if (statsLoading || projectsLoading || reportsLoading) {
@@ -115,17 +116,13 @@ export default function ProgressChart() {
               <div>
                 <p className="text-sm text-gray-600">Overall Progress</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {projectProgressData.length > 0 
-                    ? Math.round(projectProgressData.reduce((acc, p) => acc + p.progress, 0) / projectProgressData.length)
-                    : 0}%
+                  {(stats as any)?.overallProgress || 0}%
                 </p>
               </div>
               <TrendingUp className="w-8 h-8 text-green-500" />
             </div>
             <Progress 
-              value={projectProgressData.length > 0 
-                ? Math.round(projectProgressData.reduce((acc, p) => acc + p.progress, 0) / projectProgressData.length)
-                : 0} 
+              value={(stats as any)?.overallProgress || 0} 
               className="mt-3" 
             />
           </CardContent>
@@ -172,15 +169,18 @@ export default function ProgressChart() {
               <div>
                 <p className="text-sm text-gray-600">Budget Utilization</p>
                 <p className="text-2xl font-bold text-orange-600">
-                  {budgetUtilizationData.length > 0
-                    ? Math.round((budgetUtilizationData.reduce((acc, b) => acc + b.spent, 0) / 
-                        budgetUtilizationData.reduce((acc, b) => acc + b.allocated, 0)) * 100)
-                    : 0}%
+                  {(stats as any)?.budgetUtilization || 0}%
                 </p>
               </div>
               <Calendar className="w-8 h-8 text-orange-500" />
             </div>
-            <p className="text-xs text-gray-500 mt-2">Of total allocated budget</p>
+            <Progress 
+              value={(stats as any)?.budgetUtilization || 0} 
+              className="mt-3" 
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              ${((stats as any)?.totalBudgetUsed || 0).toLocaleString()} / ${((stats as any)?.totalBudget || 0).toLocaleString()}
+            </p>
           </CardContent>
         </Card>
       </div>

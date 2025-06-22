@@ -565,14 +565,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const completedProjects = projects.filter(project => project.progress === 100).length;
       const activeProjects = projects.length - completedProjects;
 
+      // Calculate overall progress as average of all project progress
+      const overallProgress = projects.length > 0 
+        ? Math.round(projects.reduce((sum, project) => sum + (project.progress || 0), 0) / projects.length)
+        : 0;
+
+      // Calculate total budget used across all projects
+      const totalBudgetUsed = projects.reduce((sum, project) => {
+        return sum + (parseFloat(project.budgetUsed?.toString() || "0"));
+      }, 0);
+
+      // Calculate budget utilization percentage
+      const budgetUtilization = totalBudget > 0 
+        ? Math.round((totalBudgetUsed / totalBudget) * 100)
+        : 0;
+
       res.json({
         activeProjects,
         completedProjects,
         totalProjects: projects.length,
+        overallProgress,
         totalReports: reports.length,
         pendingReports: pendingReports.length,
         teamMembers: users.length,
         totalBudget,
+        totalBudgetUsed,
+        budgetUtilization,
       });
     } catch (error) {
       console.error("Get dashboard stats error:", error);
