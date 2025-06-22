@@ -42,57 +42,51 @@ export default function OrganizationInfo() {
   }
 
   return (
-    <Card className="bg-white shadow-sm border border-gray-200">
-      <CardHeader className="bg-red-50 border-b border-red-100">
-        <CardTitle className="flex items-center gap-2 text-red-800">
-          <Building2 className="h-5 w-5 text-red-600" />
-          Organization Information
+    <Card className="border border-gray-200">
+      <CardHeader className="bg-gray-50 pb-3">
+        <CardTitle className="flex items-center gap-2 text-gray-800">
+          <Building2 className="h-4 w-4 text-red-600" />
+          Organization
         </CardTitle>
-        <CardDescription className="text-red-600">
-          Manage your organization details
-        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6 p-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
-              Organization Name
-            </h4>
-            <p className="text-xl font-bold text-gray-900">{(organization as any)?.name}</p>
+      <CardContent className="p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-1">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Name</div>
+            <div className="text-sm font-semibold text-gray-900">
+              {(organization as any)?.name || "Loading..."}
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
-              Created Date
-            </h4>
-            <p className="text-lg flex items-center gap-2 text-gray-700">
-              <Calendar className="h-5 w-5 text-red-500" />
-              {(organization as any)?.createdAt ? new Date((organization as any).createdAt).toLocaleDateString() : "22/06/2025"}
-            </p>
+          <div className="space-y-1">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Invitation Code</div>
+            <div className="flex items-center space-x-2">
+              <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded border text-gray-800">
+                {(organization as any)?.code || "Loading..."}
+              </code>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyToClipboard((organization as any)?.code || "")}
+                className="h-6 w-6 p-0 hover:bg-gray-100"
+              >
+                <Copy className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
-        </div>
 
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <h4 className="font-semibold text-red-800 text-sm uppercase tracking-wide mb-3">
-            Invitation Code
-          </h4>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="font-mono text-xl px-4 py-2 bg-white border-red-300 text-red-700">
-              {(organization as any)?.code}
-            </Badge>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => copyToClipboard((organization as any)?.code)}
-              className="border-red-300 text-red-700 hover:bg-red-100"
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              Copy
-            </Button>
+          <div className="space-y-1">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Created</div>
+            <div className="flex items-center space-x-1">
+              <Calendar className="w-3 h-3 text-gray-400" />
+              <span className="text-sm text-gray-700">
+                {(organization as any)?.createdAt 
+                  ? new Date((organization as any).createdAt).toLocaleDateString()
+                  : "Today"
+                }
+              </span>
+            </div>
           </div>
-          <p className="text-sm text-red-600 mt-3 font-medium">
-            Share this code with your team members to join
-          </p>
         </div>
       </CardContent>
     </Card>

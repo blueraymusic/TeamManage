@@ -50,65 +50,65 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+        <Card className="border border-gray-200">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <Projector className="w-5 h-5 text-red-600" />
+              </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900">
                   {(stats as any)?.activeProjects || 0}
                 </p>
-                <p className="text-sm font-medium text-gray-600 mt-1">Active Projects</p>
-              </div>
-              <div className="p-3 bg-red-50 rounded-full">
-                <Projector className="w-6 h-6 text-red-600" />
+                <p className="text-sm text-gray-600">Active Projects</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+        <Card className="border border-gray-200">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <Clock className="w-5 h-5 text-orange-600" />
+              </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900">
                   {(stats as any)?.pendingReports || 0}
                 </p>
-                <p className="text-sm font-medium text-gray-600 mt-1">Pending Reports</p>
-              </div>
-              <div className="p-3 bg-orange-50 rounded-full">
-                <Clock className="w-6 h-6 text-orange-600" />
+                <p className="text-sm text-gray-600">Pending Reports</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+        <Card className="border border-gray-200">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Users className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900">
                   {(stats as any)?.teamMembers || 1}
                 </p>
-                <p className="text-sm font-medium text-gray-600 mt-1">Team Members</p>
-              </div>
-              <div className="p-3 bg-green-50 rounded-full">
-                <Users className="w-6 h-6 text-green-600" />
+                <p className="text-sm text-gray-600">Team Members</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+        <Card className="border border-gray-200">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <DollarSign className="w-5 h-5 text-blue-600" />
+              </div>
               <div>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900">
                   ${(stats as any)?.totalBudget?.toLocaleString() || 0}
                 </p>
-                <p className="text-sm font-medium text-gray-600 mt-1">Total Budget</p>
-              </div>
-              <div className="p-3 bg-blue-50 rounded-full">
-                <DollarSign className="w-6 h-6 text-blue-600" />
+                <p className="text-sm text-gray-600">Total Budget</p>
               </div>
             </div>
           </CardContent>
@@ -150,93 +150,82 @@ export default function AdminDashboard() {
           
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Project Management */}
-            <Card className="bg-white shadow-sm border border-gray-200">
-              <CardHeader className="bg-red-50 border-b border-red-100">
-                <CardTitle className="flex items-center justify-between text-red-800">
-                  <div className="flex items-center gap-2">
-                    <Projector className="h-5 w-5 text-red-600" />
-                    Project Management
-                  </div>
+            <Card className="border border-gray-200">
+              <CardHeader className="bg-gray-50 pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Projector className="h-4 w-4 text-red-600" />
+                    Projects
+                  </CardTitle>
                   <ProjectForm />
-                </CardTitle>
-                <CardDescription className="text-red-600">
-                  Create and manage your organization's projects
-                </CardDescription>
+                </div>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 {projectsLoading ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
+                  <div className="space-y-3">
+                    {[1, 2].map((i) => (
                       <div key={i} className="animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
+                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
                       </div>
                     ))}
                   </div>
                 ) : (projects as any[])?.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <Projector className="w-10 h-10 text-red-500" />
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <Projector className="w-6 h-6 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No projects yet</h3>
-                    <p className="text-gray-600 mb-6">Create your first project to start tracking progress and managing team reports.</p>
+                    <p className="text-sm text-gray-600 mb-3">No projects created yet</p>
                     <ProjectForm />
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {(projects as any[])?.slice(0, 3).map((project: any) => (
-                      <div key={project.id} className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg hover:shadow-sm transition-shadow">
-                        <div className="flex-1">
-                          <div className="font-semibold text-gray-900 mb-1">{project.name}</div>
-                          <div className="text-sm text-gray-600 flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-red-500" />
-                            Due: {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
+                      <div key={project.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 text-sm truncate">{project.name}</div>
+                          <div className="text-xs text-gray-500 flex items-center mt-1">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm font-semibold text-red-600 mb-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-medium text-gray-600">
                             {project.progress || 0}%
-                          </div>
-                          <Progress value={project.progress || 0} className="w-20 h-2" />
+                          </span>
+                          <Progress value={project.progress || 0} className="w-16 h-1.5" />
                         </div>
                       </div>
                     ))}
-                    <div className="pt-4 border-t border-red-100">
-                      <ProjectForm />
-                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* Pending Approvals */}
-            <Card className="bg-white shadow-sm border border-gray-200">
-              <CardHeader className="bg-orange-50 border-b border-orange-100">
-                <CardTitle className="flex items-center gap-2 text-orange-800">
-                  <Clock className="h-5 w-5 text-orange-600" />
+            <Card className="border border-gray-200">
+              <CardHeader className="bg-gray-50 pb-3">
+                <CardTitle className="flex items-center gap-2 text-gray-800">
+                  <Clock className="h-4 w-4 text-orange-600" />
                   Pending Approvals
                 </CardTitle>
-                <CardDescription className="text-orange-600">
-                  Review and approve team reports
-                </CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 {reportsLoading ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
+                  <div className="space-y-3">
+                    {[1, 2].map((i) => (
                       <div key={i} className="animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
+                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
                       </div>
                     ))}
                   </div>
                 ) : (pendingReports as any[])?.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="bg-orange-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <Clock className="w-10 h-10 text-orange-500" />
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <Clock className="w-6 h-6 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No pending reports</h3>
-                    <p className="text-gray-600">All reports are up to date</p>
+                    <p className="text-sm text-gray-600">No pending reports</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -268,108 +257,68 @@ export default function AdminDashboard() {
           </div>
         </TabsContent>
 
-        <TabsContent value="projects" className="space-y-6">
+        <TabsContent value="projects" className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Project Management</h2>
+            <h2 className="text-lg font-semibold text-gray-900">All Projects</h2>
             <div className="flex space-x-2">
               <BulkProjectOperations projects={projects as any[] || []} />
               <ProjectForm />
             </div>
           </div>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>All Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {projectsLoading ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                  ))}
+          {projectsLoading ? (
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="animate-pulse p-4 border rounded-lg">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                 </div>
-              ) : (projects as any[])?.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <Projector className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-medium mb-2">No projects yet</h3>
-                  <p className="text-sm mb-4">Create your first project to get started with managing your NGO initiatives</p>
+              ))}
+            </div>
+          ) : (projects as any[])?.length === 0 ? (
+            <Card className="border border-gray-200">
+              <CardContent className="p-8">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Projector className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+                  <p className="text-sm text-gray-600 mb-4">Create your first project to get started</p>
                   <ProjectForm />
                 </div>
-              ) : (
-                <div className="grid gap-4">
-                  {(projects as any[])?.map((project: any) => (
-                    <div key={project.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">{project.name}</h3>
-                          {project.description && (
-                            <p className="text-gray-600 mb-3">{project.description}</p>
-                          )}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-3">
+              {(projects as any[])?.map((project: any) => (
+                <Card key={project.id} className="border border-gray-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 truncate">{project.name}</h3>
+                        {project.description && (
+                          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{project.description}</p>
+                        )}
+                        <div className="flex items-center mt-2 text-xs text-gray-500">
+                          <Calendar className="w-3 h-3 mr-1" />
+                          {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
                         </div>
-                        <Badge variant="outline" className="ml-4">
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <Badge variant={project.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
                           {project.status || 'Active'}
                         </Badge>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        {project.budget && (
-                          <div className="flex items-center gap-2">
-                            <DollarSign className="w-4 h-4 text-green-600" />
-                            <span className="text-sm">
-                              <span className="font-medium">Budget:</span> ${parseFloat(project.budget).toLocaleString()}
-                            </span>
-                          </div>
-                        )}
-                        {project.deadline && (
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm">
-                              <span className="font-medium">Deadline:</span> {new Date(project.deadline).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-purple-600" />
-                          <span className="text-sm">
-                            <span className="font-medium">Reports:</span> {(reports as any[])?.filter((r: any) => r.projectId === project.id).length || 0}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {project.goals && (
-                        <div className="mb-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Target className="w-4 h-4 text-orange-600" />
-                            <span className="text-sm font-medium">Goals:</span>
-                          </div>
-                          <p className="text-sm text-gray-600 pl-6">{project.goals}</p>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span className="text-xs text-gray-500">
-                          Created: {new Date(project.createdAt).toLocaleDateString()}
-                        </span>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            View Reports
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <TrendingUp className="w-4 h-4 mr-1" />
-                            Analytics
-                          </Button>
+                        <div className="text-right">
+                          <div className="text-xs text-gray-600 mb-1">{project.progress || 0}%</div>
+                          <Progress value={project.progress || 0} className="w-16 h-1.5" />
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6">
@@ -380,8 +329,24 @@ export default function AdminDashboard() {
           <ReportApproval />
         </TabsContent>
 
-        <TabsContent value="analytics">
-          <ProgressChart />
+        <TabsContent value="team" className="space-y-4">
+          <Card className="border border-gray-200">
+            <CardHeader className="bg-gray-50 pb-3">
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <Users className="h-4 w-4 text-blue-600" />
+                Team Members
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="text-center py-8">
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-gray-400" />
+                </div>
+                <p className="text-sm text-gray-600 mb-2">No team members yet</p>
+                <p className="text-xs text-gray-500">Share your organization code to invite members</p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

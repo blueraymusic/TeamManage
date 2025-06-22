@@ -283,6 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const projectData = insertProjectSchema.parse({
         ...req.body,
+        deadline: req.body.deadline ? new Date(req.body.deadline) : null,
         organizationId: req.session.organizationId,
         createdBy: req.session.userId,
       });
