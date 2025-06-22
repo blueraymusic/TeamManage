@@ -149,8 +149,6 @@ export default function AdminDashboard() {
         deadline: editingProject.deadline,
         budget: editBudget ? parseFloat(editBudget) : null,
         budgetUsed: editBudgetUsed ? parseFloat(editBudgetUsed) : 0,
-        status: editingProject.status,
-        goals: editingProject.goals,
       },
     });
   };
@@ -283,274 +281,252 @@ export default function AdminDashboard() {
                   <Users className="w-4 h-4 mr-2" />
                   Team
                 </TabsTrigger>
-                <TabsTrigger value="organization" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
+                <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
                   <Target className="w-4 h-4 mr-2" />
-                  Organization
+                  Settings
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <div className="p-8">
-              <TabsContent value="overview" className="space-y-6">
-                <ProgressChart />
-              </TabsContent>
-
-              <TabsContent value="projects" className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-900">Project Management</h2>
-                  <div className="flex space-x-3">
-                    <BulkProjectOperations projects={(projects as any[]) || []} onRefresh={refetch} />
-                    <ProjectForm onSuccess={refetch} />
-                  </div>
-                </div>
+            <TabsContent value="overview" className="p-6 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="bg-white border border-slate-200 shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-slate-800">Progress Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ProgressChart />
+                  </CardContent>
+                </Card>
                 
-                <div className="grid gap-6">
-                  {(projects as any[])?.map((project: any) => (
-                    <Card key={project.id} className="bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start">
+                <Card className="bg-white border border-slate-200 shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-slate-800">Recent Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {(reports as any)?.slice(0, 5)?.map((report: any) => (
+                        <div key={report.id} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           <div className="flex-1">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{project.name}</h3>
-                            <p className="text-gray-600 mb-4">{project.description || "No description provided"}</p>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                              <div>
-                                <p className="text-sm font-medium text-gray-500">Progress</p>
-                                <div className="flex items-center space-x-2 mt-1">
-                                  <Progress value={project.progress || 0} className="flex-1 h-2" />
-                                  <span className="text-sm font-medium text-gray-700">{project.progress || 0}%</span>
-                                </div>
-                              </div>
-                              
-                              {project.budget && (
-                                <div>
-                                  <p className="text-sm font-medium text-gray-500">Budget</p>
-                                  <p className="text-lg font-semibold text-gray-900">${parseFloat(project.budget).toFixed(2)}</p>
-                                </div>
-                              )}
-                              
-                              {project.deadline && (
-                                <div>
-                                  <p className="text-sm font-medium text-gray-500">Deadline</p>
-                                  <p className="text-sm text-gray-700">{new Date(project.deadline).toLocaleDateString()}</p>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex space-x-2">
-                              <Badge variant={project.progress === 100 ? "default" : "secondary"}>
-                                {project.progress === 100 ? "Completed" : "In Progress"}
-                              </Badge>
-                            </div>
+                            <p className="font-medium text-slate-800">{report.title}</p>
+                            <p className="text-sm text-slate-600">
+                              {new Date(report.createdAt).toLocaleDateString()}
+                            </p>
                           </div>
-                          
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleViewDetails(project)}>
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleEditProject(project)}>
-                                <Edit2 className="w-4 h-4 mr-2" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem 
-                                onClick={() => handleDeleteProject(project.id)}
-                                className="text-red-600"
-                              >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <Badge variant={report.status === 'approved' ? 'default' : 'secondary'}>
+                            {report.status}
+                          </Badge>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="projects" className="p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-slate-800">Project Management</h2>
+                <div className="flex space-x-3">
+                  <BulkProjectOperations projects={projects || []} onRefresh={refetch} />
+                  <ProjectForm onSuccess={refetch} />
                 </div>
-              </TabsContent>
+              </div>
 
-              <TabsContent value="reports" className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-900">Report Management</h2>
-                  <BulkReportOperations reports={(reports as any[]) || []} onRefresh={refetchReports} />
-                </div>
-                <ReportApproval />
-              </TabsContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(projects as any)?.map((project: any) => (
+                  <Card key={project.id} className="bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg text-slate-800">{project.name}</CardTitle>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => handleViewDetails(project)}>
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEditProject(project)}>
+                              <Edit2 className="w-4 h-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => handleDeleteProject(project.id)}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="text-slate-600">Progress</span>
+                            <span className="font-medium text-slate-800">{project.progress || 0}%</span>
+                          </div>
+                          <Progress value={project.progress || 0} className="h-2" />
+                        </div>
+                        
+                        {project.budget && (
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span className="text-slate-600">Budget Usage</span>
+                              <span className="font-medium text-slate-800">
+                                ${parseFloat(project.budgetUsed || 0).toFixed(0)} / ${parseFloat(project.budget).toFixed(0)}
+                              </span>
+                            </div>
+                            <Progress 
+                              value={project.budget ? (parseFloat(project.budgetUsed || 0) / parseFloat(project.budget)) * 100 : 0} 
+                              className="h-2"
+                            />
+                          </div>
+                        )}
 
-              <TabsContent value="team" className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900">Team Management</h2>
-                <p className="text-gray-600">Team management features will be available soon.</p>
-              </TabsContent>
+                        <div className="flex items-center text-sm text-slate-600">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
 
-              <TabsContent value="organization" className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900">Organization Settings</h2>
-                <OrganizationInfo />
-              </TabsContent>
-            </div>
+            <TabsContent value="reports" className="p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-slate-800">Report Management</h2>
+                <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+              </div>
+              <ReportApproval />
+            </TabsContent>
+
+            <TabsContent value="team" className="p-6">
+              <OrganizationInfo />
+            </TabsContent>
+
+            <TabsContent value="settings" className="p-6">
+              <Card className="bg-white border border-slate-200 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-slate-800">Organization Settings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-600">Organization configuration and settings will be available here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </div>
+      </div>
 
-        {/* Edit Project Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="sm:max-w-[500px] bg-white/95 backdrop-blur-xl border border-white/20">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold">Edit Project</DialogTitle>
-              <DialogDescription>
-                Update the project name, budget, and progress percentage.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-6 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="edit-name" className="font-medium">Project Name</Label>
-                <Input
-                  id="edit-name"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  placeholder="Enter project name"
-                  className="bg-white/50"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-budget" className="font-medium">Budget ($)</Label>
+      {/* Edit Project Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+            <DialogDescription>Update project details and progress.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-name">Project Name</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Progress: {editProgress[0]}%</Label>
+              <Slider
+                value={editProgress}
+                onValueChange={setEditProgress}
+                max={100}
+                step={1}
+                className="mt-2"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-budget">Budget</Label>
                 <Input
                   id="edit-budget"
                   type="number"
                   value={editBudget}
                   onChange={(e) => setEditBudget(e.target.value)}
-                  placeholder="Enter budget amount"
-                  min="0"
-                  step="0.01"
-                  className="bg-white/50"
+                  placeholder="0"
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-budget-used" className="font-medium">Budget Used ($)</Label>
+              <div>
+                <Label htmlFor="edit-budget-used">Budget Used</Label>
                 <Input
                   id="edit-budget-used"
                   type="number"
                   value={editBudgetUsed}
                   onChange={(e) => setEditBudgetUsed(e.target.value)}
-                  placeholder="Enter amount spent"
-                  min="0"
-                  step="0.01"
-                  className="bg-white/50"
+                  placeholder="0"
                 />
-                {editBudget && parseFloat(editBudget) > 0 && (
-                  <div className="space-y-2 mt-3">
-                    <Progress 
-                      value={
-                        editBudgetUsed && parseFloat(editBudgetUsed) > 0
-                          ? Math.min((parseFloat(editBudgetUsed) / parseFloat(editBudget)) * 100, 100)
-                          : 0
-                      } 
-                      className="h-2"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>
-                        {editBudget && parseFloat(editBudget) > 0
-                          ? Math.round((parseFloat(editBudgetUsed || "0") / parseFloat(editBudget)) * 100)
-                          : 0}% used
-                      </span>
-                      <span>
-                        ${Math.max(0, parseFloat(editBudget || "0") - parseFloat(editBudgetUsed || "0")).toFixed(2)} remaining
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-progress" className="font-medium">
-                  Progress: {editProgress[0]}%
-                </Label>
-                <Slider
-                  id="edit-progress"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={editProgress}
-                  onValueChange={setEditProgress}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>0%</span>
-                  <span>50%</span>
-                  <span>100%</span>
-                </div>
               </div>
             </div>
-            <div className="flex justify-end space-x-3">
+            <div className="flex space-x-2">
+              <Button onClick={handleUpdateProject} disabled={updateProjectMutation.isPending}>
+                {updateProjectMutation.isPending ? "Updating..." : "Update Project"}
+              </Button>
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleUpdateProject}
-                disabled={updateProjectMutation.isPending}
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
-              >
-                {updateProjectMutation.isPending ? "Updating..." : "Update Project"}
-              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-        {/* View Project Dialog */}
-        <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-          <DialogContent className="sm:max-w-[600px] bg-white/95 backdrop-blur-xl border border-white/20">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold">Project Details</DialogTitle>
-            </DialogHeader>
-            {viewingProject && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{viewingProject.name}</h3>
-                  <p className="text-gray-600">{viewingProject.description || "No description provided"}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Progress</p>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={viewingProject.progress || 0} className="flex-1" />
-                      <span className="text-sm font-medium">{viewingProject.progress || 0}%</span>
-                    </div>
-                  </div>
-                  
-                  {viewingProject.budget && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-500 mb-1">Budget</p>
-                      <p className="text-lg font-semibold">${parseFloat(viewingProject.budget).toFixed(2)}</p>
-                    </div>
-                  )}
-                </div>
-
-                {viewingProject.deadline && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Deadline</p>
-                    <p className="text-gray-700">{new Date(viewingProject.deadline).toLocaleDateString()}</p>
-                  </div>
-                )}
-
-                {viewingProject.goals && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Goals & Objectives</p>
-                    <p className="text-gray-700">{viewingProject.goals}</p>
-                  </div>
-                )}
+      {/* View Project Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{viewingProject?.name}</DialogTitle>
+            <DialogDescription>Project details and information</DialogDescription>
+          </DialogHeader>
+          {viewingProject && (
+            <div className="space-y-4">
+              <div>
+                <Label>Description</Label>
+                <p className="text-sm text-slate-600 mt-1">
+                  {viewingProject.description || "No description provided"}
+                </p>
               </div>
-            )}
-            <div className="flex justify-end">
-              <Button onClick={() => setIsViewDialogOpen(false)}>
-                Close
-              </Button>
+              <div>
+                <Label>Progress</Label>
+                <div className="flex items-center space-x-2 mt-1">
+                  <Progress value={viewingProject.progress || 0} className="flex-1" />
+                  <span className="text-sm font-medium">{viewingProject.progress || 0}%</span>
+                </div>
+              </div>
+              {viewingProject.budget && (
+                <div>
+                  <Label>Budget</Label>
+                  <p className="text-sm text-slate-600 mt-1">
+                    ${parseFloat(viewingProject.budgetUsed || 0).toFixed(2)} / ${parseFloat(viewingProject.budget).toFixed(2)} used
+                  </p>
+                </div>
+              )}
+              <div>
+                <Label>Deadline</Label>
+                <p className="text-sm text-slate-600 mt-1">
+                  {viewingProject.deadline ? new Date(viewingProject.deadline).toLocaleDateString() : 'No deadline set'}
+                </p>
+              </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
