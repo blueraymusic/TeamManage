@@ -307,6 +307,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk project operations
+  app.delete("/api/projects/bulk", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { projectIds } = req.body;
+      if (!Array.isArray(projectIds) || projectIds.length === 0) {
+        return res.status(400).json({ message: "Project IDs are required" });
+      }
+
+      await storage.bulkDeleteProjects(projectIds, req.session.organizationId);
+      res.json({ message: `${projectIds.length} projects deleted successfully` });
+    } catch (error) {
+      console.error("Bulk delete projects error:", error);
+      res.status(500).json({ message: "Failed to delete projects" });
+    }
+  });
+
+  app.patch("/api/projects/bulk-status", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { projectIds, status } = req.body;
+      if (!Array.isArray(projectIds) || projectIds.length === 0) {
+        return res.status(400).json({ message: "Project IDs are required" });
+      }
+
+      await storage.bulkUpdateProjectStatus(projectIds, status, req.session.organizationId);
+      res.json({ message: `${projectIds.length} projects updated successfully` });
+    } catch (error) {
+      console.error("Bulk update projects error:", error);
+      res.status(500).json({ message: "Failed to update projects" });
+    }
+  });
+
+  app.post("/api/projects/export", requireAuth, async (req: any, res) => {
+    try {
+      const { projectIds } = req.body;
+      const projects = await storage.getProjectsForExport(projectIds || [], req.session.organizationId);
+      
+      const headers = ["ID", "Name", "Description", "Budget", "Deadline", "Status", "Goals", "Created At"];
+      const csvRows = [
+        headers.join(","),
+        ...projects.map((project: any) => [
+          project.id,
+          `"${(project.name || "").replace(/"/g, '""')}"`,
+          `"${(project.description || "").replace(/"/g, '""')}"`,
+          project.budget || "",
+          project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : "",
+          project.status || "active",
+          `"${(project.goals || "").replace(/"/g, '""')}"`,
+          new Date(project.createdAt).toISOString().split('T')[0]
+        ].join(","))
+      ];
+
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=projects-export.csv");
+      res.send(csvRows.join("\n"));
+    } catch (error) {
+      console.error("Export projects error:", error);
+      res.status(500).json({ message: "Failed to export projects" });
+    }
+  });
+
   // Report routes
   app.post("/api/reports", requireAuth, upload.array("files", 5), async (req: any, res) => {
     try {
@@ -367,6 +435,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Update report status error:", error);
       res.status(500).json({ message: "Failed to update report status" });
+    }
+  });
+
+  // Bulk report operations
+  app.patch("/api/reports/bulk-approve", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { reportIds } = req.body;
+      if (!Array.isArray(reportIds) || reportIds.length === 0) {
+        return res.status(400).json({ message: "Report IDs are required" });
+      }
+
+      await storage.bulkUpdateReportStatus(reportIds, "approved", req.session.userId, req.session.organizationId);
+      res.json({ message: `${reportIds.length} reports approved successfully` });
+    } catch (error) {
+      console.error("Bulk approve reports error:", error);
+      res.status(500).json({ message: "Failed to approve reports" });
+    }
+  });
+
+  app.patch("/api/reports/bulk-reject", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { reportIds } = req.body;
+      if (!Array.isArray(reportIds) || reportIds.length === 0) {
+        return res.status(400).json({ message: "Report IDs are required" });
+      }
+
+      await storage.bulkUpdateReportStatus(reportIds, "rejected", req.session.userId, req.session.organizationId);
+      res.json({ message: `${reportIds.length} reports rejected successfully` });
+    } catch (error) {
+      console.error("Bulk reject reports error:", error);
+      res.status(500).json({ message: "Failed to reject reports" });
+    }
+  });
+
+  app.post("/api/reports/export", requireAuth, async (req: any, res) => {
+    try {
+      const { reportIds } = req.body;
+      const reports = await storage.getReportsForExport(reportIds || [], req.session.organizationId);
+      
+      const headers = ["ID", "Title", "Description", "Status", "Project", "Submitted By", "Created At", "Review Notes"];
+      const csvRows = [
+        headers.join(","),
+        ...reports.map((report: any) => [
+          report.id,
+          `"${(report.title || "").replace(/"/g, '""')}"`,
+          `"${(report.description || "").replace(/"/g, '""')}"`,
+          report.status,
+          `"${(report.projectName || "").replace(/"/g, '""')}"`,
+          `"${(report.submittedByName || "").replace(/"/g, '""')}"`,
+          new Date(report.createdAt).toISOString().split('T')[0],
+          `"${(report.reviewNotes || "").replace(/"/g, '""')}"`
+        ].join(","))
+      ];
+
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=reports-export.csv");
+      res.send(csvRows.join("\n"));
+    } catch (error) {
+      console.error("Export reports error:", error);
+      res.status(500).json({ message: "Failed to export reports" });
     }
   });
 

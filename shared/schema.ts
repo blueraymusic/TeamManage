@@ -31,6 +31,7 @@ export const projects = pgTable("projects", {
   budget: decimal("budget", { precision: 10, scale: 2 }),
   deadline: timestamp("deadline"),
   goals: text("goals"),
+  status: text("status").notNull().default("active"), // 'active', 'on-hold', 'completed', 'cancelled'
   organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

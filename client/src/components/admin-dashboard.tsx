@@ -8,6 +8,7 @@ import ProjectForm from "@/components/project-form";
 import ReportApproval from "@/components/report-approval";
 import ProgressChart from "@/components/progress-chart";
 import OrganizationInfo from "@/components/organization-info";
+import { BulkProjectOperations, BulkReportOperations } from "@/components/bulk-operations";
 import { t } from "@/lib/i18n";
 import {
   Projector,
@@ -222,7 +223,10 @@ export default function AdminDashboard() {
         <TabsContent value="projects" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Project Management</h2>
-            <ProjectForm />
+            <div className="flex space-x-2">
+              <BulkProjectOperations projects={projects as any[] || []} />
+              <ProjectForm />
+            </div>
           </div>
           
           <Card>
@@ -320,7 +324,11 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="reports">
+        <TabsContent value="reports" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold">Report Management</h2>
+            <BulkReportOperations reports={reports as any[] || []} />
+          </div>
           <ReportApproval />
         </TabsContent>
 

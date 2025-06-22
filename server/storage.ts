@@ -13,7 +13,7 @@ import {
   type InsertReport,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Organization operations
@@ -40,6 +40,13 @@ export interface IStorage {
   getPendingReports(organizationId: number): Promise<Report[]>;
   getReportById(id: number): Promise<Report | undefined>;
   updateReportStatus(id: number, status: string, reviewedBy: number, reviewNotes?: string): Promise<Report>;
+
+  // Bulk operations
+  bulkDeleteProjects(projectIds: number[], organizationId: number): Promise<void>;
+  bulkUpdateProjectStatus(projectIds: number[], status: string, organizationId: number): Promise<void>;
+  getProjectsForExport(projectIds: number[], organizationId: number): Promise<any[]>;
+  bulkUpdateReportStatus(reportIds: number[], status: string, reviewedBy: number, organizationId: number): Promise<void>;
+  getReportsForExport(reportIds: number[], organizationId: number): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -164,6 +171,116 @@ export class DatabaseStorage implements IStorage {
       .where(eq(reports.id, id))
       .returning();
     return updated;
+  }
+
+  // Bulk operations
+  async bulkDeleteProjects(projectIds: number[], organizationId: number): Promise<void> {
+    await db
+      .delete(projects)
+      .where(
+        and(
+          inArray(projects.id, projectIds),
+          eq(projects.organizationId, organizationId)
+        )
+      );
+  }
+
+  async bulkUpdateProjectStatus(projectIds: number[], status: string, organizationId: number): Promise<void> {
+    await db
+      .update(projects)
+      .set({ status })
+      .where(
+        and(
+          inArray(projects.id, projectIds),
+          eq(projects.organizationId, organizationId)
+        )
+      );
+  }
+
+  async getProjectsForExport(projectIds: number[], organizationId: number): Promise<any[]> {
+    if (projectIds.length > 0) {
+      return await db
+        .select()
+        .from(projects)
+        .where(
+          and(
+            eq(projects.organizationId, organizationId),
+            inArray(projects.id, projectIds)
+          )
+        );
+    } else {
+      return await db
+        .select()
+        .from(projects)
+        .where(eq(projects.organizationId, organizationId));
+    }
+  }
+
+  async bulkUpdateReportStatus(reportIds: number[], status: string, reviewedBy: number, organizationId: number): Promise<void> {
+    const validReports = await db
+      .select({ id: reports.id })
+      .from(reports)
+      .innerJoin(projects, eq(reports.projectId, projects.id))
+      .where(
+        and(
+          inArray(reports.id, reportIds),
+          eq(projects.organizationId, organizationId)
+        )
+      );
+
+    const validReportIds = validReports.map(r => r.id);
+
+    if (validReportIds.length > 0) {
+      await db
+        .update(reports)
+        .set({
+          status,
+          reviewedBy,
+          reviewedAt: new Date(),
+        })
+        .where(inArray(reports.id, validReportIds));
+    }
+  }
+
+  async getReportsForExport(reportIds: number[], organizationId: number): Promise<any[]> {
+    if (reportIds.length > 0) {
+      return await db
+        .select({
+          id: reports.id,
+          title: reports.title,
+          description: reports.content,
+          status: reports.status,
+          createdAt: reports.submittedAt,
+          reviewNotes: reports.reviewNotes,
+          projectName: projects.name,
+          submittedByName: sql<string>`${users.firstName} || ' ' || ${users.lastName}`,
+        })
+        .from(reports)
+        .innerJoin(projects, eq(reports.projectId, projects.id))
+        .innerJoin(users, eq(reports.submittedBy, users.id))
+        .where(
+          and(
+            eq(projects.organizationId, organizationId),
+            inArray(reports.id, reportIds)
+          )
+        );
+    } else {
+      return await db
+        .select({
+          id: reports.id,
+          title: reports.title,
+          description: reports.content,
+          status: reports.status,
+          createdAt: reports.submittedAt,
+          reviewNotes: reports.reviewNotes,
+          projectName: projects.name,
+          submittedByName: sql<string>`${users.firstName} || ' ' || ${users.lastName}`,
+        })
+        .from(reports)
+        .innerJoin(projects, eq(reports.projectId, projects.id))
+        .innerJoin(users, eq(reports.submittedBy, users.id))
+        .where(eq(projects.organizationId, organizationId));
+    }
   }
 }
 
