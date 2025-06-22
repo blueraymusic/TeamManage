@@ -167,43 +167,15 @@ export default function OfficerDashboard() {
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="p-6 space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="bg-white border border-slate-200 shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-slate-800">Project Progress</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ProgressChart />
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-white border border-slate-200 shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-slate-800">Recent Activity</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {(reports as any)?.slice(0, 5)?.map((report: any) => (
-                        <div key={report.id} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <div className="flex-1">
-                            <p className="font-medium text-slate-800">{report.title}</p>
-                            <p className="text-sm text-slate-600">
-                              {new Date(report.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <Badge variant={report.status === 'approved' ? 'default' : 'secondary'}>
-                            {report.status}
-                          </Badge>
-                        </div>
-                      )) || (
-                        <p className="text-slate-500 text-center py-8">No recent activity</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+            <TabsContent value="overview" className="p-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="text-gray-900">Project Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ProgressChart />
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="projects" className="p-6 space-y-6">
