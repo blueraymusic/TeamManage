@@ -173,27 +173,21 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-        {/* Professional Header */}
-        <div className="bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-xl shadow-lg p-6">
+        {/* Simple Header */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl opacity-20"></div>
-                <div className="relative bg-gradient-to-br from-blue-600 to-indigo-700 p-3 rounded-xl shadow-lg">
-                  <AdelLogo size="md" className="filter brightness-0 invert" />
-                </div>
+            <div className="flex items-center space-x-3">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <AdelLogo size="sm" className="filter brightness-0 invert" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
-                  ADEL Admin Portal
-                </h1>
-                <p className="text-slate-600 font-medium">Project & Team Management</p>
+                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600">Manage projects and team</p>
               </div>
             </div>
             <Button
               onClick={() => window.location.href = '/api/auth/logout'}
               variant="outline"
-              className="border-2 border-slate-300 text-slate-700 hover:border-red-400 hover:text-red-700 hover:bg-red-50 transition-all duration-300"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -201,88 +195,83 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Professional Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-white/90 border border-slate-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Projector className="w-6 h-6 text-blue-600" />
+        {/* Simple Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="bg-white border border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <Projector className="w-8 h-8 text-blue-600" />
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {(stats as any)?.activeProjects || 0}
+                  </p>
+                  <p className="text-gray-600">Active Projects</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-800 mb-1">
-                {(stats as any)?.activeProjects || 0}
-              </p>
-              <p className="text-slate-600 font-medium">Active Projects</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 border border-slate-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-emerald-100 rounded-lg">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+          <Card className="bg-white border border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {(stats as any)?.completedProjects || 0}
+                  </p>
+                  <p className="text-gray-600">Completed</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-800 mb-1">
-                {(stats as any)?.completedProjects || 0}
-              </p>
-              <p className="text-slate-600 font-medium">Completed Projects</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 border border-slate-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <FileText className="w-6 h-6 text-orange-600" />
+          <Card className="bg-white border border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <FileText className="w-8 h-8 text-orange-600" />
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {(pendingReports as any)?.length || 0}
+                  </p>
+                  <p className="text-gray-600">Pending Reports</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-800 mb-1">
-                {(pendingReports as any)?.length || 0}
-              </p>
-              <p className="text-slate-600 font-medium">Pending Reports</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 border border-slate-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-purple-100 rounded-lg">
-                  <Users className="w-6 h-6 text-purple-600" />
+          <Card className="bg-white border border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <Users className="w-8 h-8 text-purple-600" />
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {(stats as any)?.totalMembers || 0}
+                  </p>
+                  <p className="text-gray-600">Team Members</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-800 mb-1">
-                {(stats as any)?.totalMembers || 0}
-              </p>
-              <p className="text-slate-600 font-medium">Team Members</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
-        <div className="bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-xl shadow-lg overflow-hidden">
+        {/* Simple Tabs */}
+        <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs defaultValue="overview" className="w-full">
-            <div className="border-b border-slate-200 bg-white/90 px-6">
-              <TabsList className="grid w-full grid-cols-5 bg-transparent h-16">
-                <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
-                  <BarChart3 className="w-4 h-4 mr-2" />
+            <div className="border-b border-gray-200 px-4">
+              <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
+                <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
-                  <Projector className="w-4 h-4 mr-2" />
+                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Projects
                 </TabsTrigger>
-                <TabsTrigger value="reports" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
-                  <FileText className="w-4 h-4 mr-2" />
+                <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
-                <TabsTrigger value="team" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
-                  <Users className="w-4 h-4 mr-2" />
+                <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
                 </TabsTrigger>
-                <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl font-medium">
-                  <Target className="w-4 h-4 mr-2" />
+                <TabsTrigger value="settings" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Settings
                 </TabsTrigger>
               </TabsList>
