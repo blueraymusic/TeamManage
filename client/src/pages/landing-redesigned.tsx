@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import AuthModals from "@/components/auth-modals";
 import LanguageSwitcher from "@/components/language-switcher";
 import AdelLogo from "@/components/adel-logo";
+import { t, getCurrentLanguage } from "@/lib/i18n";
 import {
   Users,
   Target,
@@ -25,6 +26,16 @@ import {
 
 export default function LandingRedesigned() {
   const [showAuthModal, setShowAuthModal] = useState<"login" | "register" | null>(null);
+  const [currentLang, setCurrentLang] = useState(getCurrentLanguage());
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      setCurrentLang(getCurrentLanguage());
+    };
+    
+    window.addEventListener('languageChanged', handleLanguageChange);
+    return () => window.removeEventListener('languageChanged', handleLanguageChange);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -49,7 +60,7 @@ export default function LandingRedesigned() {
             <div className="hidden lg:flex items-center">
               <nav className="flex items-center space-x-8 mr-8">
                 <a href="#features" className="text-slate-700 hover:text-blue-600 font-medium transition-colors">
-                  Features
+                  {t('nav.features')}
                 </a>
                 <a href="#how-it-works" className="text-slate-700 hover:text-blue-600 font-medium transition-colors">
                   How It Works
@@ -148,15 +159,11 @@ Best regards,
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-              Streamline Your{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                NGO Operations
-              </span>
+              {t('hero.title')}
             </h1>
             
             <p className="text-xl lg:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Empower your organization with advanced project management, team collaboration, 
-              and progress tracking designed specifically for NGOs and non-profit organizations.
+              {t('hero.subtitle')}
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
@@ -165,7 +172,7 @@ Best regards,
                 size="lg"
                 className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
               >
-                Start Free Trial
+                {t('hero.startTrial')}
                 <ArrowRight className="w-6 h-6 ml-3" />
               </Button>
               
@@ -175,7 +182,7 @@ Best regards,
                 className="bg-white/50 border-2 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
               >
                 <Play className="w-6 h-6 mr-3" />
-                Watch Demo
+                {t('hero.watchDemo')}
               </Button>
             </div>
 
@@ -203,13 +210,10 @@ Best regards,
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Powerful Features for{" "}
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Modern NGOs
-              </span>
+              {t('features.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything your organization needs to manage projects, track progress, and collaborate effectively.
+              {t('features.subtitle')}
             </p>
           </div>
 
@@ -220,9 +224,9 @@ Best regards,
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
                   <Target className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Project Management</h3>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">{t('features.budgetManagement')}</h3>
                 <p className="text-gray-600 text-center leading-relaxed">
-                  Create, organize, and track projects with built-in budget management, milestone tracking, and deadline monitoring.
+                  {t('features.budgetManagementDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -233,9 +237,9 @@ Best regards,
                 <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Team Collaboration</h3>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">{t('features.teamManagement')}</h3>
                 <p className="text-gray-600 text-center leading-relaxed">
-                  Enable seamless communication between admins and officers with real-time messaging and document sharing.
+                  {t('features.teamManagementDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -246,9 +250,9 @@ Best regards,
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
                   <BarChart3 className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Progress Tracking</h3>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">{t('features.progressTracking')}</h3>
                 <p className="text-gray-600 text-center leading-relaxed">
-                  Monitor project progress with detailed analytics, automated reports, and real-time status updates.
+                  {t('features.progressTrackingDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -296,10 +300,10 @@ Best regards,
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              How ADEL Works
+              {t('workflow.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get started in minutes with our intuitive three-step process designed specifically for NGOs.
+              {t('workflow.subtitle')}
             </p>
           </div>
 
@@ -313,9 +317,9 @@ Best regards,
                   1
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Register Your Organization</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('workflow.step1')}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Create your organization account with a unique code and set up admin and officer roles for your team members.
+                {t('workflow.step1Desc')}
               </p>
             </div>
 
@@ -328,9 +332,9 @@ Best regards,
                   2
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Create & Manage Projects</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('workflow.step2')}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Set up projects with budgets, deadlines, and goals. Track progress and manage resources efficiently.
+                {t('workflow.step2Desc')}
               </p>
             </div>
 
@@ -343,9 +347,9 @@ Best regards,
                   3
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Track & Approve Progress</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('workflow.step3')}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Officers submit reports, admins review and approve them, and everyone stays updated on project status.
+                {t('workflow.step3Desc')}
               </p>
             </div>
           </div>
@@ -406,7 +410,7 @@ Best regards,
                 }}
                 variant="outline"
                 size="lg"
-                className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
+                className="border-2 border-white/30 text-black hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
               >
                 <CalendarDays className="w-6 h-6 mr-3" />
                 Book a Demo

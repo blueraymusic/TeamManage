@@ -12,8 +12,8 @@ const translations: Record<string, Translations> = {
     'nav.getstarted': 'Get Started',
     
     // Hero section
-    'hero.title': 'Empower Your NGO Projects',
-    'hero.subtitle': 'ADEL streamlines project management for NGOs with collaborative tools, progress tracking, and transparent reporting workflows designed for teams making a difference.',
+    'hero.title': 'Streamline Your NGO Operations',
+    'hero.subtitle': 'Empower your organization with advanced project management, team collaboration, and progress tracking designed specifically for NGOs and non-profit organizations.',
     'hero.startTrial': 'Start Free Trial',
     'hero.watchDemo': 'Watch Demo',
     
@@ -104,8 +104,8 @@ const translations: Record<string, Translations> = {
     'nav.getstarted': 'Commencer',
     
     // Hero section
-    'hero.title': 'Renforcez vos projets ONG',
-    'hero.subtitle': 'ADEL rationalise la gestion de projet pour les ONG avec des outils collaboratifs, le suivi des progrès et des flux de travail de rapport transparents conçus pour les équipes qui font la différence.',
+    'hero.title': 'Rationalisez vos opérations ONG',
+    'hero.subtitle': 'Renforcez votre organisation avec une gestion de projet avancée, une collaboration d\'équipe et un suivi des progrès conçus spécifiquement pour les ONG et les organisations à but non lucratif.',
     'hero.startTrial': 'Essai gratuit',
     'hero.watchDemo': 'Voir la démo',
     

@@ -15,8 +15,8 @@ export default function LanguageSwitcher() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
     setCurrentLang(lang);
-    // Force re-render of the entire app
-    window.location.reload();
+    // Dispatch custom event to notify components of language change
+    window.dispatchEvent(new CustomEvent('languageChanged'));
   };
 
   return (
