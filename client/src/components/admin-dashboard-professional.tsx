@@ -18,6 +18,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -45,6 +56,7 @@ import {
   Activity
 } from "lucide-react";
 import { t } from "@/lib/i18n";
+import { useLogout } from "@/hooks/use-auth";
 import OrganizationInfo from "./organization-info";
 import ProjectForm from "./project-form";
 import ReportApproval from "./report-approval";
@@ -55,6 +67,7 @@ import AdelLogo from "./adel-logo";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
+  const logout = useLogout();
   const [editingProject, setEditingProject] = useState<any>(null);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
@@ -186,13 +199,36 @@ export default function AdminDashboard() {
                 <p className="text-gray-600">Manage projects and team</p>
               </div>
             </div>
-            <Button
-              onClick={() => window.location.href = '/api/auth/logout'}
-              variant="outline"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  disabled={logout.isPending}
+                  className="hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  {logout.isPending ? "Signing out..." : "Logout"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to sign out? You'll need to log in again to access your dashboard.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => logout.mutate()}
+                    disabled={logout.isPending}
+                    className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                  >
+                    {logout.isPending ? "Signing out..." : "Sign Out"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 

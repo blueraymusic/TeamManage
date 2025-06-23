@@ -214,11 +214,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/logout", (req, res) => {
-    req.session.destroy((err) => {
+  app.post("/api/auth/logout", (req: any, res) => {
+    console.log("Logout request - sessionUserId:", req.session?.userId);
+    
+    // Clear session data
+    req.session.destroy((err: any) => {
       if (err) {
+        console.error("Logout error:", err);
         return res.status(500).json({ message: "Logout failed" });
       }
+      
+      // Clear the session cookie
+      res.clearCookie('connect.sid', {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
+      });
+      
+      console.log("Logout successful");
       res.json({ message: "Logged out successfully" });
     });
   });

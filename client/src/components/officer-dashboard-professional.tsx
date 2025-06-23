@@ -28,12 +28,14 @@ import {
   Target
 } from "lucide-react";
 import { t } from "@/lib/i18n";
+import { useLogout } from "@/hooks/use-auth";
 import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
 
 export default function OfficerDashboard() {
+  const logout = useLogout();
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
@@ -83,11 +85,13 @@ export default function OfficerDashboard() {
               </div>
             </div>
             <Button
-              onClick={() => window.location.href = '/api/auth/logout'}
+              onClick={() => logout.mutate()}
               variant="outline"
+              disabled={logout.isPending}
+              className="hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors"
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {logout.isPending ? "Signing out..." : "Logout"}
             </Button>
           </div>
         </div>

@@ -74,11 +74,26 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/auth/logout");
+      const response = await apiRequest("POST", "/api/auth/logout");
+      return response;
     },
     onSuccess: () => {
+      // Clear all React Query cache
       queryClient.clear();
-      window.location.href = "/";
+      
+      // Clear any local storage items if they exist
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_data');
+      
+      // Force a complete page reload to clear all state
+      window.location.replace("/");
+    },
+    onError: (error) => {
+      console.error("Logout error:", error);
+      // Even on error, try to clear local state and redirect
+      queryClient.clear();
+      localStorage.clear();
+      window.location.replace("/");
     },
   });
 }
