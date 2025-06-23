@@ -357,9 +357,9 @@ Best regards,
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 lg:py-32 mt-16 lg:mt-20">
+      <section className="py-16 lg:py-20 mt-8 lg:mt-12">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-12 lg:p-16 text-center text-white max-w-5xl mx-auto">
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-8 lg:p-12 text-center text-white max-w-5xl mx-auto">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
               Ready to Transform Your NGO?
             </h2>
