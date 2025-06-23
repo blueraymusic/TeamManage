@@ -114,7 +114,12 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log('File selected:', file.name, file.size, file.type);
       setSelectedFile(file);
+      toast({
+        title: "File selected",
+        description: `${file.name} ready to send`,
+      });
     }
   };
 
@@ -169,6 +174,7 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
 
     if (selectedFile) {
       // Handle file upload
+      console.log('Starting file upload process:', selectedFile.name);
       setIsUploading(true);
       try {
         const formData = new FormData();
@@ -176,7 +182,9 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
         formData.append('recipientId', targetRecipientId!.toString());
         formData.append('content', newMessage.trim() || `📎 Document: ${selectedFile.name}`);
 
-        await apiRequest('POST', '/api/messages/upload', formData);
+        console.log('Sending file upload request to /api/messages/upload');
+        const response = await apiRequest('POST', '/api/messages/upload', formData);
+        console.log('File upload successful:', response);
         
         setNewMessage("");
         setSelectedFile(null);
@@ -190,6 +198,7 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           description: "File sent successfully",
         });
       } catch (error) {
+        console.error('File upload error:', error);
         toast({
           title: "Error", 
           description: "Failed to send file",
@@ -389,6 +398,13 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
             </div>
           )}
           
+          {/* File Upload Instructions */}
+          {!selectedFile && (
+            <div className="mb-2 text-xs text-gray-500 text-center">
+              Use the 📎 button to attach documents instead of typing filenames
+            </div>
+          )}
+          
           <form onSubmit={handleSendMessage} className="flex gap-3">
             <div className="flex-1 flex gap-2">
               <Input
@@ -407,10 +423,11 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
               />
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={sendMessageMutation.isPending || isUploading}
-                className="rounded-full w-10 h-10 p-0 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                className="rounded-full w-10 h-10 p-0 border-blue-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-300"
+                title="Click to attach file"
               >
                 <Paperclip className="h-4 w-4" />
               </Button>
