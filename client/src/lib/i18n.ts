@@ -94,6 +94,25 @@ const translations: Record<string, Translations> = {
     'dashboard.submitNewReport': 'Submit New Report',
     'dashboard.viewMyProjects': 'View My Projects',
     'dashboard.recentSubmissions': 'Recent Submissions',
+    
+    // Footer
+    'footer.description': 'Empowering NGOs and non-profit organizations with modern project management tools to maximize their social impact.',
+    'footer.platform': 'Platform',
+    'footer.support': 'Support',
+    'footer.demo': 'Demo',
+    'footer.pricing': 'Pricing',
+    'footer.help': 'Help Center',
+    'footer.documentation': 'Documentation',
+    'footer.training': 'Training',
+    'footer.contact': 'Contact Us',
+    'footer.newsletter.title': 'Stay Updated',
+    'footer.newsletter.subtitle': 'Get the latest updates and NGO management insights delivered to your inbox.',
+    'footer.newsletter.placeholder': 'Enter your email',
+    'footer.newsletter.subscribe': 'Subscribe',
+    'footer.rights': 'All rights reserved.',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
+    'footer.cookies': 'Cookie Policy',
   },
   fr: {
     // Navigation
@@ -176,6 +195,25 @@ const translations: Record<string, Translations> = {
     'dashboard.submitNewReport': 'Soumettre un nouveau rapport',
     'dashboard.viewMyProjects': 'Voir mes projets',
     'dashboard.recentSubmissions': 'Soumissions récentes',
+    
+    // Footer
+    'footer.description': 'Autonomiser les ONG et les organisations à but non lucratif avec des outils modernes de gestion de projet pour maximiser leur impact social.',
+    'footer.platform': 'Plateforme',
+    'footer.support': 'Support',
+    'footer.demo': 'Démo',
+    'footer.pricing': 'Tarifs',
+    'footer.help': 'Centre d\'aide',
+    'footer.documentation': 'Documentation',
+    'footer.training': 'Formation',
+    'footer.contact': 'Nous contacter',
+    'footer.newsletter.title': 'Restez informé',
+    'footer.newsletter.subtitle': 'Recevez les dernières mises à jour et conseils de gestion d\'ONG directement dans votre boîte mail.',
+    'footer.newsletter.placeholder': 'Entrez votre email',
+    'footer.newsletter.subscribe': 'S\'abonner',
+    'footer.rights': 'Tous droits réservés.',
+    'footer.privacy': 'Politique de confidentialité',
+    'footer.terms': 'Conditions d\'utilisation',
+    'footer.cookies': 'Politique des cookies',
   },
 };
 
