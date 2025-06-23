@@ -627,15 +627,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // File serving route
-  app.get("/api/files/:filename", requireAuth, (req: any, res) => {
+  app.get("/api/files/:filename", (req: any, res) => {
     const { filename } = req.params;
-    const filePath = path.join(__dirname, "../uploads", filename);
+    const uploadsDir = path.resolve(process.cwd(), "uploads");
+    const filePath = path.join(uploadsDir, filename);
     
-    // Check if file exists and serve it
-    res.download(filePath, (err) => {
+    console.log("File download request - filename:", filename);
+    console.log("File path:", filePath);
+    console.log("Session:", req.session);
+    
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      console.error("File not found:", filePath);
+      return res.status(404).json({ message: "File not found" });
+    }
+    
+    // Set proper headers for file download
+    const originalName = "attachment"; // We'll need to store original names
+    res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    
+    // Serve the file
+    res.sendFile(filePath, (err) => {
       if (err) {
         console.error("File download error:", err);
-        res.status(404).json({ message: "File not found" });
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Download failed" });
+        }
       }
     });
   });
