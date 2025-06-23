@@ -86,13 +86,25 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           return;
         }
         targetRecipientId = admin.id;
-      } else {
-        toast({
-          title: "Error",
-          description: "Please select a recipient",
-          variant: "destructive",
-        });
-        return;
+      } else if (user?.role === "admin") {
+        // Admin sends to the first officer they find in filtered messages, or first officer in org
+        const recentOfficer = filteredMessages.find(msg => msg.senderId !== user.id);
+        if (recentOfficer) {
+          targetRecipientId = recentOfficer.senderId;
+        } else {
+          // Find first officer in organization
+          const officer = organizationMembers.find((member: any) => member.role === "officer");
+          if (officer) {
+            targetRecipientId = officer.id;
+          } else {
+            toast({
+              title: "Error",
+              description: "No officers found to message",
+              variant: "destructive",
+            });
+            return;
+          }
+        }
       }
     }
 
