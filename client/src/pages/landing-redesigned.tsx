@@ -148,7 +148,7 @@ Best regards,
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32 mt-8 lg:mt-12">
+      <section className="relative py-24 lg:py-32">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10"></div>
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center max-w-5xl mx-auto">
