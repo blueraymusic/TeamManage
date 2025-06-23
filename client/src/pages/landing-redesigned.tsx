@@ -148,10 +148,10 @@ Best regards,
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10"></div>
+      <section className="relative py-24 lg:py-32 transition-all duration-700 ease-in-out">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10 transition-all duration-700"></div>
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="text-center max-w-5xl mx-auto">
+          <div className="text-center max-w-5xl mx-auto animate-in fade-in duration-1000">
             <div className="mb-8">
               <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 text-lg font-medium mb-8 inline-block">
                 NGO Project Management Platform
@@ -206,7 +206,7 @@ Best regards,
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 lg:py-32 mt-16 lg:mt-20">
+      <section id="features" className="py-24 lg:py-32 mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
@@ -296,7 +296,7 @@ Best regards,
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-gradient-to-r from-slate-50 to-blue-50">
+      <section id="how-it-works" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-gradient-to-r from-slate-50 to-blue-50 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
@@ -357,7 +357,7 @@ Best regards,
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <section className="py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-8 lg:p-12 text-center text-white max-w-5xl mx-auto">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
@@ -452,7 +452,7 @@ Best regards`;
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16 mt-16 lg:mt-20">
+      <footer className="bg-slate-900 text-white py-16 mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center space-x-4 mb-8">
