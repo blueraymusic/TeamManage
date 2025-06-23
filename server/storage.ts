@@ -16,7 +16,7 @@ import {
   type InsertMessage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, inArray, sql } from "drizzle-orm";
+import { eq, and, or, desc, inArray, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Organization operations
@@ -195,9 +195,15 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(messages.organizationId, organizationId),
-          and(
-            eq(messages.senderId, senderId),
-            eq(messages.recipientId, recipientId)
+          or(
+            and(
+              eq(messages.senderId, senderId),
+              eq(messages.recipientId, recipientId)
+            ),
+            and(
+              eq(messages.senderId, recipientId),
+              eq(messages.recipientId, senderId)
+            )
           )
         )
       )

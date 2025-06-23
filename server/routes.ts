@@ -648,24 +648,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { userId } = req.params;
       
-      // Admin can view messages with any user, users can only view messages with admin
-      let senderId = req.session.userId;
-      let recipientId = parseInt(userId);
-      
-      if (req.session.userRole !== "admin") {
-        // Non-admin users can only view messages between themselves and admin
+      if (req.session.userRole === "admin") {
+        // Admin viewing messages with a specific user
+        const messages = await storage.getMessagesBetweenUsers(req.session.userId, parseInt(userId), req.session.organizationId);
+        res.json(messages);
+      } else {
+        // Officer viewing messages with admin
         // Find admin of the organization
         const users = await storage.getUsersByOrganization(req.session.organizationId);
         const admin = users.find(user => user.role === "admin");
         if (!admin) {
           return res.status(404).json({ message: "Admin not found" });
         }
-        senderId = admin.id;
-        recipientId = req.session.userId;
+        
+        // Get messages between admin and current user
+        const messages = await storage.getMessagesBetweenUsers(admin.id, req.session.userId, req.session.organizationId);
+        res.json(messages);
       }
-
-      const messages = await storage.getMessagesBetweenUsers(senderId, recipientId, req.session.organizationId);
-      res.json(messages);
     } catch (error) {
       console.error("Get messages error:", error);
       res.status(500).json({ message: "Failed to get messages" });
