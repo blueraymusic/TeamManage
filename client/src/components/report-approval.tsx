@@ -312,13 +312,6 @@ export default function ReportApproval() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Report Management</h2>
-          <p className="text-gray-600 mt-1">Review and manage team report submissions</p>
-        </div>
-      </div>
-
       <Tabs defaultValue="pending" className="space-y-6">
         <TabsList>
           <TabsTrigger value="pending">
