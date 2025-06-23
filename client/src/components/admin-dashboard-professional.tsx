@@ -420,15 +420,40 @@ export default function AdminDashboard() {
                   <CardTitle className="text-gray-900">Add Team Member</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex space-x-4">
-                    <Input 
-                      placeholder="Enter team member email or phone number" 
-                      className="flex-1"
-                    />
-                    <Button>Send Invitation</Button>
-                  </div>
+                  <Button 
+                    onClick={() => {
+                      const orgData = organization;
+                      if (orgData?.code) {
+                        const subject = "Invitation to Join Organization - ADEL Platform";
+                        const body = `Hello,
+
+You are invited to join our organization on the ADEL platform.
+
+Organization Details:
+- Name: ${orgData.name}
+- Join Code: ${orgData.code}
+
+To join:
+1. Visit the ADEL platform
+2. Click "Get Started" 
+3. Select "Officer" role
+4. Enter the organization code: ${orgData.code}
+
+The ADEL platform helps NGOs manage projects, track progress, and collaborate effectively.
+
+Best regards,
+${orgData.name} Team`;
+                        
+                        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                      }
+                    }}
+                    className="w-full"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Send Invitation Email
+                  </Button>
                   <p className="text-sm text-gray-600 mt-2">
-                    Team members will receive an invitation to join your organization
+                    Opens your email client with a pre-written invitation containing the organization code
                   </p>
                 </CardContent>
               </Card>
