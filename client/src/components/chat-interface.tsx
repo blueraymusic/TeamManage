@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Send, MessageCircle, AlertCircle, AlertTriangle } from "lucide-react";
+import { Send, MessageCircle, AlertCircle, AlertTriangle, Paperclip, File, Image, X } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -17,6 +17,10 @@ interface Message {
   urgency: string;
   isRead: boolean;
   createdAt: string;
+  fileUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileType?: string;
   senderName?: string;
   senderRole?: string;
 }
@@ -28,7 +32,10 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ recipientId, recipientName }: ChatInterfaceProps) {
   const [newMessage, setNewMessage] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -104,9 +111,23 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
     scrollToBottom();
   }, [messages]);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !selectedFile) return;
 
     let targetRecipientId = recipientId;
 
@@ -146,10 +167,44 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
       }
     }
 
-    sendMessageMutation.mutate({
-      content: newMessage,
-      recipientId: targetRecipientId!,
-    });
+    if (selectedFile) {
+      // Handle file upload
+      setIsUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('recipientId', targetRecipientId!.toString());
+        formData.append('content', newMessage.trim() || `📎 Document: ${selectedFile.name}`);
+
+        await apiRequest('POST', '/api/messages/upload', formData);
+        
+        setNewMessage("");
+        setSelectedFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+        
+        toast({
+          title: "Success",
+          description: "File sent successfully",
+        });
+      } catch (error) {
+        toast({
+          title: "Error", 
+          description: "Failed to send file",
+          variant: "destructive",
+        });
+      } finally {
+        setIsUploading(false);
+      }
+    } else {
+      // Handle text message
+      sendMessageMutation.mutate({
+        content: newMessage,
+        recipientId: targetRecipientId!,
+      });
+    }
   };
 
   // Get user name by ID
@@ -246,6 +301,49 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                           </div>
                         )}
                         <div className="break-words leading-relaxed">{message.content}</div>
+                        
+                        {/* File Attachment Display */}
+                        {message.fileUrl && (
+                          <div className={`mt-3 p-2 rounded-lg border ${
+                            isCurrentUser 
+                              ? "bg-blue-400 border-blue-300" 
+                              : "bg-gray-50 border-gray-200"
+                          }`}>
+                            <div className="flex items-center gap-2">
+                              {message.fileType?.startsWith('image/') ? (
+                                <Image className={`h-4 w-4 ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`} />
+                              ) : (
+                                <File className={`h-4 w-4 ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`} />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className={`text-sm font-medium truncate ${
+                                  isCurrentUser ? "text-blue-100" : "text-gray-800"
+                                }`}>
+                                  {message.fileName}
+                                </div>
+                                {message.fileSize && (
+                                  <div className={`text-xs ${
+                                    isCurrentUser ? "text-blue-200" : "text-gray-500"
+                                  }`}>
+                                    {(message.fileSize / 1024).toFixed(1)} KB
+                                  </div>
+                                )}
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(message.fileUrl, '_blank')}
+                                className={`h-8 w-8 p-0 ${
+                                  isCurrentUser 
+                                    ? "text-blue-100 hover:bg-blue-600" 
+                                    : "text-gray-600 hover:bg-gray-200"
+                                }`}
+                              >
+                                <File className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                         <div className={`text-xs mt-2 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
                           {new Date(message.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
@@ -263,20 +361,70 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
 
         {/* Message Input */}
         <div className="p-4 border-t bg-gray-50">
+          {/* File Upload Preview */}
+          {selectedFile && (
+            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {selectedFile.type.startsWith('image/') ? (
+                  <Image className="h-4 w-4 text-blue-600" />
+                ) : (
+                  <File className="h-4 w-4 text-blue-600" />
+                )}
+                <span className="text-sm text-blue-800 font-medium">
+                  {selectedFile.name}
+                </span>
+                <span className="text-xs text-blue-600">
+                  ({(selectedFile.size / 1024).toFixed(1)} KB)
+                </span>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleRemoveFile}
+                className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-100"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+          
           <form onSubmit={handleSendMessage} className="flex gap-3">
-            <Input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-              disabled={sendMessageMutation.isPending}
-              className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
-            />
+            <div className="flex-1 flex gap-2">
+              <Input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message..."}
+                disabled={sendMessageMutation.isPending || isUploading}
+                className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={sendMessageMutation.isPending || isUploading}
+                className="rounded-full w-10 h-10 p-0 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+            </div>
             <Button
               type="submit"
-              disabled={!newMessage.trim() || sendMessageMutation.isPending}
+              disabled={(!newMessage.trim() && !selectedFile) || sendMessageMutation.isPending || isUploading}
               className="rounded-full w-10 h-10 p-0 bg-blue-500 hover:bg-blue-600"
             >
-              <Send className="h-4 w-4" />
+              {isUploading ? (
+                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
             </Button>
           </form>
         </div>

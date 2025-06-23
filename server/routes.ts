@@ -717,6 +717,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // File upload for messages
+  app.post("/api/messages/upload", requireAuth, upload.single('file'), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const { recipientId, content } = req.body;
+      if (!recipientId) {
+        return res.status(400).json({ message: "Recipient ID is required" });
+      }
+
+      // Generate a unique filename
+      const fileExtension = path.extname(req.file.originalname);
+      const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${fileExtension}`;
+      const newPath = path.join(uploadDir, uniqueFilename);
+      
+      // Move file to permanent location with unique name
+      fs.renameSync(req.file.path, newPath);
+
+      // Create message with file attachment
+      const messageData = {
+        content: content || `📎 Document: ${req.file.originalname}`,
+        senderId: req.session.userId,
+        recipientId: parseInt(recipientId),
+        organizationId: req.session.organizationId,
+        fileUrl: `/api/files/${uniqueFilename}`,
+        fileName: req.file.originalname,
+        fileSize: req.file.size,
+        fileType: req.file.mimetype
+      };
+
+      const message = await storage.sendMessage(messageData);
+      res.json(message);
+    } catch (error) {
+      console.error("Upload message error:", error);
+      // Clean up uploaded file if there was an error
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      res.status(500).json({ message: "Failed to upload file" });
+    }
+  });
+
   // Get all messages for current user
   app.get("/api/messages", requireAuth, async (req: any, res) => {
     try {

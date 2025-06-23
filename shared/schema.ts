@@ -63,6 +63,10 @@ export const messages = pgTable("messages", {
   organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   urgency: varchar("urgency", { length: 20 }).default("normal").notNull(), // low, normal, high, urgent
   isRead: boolean("is_read").default(false).notNull(),
+  fileUrl: text("file_url"), // URL to uploaded file
+  fileName: text("file_name"), // Original filename
+  fileSize: integer("file_size"), // File size in bytes
+  fileType: text("file_type"), // MIME type
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
