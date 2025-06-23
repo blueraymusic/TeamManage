@@ -400,8 +400,13 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           
           {/* File Upload Instructions */}
           {!selectedFile && (
-            <div className="mb-2 text-xs text-gray-500 text-center">
-              Use the 📎 button to attach documents instead of typing filenames
+            <div className="mb-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="text-xs text-yellow-800 text-center font-medium">
+                ⚠️ Important: Click the blue 📎 button below to attach actual files
+              </div>
+              <div className="text-xs text-yellow-700 text-center mt-1">
+                Don't type "📎 Document: filename" - use the attachment button instead
+              </div>
             </div>
           )}
           
@@ -426,10 +431,10 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={sendMessageMutation.isPending || isUploading}
-                className="rounded-full w-10 h-10 p-0 border-blue-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-300"
+                className="w-12 h-10 border-2 border-blue-500 bg-blue-50 text-blue-600 hover:text-blue-700 hover:bg-blue-100 hover:border-blue-600 shadow-sm"
                 title="Click to attach file"
               >
-                <Paperclip className="h-4 w-4" />
+                <Paperclip className="h-5 w-5" />
               </Button>
             </div>
             <Button

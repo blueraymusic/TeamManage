@@ -669,35 +669,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // File serving route
-  app.get("/api/files/:filename", (req: any, res) => {
-    const { filename } = req.params;
-    const uploadsDir = path.resolve(process.cwd(), "uploads");
-    const filePath = path.join(uploadsDir, filename);
-    
-    console.log("File download request - filename:", filename);
-    console.log("File path:", filePath);
-    console.log("Session:", req.session);
-    
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
-      console.error("File not found:", filePath);
-      return res.status(404).json({ message: "File not found" });
-    }
-    
-    // Set proper headers for file download
-    const originalName = "attachment"; // We'll need to store original names
-    res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    
-    // Serve the file
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error("File download error:", err);
-        if (!res.headersSent) {
-          res.status(500).json({ message: "Download failed" });
-        }
+  app.get("/api/files/:filename", requireAuth, async (req: any, res) => {
+    try {
+      const { filename } = req.params;
+      const uploadsDir = path.resolve(process.cwd(), "uploads");
+      const filePath = path.join(uploadsDir, filename);
+      
+      console.log("File download request - filename:", filename);
+      console.log("File path:", filePath);
+      
+      // Check if file exists
+      if (!fs.existsSync(filePath)) {
+        console.error("File not found:", filePath);
+        return res.status(404).json({ message: "File not found" });
       }
-    });
+      
+      // Get original filename from database
+      const messages = await storage.getAllMessagesForOrganization(req.session.organizationId);
+      const messageWithFile = messages.find(msg => msg.fileUrl === `/api/files/${filename}`);
+      const originalName = messageWithFile?.fileName || filename;
+      
+      // Set proper headers for file download
+      res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
+      res.setHeader('Content-Type', messageWithFile?.fileType || 'application/octet-stream');
+      
+      // Serve the file
+      res.sendFile(filePath, (err) => {
+        if (err) {
+          console.error("File download error:", err);
+          if (!res.headersSent) {
+            res.status(500).json({ message: "Download failed" });
+          }
+        }
+      });
+    } catch (error) {
+      console.error("File serving error:", error);
+      res.status(500).json({ message: "File serving failed" });
+    }
   });
 
   // Messaging routes
