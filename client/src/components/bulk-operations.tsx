@@ -72,7 +72,19 @@ export function BulkProjectOperations({ projects, onRefresh }: BulkProjectOperat
 
   const exportProjectsMutation = useMutation({
     mutationFn: async (projectIds: number[]) => {
-      const response = await apiRequest("POST", "/api/projects/export", { projectIds });
+      const response = await fetch("/api/projects/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ projectIds }),
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to export projects");
+      }
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -286,7 +298,19 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
 
   const exportReportsMutation = useMutation({
     mutationFn: async (reportIds: number[]) => {
-      const response = await apiRequest("POST", "/api/reports/export", { reportIds });
+      const response = await fetch("/api/reports/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ reportIds }),
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to export reports");
+      }
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
