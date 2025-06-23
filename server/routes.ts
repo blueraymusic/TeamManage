@@ -622,6 +622,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // File serving route
+  app.get("/api/files/:filename", requireAuth, (req: any, res) => {
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, "../uploads", filename);
+    
+    // Check if file exists and serve it
+    res.download(filePath, (err) => {
+      if (err) {
+        console.error("File download error:", err);
+        res.status(404).json({ message: "File not found" });
+      }
+    });
+  });
+
   // Messaging routes
   app.post("/api/messages", requireAuth, async (req: any, res) => {
     try {

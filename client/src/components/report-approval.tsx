@@ -33,6 +33,34 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [reviewNotes, setReviewNotes] = useState("");
+
+  const handleDownloadFile = async (file: any) => {
+    try {
+      const response = await fetch(`/api/files/${file.filename}`, {
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to download file");
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.originalName || file.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Could not download the file. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
   const [isOpen, setIsOpen] = useState(false);
 
   const updateStatusMutation = useMutation({
@@ -174,7 +202,11 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
                         </p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleDownloadFile(file)}
+                    >
                       <Download className="w-4 h-4" />
                     </Button>
                   </div>
