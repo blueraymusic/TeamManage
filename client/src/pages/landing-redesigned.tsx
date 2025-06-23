@@ -2,45 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import AuthModals from "@/components/auth-modals";
 import LanguageSwitcher from "@/components/language-switcher";
 import AdelLogo from "@/components/adel-logo";
 import {
   Users,
-  TrendingUp,
-  Upload,
-  Wallet,
-  Smartphone,
-  Globe,
-  Rocket,
-  Play,
-  Crown,
-  User,
-  Shield,
-  Zap,
   Target,
   CheckCircle2,
-  Star,
   ArrowRight,
   BarChart3,
   FileText,
@@ -48,197 +16,121 @@ import {
   Settings,
   Layers,
   CalendarDays,
-  Clock,
   Mail,
-  Phone,
-  Building2
+  User,
+  Shield,
+  Play,
+  Rocket
 } from "lucide-react";
 
-export default function Landing() {
+export default function LandingRedesigned() {
   const [showAuthModal, setShowAuthModal] = useState<"login" | "register" | null>(null);
-  const [showMeetingModal, setShowMeetingModal] = useState(false);
-  const [isSubmittingMeeting, setIsSubmittingMeeting] = useState(false);
-  const [meetingForm, setMeetingForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    company: "",
-    phone: "",
-    organizationType: "",
-    teamSize: "",
-    meetingPurpose: "",
-    preferredTime: "",
-    message: ""
-  });
-  const { toast } = useToast();
-
-  const handleMeetingFormChange = (field: string, value: string) => {
-    setMeetingForm(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleMeetingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmittingMeeting(true);
-
-    try {
-      // Validate required fields
-      if (!meetingForm.firstName || !meetingForm.lastName || !meetingForm.email || !meetingForm.company) {
-        toast({
-          title: "Missing Information",
-          description: "Please fill in all required fields.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Submit meeting booking request to API
-      const response = await fetch('/api/contact/meeting', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(meetingForm),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit meeting request');
-      }
-
-      const data = await response.json();
-
-      toast({
-        title: "Meeting Request Submitted!",
-        description: `Thank you ${meetingForm.firstName}! Our sales team will contact you within 24 hours to schedule your demo. Reference ID: ${data.requestId}`,
-      });
-
-      // Reset form and close modal
-      setMeetingForm({
-        firstName: "",
-        lastName: "",
-        email: "",
-        company: "",
-        phone: "",
-        organizationType: "",
-        teamSize: "",
-        meetingPurpose: "",
-        preferredTime: "",
-        message: ""
-      });
-      setShowMeetingModal(false);
-
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit meeting request. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmittingMeeting(false);
-    }
-  };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
-      {/* Navigation Header */}
-      <header className="relative sticky top-0 z-50 mt-4">
-        {/* Background with Glass Effect */}
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl border-b border-slate-200/60"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50"></div>
-        
-        {/* Header Content */}
-        <div className="relative">
-          <div className="max-w-full mx-auto px-6 lg:px-8 xl:px-12">
-            <div className="flex justify-between items-center h-16 lg:h-18">
-              
-              {/* Logo Section */}
-              <div className="flex items-center space-x-4">
-                <div className="relative group">
-                  {/* Subtle Professional Glow */}
-                  <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
-                  
-                  {/* Logo Container */}
-                  <div className="relative bg-gradient-to-br from-blue-600 to-indigo-700 p-2.5 rounded-lg shadow-lg transform group-hover:scale-102 transition-transform duration-300">
-                    <AdelLogo size="md" className="filter brightness-0 invert" />
-                  </div>
-                </div>
-                
-                {/* Brand Text */}
-                <div className="flex flex-col">
-                  <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
-                    ADEL
-                  </h1>
-                  <p className="text-xs lg:text-sm text-slate-600 font-medium -mt-0.5">
-                    For NGOs & Non-Profits
-                  </p>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between px-6 lg:px-8 xl:px-12 h-20">
+            {/* Logo */}
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl blur-sm opacity-75"></div>
+                <div className="relative p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                  <AdelLogo size="sm" className="filter brightness-0 invert" />
                 </div>
               </div>
-              
-              {/* Navigation Links */}
-              <nav className="hidden lg:flex items-center">
-                <div className="flex items-center space-x-2 mr-8">
-                  <a href="#features" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
-                    <span className="relative z-10">Features</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
-                  </a>
-                  
-                  <a href="#workflow" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
-                    <span className="relative z-10">How it Works</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
-                  </a>
-                  
-                  <a href="#about" className="relative group px-4 py-2 text-slate-700 hover:text-blue-700 transition-all duration-300 font-semibold">
-                    <span className="relative z-10">About</span>
-                    <div className="absolute inset-0 bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
-                  </a>
-                </div>
-                
-                {/* Language Switcher */}
-                <div className="mr-6">
-                  <LanguageSwitcher />
-                </div>
-                
-                {/* Action Buttons */}
-                <div className="flex items-center space-x-3">
-                  <Button
-                    onClick={() => setShowMeetingModal(true)}
-                    variant="outline"
-                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
-                  >
-                    <CalendarDays className="w-4 h-4 mr-2" />
-                    Book Demo
-                  </Button>
-                  
-                  <Button
-                    onClick={() => setShowAuthModal("login")}
-                    variant="outline"
-                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
-                  >
-                    Log In
-                  </Button>
-                  
-                  <Button
-                    onClick={() => setShowAuthModal("register")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-7 py-2 font-semibold rounded-lg"
-                  >
-                    Get Started
-                  </Button>
-                </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                ADEL
+              </span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center">
+              <nav className="flex items-center space-x-8 mr-8">
+                <a href="#features" className="text-slate-700 hover:text-blue-600 font-medium transition-colors">
+                  Features
+                </a>
+                <a href="#how-it-works" className="text-slate-700 hover:text-blue-600 font-medium transition-colors">
+                  How It Works
+                </a>
+                <a href="#pricing" className="text-slate-700 hover:text-blue-600 font-medium transition-colors">
+                  Pricing
+                </a>
               </nav>
 
-              {/* Mobile Menu Button */}
-              <div className="lg:hidden">
+              <div className="mr-6">
+                <LanguageSwitcher />
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-3">
                 <Button
+                  onClick={() => {
+                    const subject = "ADEL Demo Request";
+                    const body = `Hello,
+
+I'm interested in learning more about ADEL for our organization.
+
+Organization Details:
+- Company/NGO: [Your organization name]
+- Team Size: [Number of team members]
+- Organization Type: [NGO/Government/Corporate/Other]
+
+Meeting Purpose:
+- [ ] Product Demo
+- [ ] Implementation Planning  
+- [ ] Pricing Discussion
+- [ ] Technical Integration
+
+Preferred Meeting Time:
+- [ ] Morning (9 AM - 12 PM)
+- [ ] Afternoon (12 PM - 5 PM)
+- [ ] Evening (5 PM - 8 PM)
+
+Additional Information:
+[Please share any specific requirements or questions]
+
+Best regards,
+[Your name]
+[Your email]
+[Your phone number]`;
+                    
+                    window.location.href = `mailto:sissokoadel057@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                  }}
                   variant="outline"
-                  size="sm"
-                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                  className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
                 >
-                  <Layers className="w-5 h-5" />
+                  <CalendarDays className="w-4 h-4 mr-2" />
+                  Book Demo
+                </Button>
+                
+                <Button
+                  onClick={() => setShowAuthModal("login")}
+                  variant="outline"
+                  className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
+                >
+                  Log In
+                </Button>
+                
+                <Button
+                  onClick={() => setShowAuthModal("register")}
+                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-7 py-2 font-semibold rounded-lg"
+                >
+                  Get Started
                 </Button>
               </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                <Layers className="w-5 h-5" />
+              </Button>
             </div>
           </div>
         </div>
@@ -321,118 +213,97 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {/* Feature Cards */}
-            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <BarChart3 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Project Management</h3>
-                  <p className="text-blue-100 leading-relaxed">
-                    Create, organize, and track multiple projects with advanced tools for budget management and timeline tracking.
-                  </p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            {/* Project Management */}
+            <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
+                  <Target className="w-8 h-8 text-white" />
                 </div>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Project Management</h3>
+                <p className="text-gray-600 text-center leading-relaxed">
+                  Create, organize, and track projects with built-in budget management, milestone tracking, and deadline monitoring.
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <Users className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Team Collaboration</h3>
-                  <p className="text-emerald-100 leading-relaxed">
-                    Enable seamless collaboration between administrators and officers with role-based access controls.
-                  </p>
+            {/* Team Collaboration */}
+            <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Team Collaboration</h3>
+                <p className="text-gray-600 text-center leading-relaxed">
+                  Enable seamless communication between admins and officers with real-time messaging and document sharing.
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-500 to-indigo-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <FileText className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Report Management</h3>
-                  <p className="text-purple-100 leading-relaxed">
-                    Submit, review, and approve reports with automated workflows and comprehensive tracking systems.
-                  </p>
+            {/* Progress Tracking */}
+            <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg mx-auto mb-6 flex items-center justify-center">
+                  <BarChart3 className="w-8 h-8 text-white" />
                 </div>
+                <h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Progress Tracking</h3>
+                <p className="text-gray-600 text-center leading-relaxed">
+                  Monitor project progress with detailed analytics, automated reports, and real-time status updates.
+                </p>
               </CardContent>
             </Card>
+          </div>
 
-            <Card className="bg-gradient-to-br from-orange-500 to-amber-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <TrendingUp className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Analytics & Insights</h3>
-                  <p className="text-orange-100 leading-relaxed">
-                    Get detailed insights into project progress, budget utilization, and team performance with visual dashboards.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Additional Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center p-6 bg-blue-50 rounded-2xl">
+              <div className="w-12 h-12 bg-blue-500 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Report Generation</h4>
+              <p className="text-sm text-gray-600">Automated progress reports with file attachments</p>
+            </div>
 
-            <Card className="bg-gradient-to-br from-rose-500 to-pink-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <Shield className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Secure & Reliable</h3>
-                  <p className="text-rose-100 leading-relaxed">
-                    Enterprise-grade security with encrypted data storage and regular backups to keep your information safe.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="text-center p-6 bg-emerald-50 rounded-2xl">
+              <div className="w-12 h-12 bg-emerald-500 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Role-Based Access</h4>
+              <p className="text-sm text-gray-600">Secure admin and officer permission levels</p>
+            </div>
 
-            <Card className="bg-gradient-to-br from-cyan-500 to-blue-600 border-0 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-500 overflow-hidden group">
-              <CardContent className="p-8 text-white relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="relative z-10">
-                  <div className="p-4 bg-white/20 rounded-2xl inline-block mb-6">
-                    <Settings className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Easy Setup</h3>
-                  <p className="text-cyan-100 leading-relaxed">
-                    Get started in minutes with our intuitive setup process and comprehensive onboarding resources.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="text-center p-6 bg-purple-50 rounded-2xl">
+              <div className="w-12 h-12 bg-purple-500 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Deadline Management</h4>
+              <p className="text-sm text-gray-600">Never miss important project milestones</p>
+            </div>
+
+            <div className="text-center p-6 bg-orange-50 rounded-2xl">
+              <div className="w-12 h-12 bg-orange-500 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2">Custom Workflows</h4>
+              <p className="text-sm text-gray-600">Adapt the platform to your organization's needs</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="workflow" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-white/30 backdrop-blur-sm">
+      {/* How It Works */}
+      <section id="how-it-works" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-gradient-to-r from-slate-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              How{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                ADEL
-              </span>{" "}
-              Works
+              How ADEL Works
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Simple steps to transform your NGO's project management workflow.
+              Get started in minutes with our intuitive three-step process designed specifically for NGOs.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="text-center">
               <div className="relative mb-8">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-2xl mx-auto flex items-center justify-center mb-6">
@@ -500,234 +371,77 @@ export default function Landing() {
                 Get Started Free
                 <Rocket className="w-6 h-6 ml-3" />
               </Button>
-              <Dialog open={showMeetingModal} onOpenChange={setShowMeetingModal}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
-                  >
-                    <CalendarDays className="w-6 h-6 mr-3" />
-                    Book a Demo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-900">
-                      Book Your Personalized Demo
-                    </DialogTitle>
-                    <DialogDescription className="text-gray-600">
-                      Schedule a meeting with our team to see how ADEL can transform your NGO operations.
-                    </DialogDescription>
-                  </DialogHeader>
+              <Button
+                onClick={() => {
+                  const subject = "ADEL Demo Request";
+                  const body = `Hello,
+
+I'm interested in learning more about ADEL for our organization.
+
+Organization Details:
+- Company/NGO: [Your organization name]
+- Team Size: [Number of team members]
+- Organization Type: [NGO/Government/Corporate/Other]
+
+Meeting Purpose:
+- [ ] Product Demo
+- [ ] Implementation Planning  
+- [ ] Pricing Discussion
+- [ ] Technical Integration
+
+Preferred Meeting Time:
+- [ ] Morning (9 AM - 12 PM)
+- [ ] Afternoon (12 PM - 5 PM)
+- [ ] Evening (5 PM - 8 PM)
+
+Additional Information:
+[Please share any specific requirements or questions]
+
+Best regards,
+[Your name]
+[Your email]
+[Your phone number]`;
                   
-                  <form onSubmit={handleMeetingSubmit} className="space-y-6 mt-6">
-                    {/* Personal Information */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                          First Name *
-                        </Label>
-                        <Input
-                          id="firstName"
-                          value={meetingForm.firstName}
-                          onChange={(e) => handleMeetingFormChange("firstName", e.target.value)}
-                          placeholder="Enter your first name"
-                          className="border-gray-300"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                          Last Name *
-                        </Label>
-                        <Input
-                          id="lastName"
-                          value={meetingForm.lastName}
-                          onChange={(e) => handleMeetingFormChange("lastName", e.target.value)}
-                          placeholder="Enter your last name"
-                          className="border-gray-300"
-                          required
-                        />
-                      </div>
-                    </div>
+                  window.location.href = `mailto:sissokoadel057@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                }}
+                variant="outline"
+                size="lg"
+                className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
+              >
+                <CalendarDays className="w-6 h-6 mr-3" />
+                Book a Demo
+              </Button>
+            </div>
+            
+            {/* Secondary Contact Button */}
+            <div className="mt-8">
+              <Button
+                onClick={() => {
+                  const subject = "Contact Request - ADEL Platform";
+                  const body = `Hello,
 
-                    {/* Contact Information */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-medium text-gray-700 flex items-center">
-                          <Mail className="w-4 h-4 mr-2" />
-                          Email Address *
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={meetingForm.email}
-                          onChange={(e) => handleMeetingFormChange("email", e.target.value)}
-                          placeholder="your.email@organization.org"
-                          className="border-gray-300"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700 flex items-center">
-                          <Phone className="w-4 h-4 mr-2" />
-                          Phone Number
-                        </Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          value={meetingForm.phone}
-                          onChange={(e) => handleMeetingFormChange("phone", e.target.value)}
-                          placeholder="+1 (555) 123-4567"
-                          className="border-gray-300"
-                        />
-                      </div>
-                    </div>
+I would like to get in touch regarding the ADEL platform.
 
-                    {/* Organization Details */}
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="company" className="text-sm font-medium text-gray-700 flex items-center">
-                          <Building2 className="w-4 h-4 mr-2" />
-                          Organization Name *
-                        </Label>
-                        <Input
-                          id="company"
-                          value={meetingForm.company}
-                          onChange={(e) => handleMeetingFormChange("company", e.target.value)}
-                          placeholder="Your NGO or organization name"
-                          className="border-gray-300"
-                          required
-                        />
-                      </div>
+My Information:
+- Name: [Your name]
+- Organization: [Your organization]
+- Email: [Your email]
+- Phone: [Your phone number]
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="organizationType" className="text-sm font-medium text-gray-700">
-                            Organization Type
-                          </Label>
-                          <Select value={meetingForm.organizationType} onValueChange={(value) => handleMeetingFormChange("organizationType", value)}>
-                            <SelectTrigger className="border-gray-300">
-                              <SelectValue placeholder="Select organization type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ngo">NGO / Non-Profit</SelectItem>
-                              <SelectItem value="charity">Charity</SelectItem>
-                              <SelectItem value="foundation">Foundation</SelectItem>
-                              <SelectItem value="social-enterprise">Social Enterprise</SelectItem>
-                              <SelectItem value="government">Government Agency</SelectItem>
-                              <SelectItem value="international">International Organization</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+How can we help you?
+[Please describe your inquiry or interest]
 
-                        <div className="space-y-2">
-                          <Label htmlFor="teamSize" className="text-sm font-medium text-gray-700">
-                            Team Size
-                          </Label>
-                          <Select value={meetingForm.teamSize} onValueChange={(value) => handleMeetingFormChange("teamSize", value)}>
-                            <SelectTrigger className="border-gray-300">
-                              <SelectValue placeholder="Select team size" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1-10">1-10 members</SelectItem>
-                              <SelectItem value="11-50">11-50 members</SelectItem>
-                              <SelectItem value="51-100">51-100 members</SelectItem>
-                              <SelectItem value="101-500">101-500 members</SelectItem>
-                              <SelectItem value="500+">500+ members</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Meeting Preferences */}
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="meetingPurpose" className="text-sm font-medium text-gray-700">
-                          What would you like to discuss?
-                        </Label>
-                        <Select value={meetingForm.meetingPurpose} onValueChange={(value) => handleMeetingFormChange("meetingPurpose", value)}>
-                          <SelectTrigger className="border-gray-300">
-                            <SelectValue placeholder="Select meeting purpose" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="product-demo">Product Demo</SelectItem>
-                            <SelectItem value="pricing">Pricing & Plans</SelectItem>
-                            <SelectItem value="implementation">Implementation Support</SelectItem>
-                            <SelectItem value="custom-solutions">Custom Solutions</SelectItem>
-                            <SelectItem value="migration">Data Migration</SelectItem>
-                            <SelectItem value="general">General Discussion</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="preferredTime" className="text-sm font-medium text-gray-700 flex items-center">
-                          <Clock className="w-4 h-4 mr-2" />
-                          Preferred Time
-                        </Label>
-                        <Select value={meetingForm.preferredTime} onValueChange={(value) => handleMeetingFormChange("preferredTime", value)}>
-                          <SelectTrigger className="border-gray-300">
-                            <SelectValue placeholder="Select preferred time" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="morning">Morning (9AM - 12PM)</SelectItem>
-                            <SelectItem value="afternoon">Afternoon (12PM - 5PM)</SelectItem>
-                            <SelectItem value="evening">Evening (5PM - 8PM)</SelectItem>
-                            <SelectItem value="flexible">I'm flexible</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="message" className="text-sm font-medium text-gray-700">
-                          Additional Information
-                        </Label>
-                        <Textarea
-                          id="message"
-                          value={meetingForm.message}
-                          onChange={(e) => handleMeetingFormChange("message", e.target.value)}
-                          placeholder="Tell us about your current challenges, specific requirements, or any questions you have..."
-                          rows={4}
-                          className="border-gray-300"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="flex justify-end space-x-4 pt-6 border-t">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setShowMeetingModal(false)}
-                        disabled={isSubmittingMeeting}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="submit"
-                        disabled={isSubmittingMeeting}
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8"
-                      >
-                        {isSubmittingMeeting ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Submitting...
-                          </>
-                        ) : (
-                          <>
-                            <CalendarDays className="w-4 h-4 mr-2" />
-                            Book Meeting
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+Best regards`;
+                  
+                  window.location.href = `mailto:sissokoadel057@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                }}
+                variant="outline"
+                size="lg" 
+                className="bg-transparent border-2 border-white/50 text-black hover:text-white hover:bg-white/20 transition-all duration-300 px-8 py-3 font-semibold rounded-xl"
+              >
+                <Mail className="w-5 h-5 mr-2" />
+                Contacts
+              </Button>
             </div>
           </div>
         </div>
