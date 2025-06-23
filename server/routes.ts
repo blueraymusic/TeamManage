@@ -661,11 +661,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Messaging routes
   app.post("/api/messages", requireAuth, async (req: any, res) => {
     try {
-      // Only admin can send messages
-      if (req.session.userRole !== "admin") {
-        return res.status(403).json({ message: "Only admin can send messages" });
-      }
-
       const messageData = insertMessageSchema.parse({
         ...req.body,
         senderId: req.session.userId,
@@ -677,6 +672,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Send message error:", error);
       res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Get all messages for current user
+  app.get("/api/messages", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole === "admin") {
+        // Admin gets all messages in organization
+        const messages = await storage.getAllMessagesForOrganization(req.session.organizationId);
+        res.json(messages);
+      } else {
+        // Officer gets messages between them and admin
+        const users = await storage.getUsersByOrganization(req.session.organizationId);
+        const admin = users.find(user => user.role === "admin");
+        if (!admin) {
+          return res.status(404).json({ message: "Admin not found" });
+        }
+        
+        const messages = await storage.getMessagesBetweenUsers(admin.id, req.session.userId, req.session.organizationId);
+        res.json(messages);
+      }
+    } catch (error) {
+      console.error("Get messages error:", error);
+      res.status(500).json({ message: "Failed to get messages" });
     }
   });
 

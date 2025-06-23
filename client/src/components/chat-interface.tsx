@@ -1,0 +1,221 @@
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Send, MessageCircle } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+
+interface Message {
+  id: number;
+  content: string;
+  senderId: number;
+  recipientId: number;
+  organizationId: number;
+  isRead: boolean;
+  createdAt: string;
+  senderName?: string;
+  senderRole?: string;
+}
+
+interface ChatInterfaceProps {
+  recipientId?: number;
+  recipientName?: string;
+}
+
+export default function ChatInterface({ recipientId, recipientName }: ChatInterfaceProps) {
+  const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const { data: messages = [], isLoading } = useQuery<Message[]>({
+    queryKey: ["/api/messages"],
+    refetchInterval: 3000, // Auto-refresh every 3 seconds
+  });
+
+  const { data: organizationMembers = [] } = useQuery<any[]>({
+    queryKey: ["/api/organization/members"],
+  });
+
+  const sendMessageMutation = useMutation({
+    mutationFn: async (messageData: { content: string; recipientId: number }) => {
+      return await apiRequest("/api/messages", "POST", messageData);
+    },
+    onSuccess: () => {
+      setNewMessage("");
+      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      scrollToBottom();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+
+    let targetRecipientId = recipientId;
+
+    // If no specific recipient, determine based on user role
+    if (!targetRecipientId) {
+      if (user?.role === "officer") {
+        // Officer sends to admin
+        const admin = organizationMembers.find((member: any) => member.role === "admin");
+        if (!admin) {
+          toast({
+            title: "Error",
+            description: "Admin not found",
+            variant: "destructive",
+          });
+          return;
+        }
+        targetRecipientId = admin.id;
+      } else {
+        toast({
+          title: "Error",
+          description: "Please select a recipient",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    sendMessageMutation.mutate({
+      content: newMessage,
+      recipientId: targetRecipientId!,
+    });
+  };
+
+  // Get user name by ID
+  const getUserName = (userId: number) => {
+    const member = organizationMembers.find((m: any) => m.id === userId);
+    return member ? `${member.firstName || ""} ${member.lastName || ""}`.trim() || member.email : `User #${userId}`;
+  };
+
+  // Get user role by ID
+  const getUserRole = (userId: number) => {
+    const member = organizationMembers.find((m: any) => m.id === userId);
+    return member?.role || "user";
+  };
+
+  // Filter messages based on current context
+  const filteredMessages = messages.filter((message: Message) => {
+    if (!user) return false;
+    
+    if (recipientId) {
+      // Show messages between current user and specific recipient
+      return (
+        (message.senderId === user.id && message.recipientId === recipientId) ||
+        (message.senderId === recipientId && message.recipientId === user.id)
+      );
+    } else {
+      // Show all messages involving current user
+      return message.senderId === user.id || message.recipientId === user.id;
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center">Loading messages...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="h-[600px] flex flex-col">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2">
+          <MessageCircle className="h-5 w-5" />
+          {recipientName ? `Chat with ${recipientName}` : "Messages"}
+        </CardTitle>
+      </CardHeader>
+      
+      <CardContent className="flex-1 flex flex-col p-0">
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {filteredMessages.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              No messages yet. Start a conversation!
+            </div>
+          ) : (
+            filteredMessages
+              .sort((a: Message, b: Message) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+              .map((message: Message) => {
+                const isCurrentUser = message.senderId === user?.id;
+                const senderName = getUserName(message.senderId);
+                const senderRole = getUserRole(message.senderId);
+                
+                return (
+                  <div
+                    key={message.id}
+                    className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[70%] rounded-lg p-3 ${
+                        isCurrentUser
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
+                      {!isCurrentUser && (
+                        <div className="text-xs opacity-75 mb-1">
+                          {senderName} ({senderRole})
+                        </div>
+                      )}
+                      <div className="break-words">{message.content}</div>
+                      <div className={`text-xs mt-1 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Message Input */}
+        <div className="p-4 border-t">
+          <form onSubmit={handleSendMessage} className="flex gap-2">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              disabled={sendMessageMutation.isPending}
+              className="flex-1"
+            />
+            <Button
+              type="submit"
+              disabled={!newMessage.trim() || sendMessageMutation.isPending}
+              size="sm"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

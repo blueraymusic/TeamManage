@@ -30,7 +30,7 @@ import {
 import { t } from "@/lib/i18n";
 import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
-import OfficerMessages from "./officer-messages";
+import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
 
 export default function OfficerDashboard() {
@@ -288,7 +288,7 @@ export default function OfficerDashboard() {
             </TabsContent>
 
             <TabsContent value="messages" className="p-6">
-              <OfficerMessages />
+              <ChatInterface />
             </TabsContent>
           </Tabs>
         </div>

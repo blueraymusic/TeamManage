@@ -47,6 +47,7 @@ export interface IStorage {
   // Message operations
   sendMessage(message: InsertMessage): Promise<Message>;
   getMessagesBetweenUsers(senderId: number, recipientId: number, organizationId: number): Promise<Message[]>;
+  getAllMessagesForOrganization(organizationId: number): Promise<Message[]>;
   getUnreadMessagesForUser(userId: number, organizationId: number): Promise<Message[]>;
   markMessageAsRead(messageId: number): Promise<void>;
 
@@ -207,6 +208,14 @@ export class DatabaseStorage implements IStorage {
           )
         )
       )
+      .orderBy(desc(messages.createdAt));
+  }
+
+  async getAllMessagesForOrganization(organizationId: number): Promise<Message[]> {
+    return await db
+      .select()
+      .from(messages)
+      .where(eq(messages.organizationId, organizationId))
       .orderBy(desc(messages.createdAt));
   }
 

@@ -49,7 +49,7 @@ import OrganizationInfo from "./organization-info";
 import ProjectForm from "./project-form";
 import ReportApproval from "./report-approval";
 import ProgressChart from "./progress-chart";
-import TeamMessaging from "./team-messaging";
+import ChatInterface from "./chat-interface";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 import AdelLogo from "./adel-logo";
 
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
             </TabsContent>
 
             <TabsContent value="messages" className="p-6">
-              <TeamMessaging />
+              <ChatInterface />
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">
