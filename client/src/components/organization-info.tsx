@@ -1,13 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Users, Building2, Calendar, Mail, UserCheck } from "lucide-react";
+import { Copy, Users, Building2, Calendar, Mail, UserCheck, UserX, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { t } from "@/lib/i18n";
+import { apiRequest } from "@/lib/queryClient";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function OrganizationInfo() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const { data: organization = {}, isLoading } = useQuery({
     queryKey: ["/api/organization"],
@@ -15,6 +28,26 @@ export default function OrganizationInfo() {
 
   const { data: teamMembers = [], isLoading: membersLoading } = useQuery({
     queryKey: ["/api/organization/members"],
+  });
+
+  const removeMemberMutation = useMutation({
+    mutationFn: async (memberId: number) => {
+      await apiRequest("DELETE", `/api/organization/members/${memberId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Team member removed successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/organization/members"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to remove team member",
+        variant: "destructive",
+      });
+    },
   });
 
   const copyToClipboard = (text: string) => {
@@ -137,9 +170,47 @@ export default function OrganizationInfo() {
                       </div>
                     </div>
                   </div>
-                  <Badge variant={member.role === 'admin' ? 'default' : 'secondary'}>
-                    {member.role}
-                  </Badge>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant={member.role === 'admin' ? 'default' : 'secondary'}>
+                      {member.role}
+                    </Badge>
+                    {member.role === 'officer' && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <UserX className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="flex items-center gap-2">
+                              <AlertTriangle className="w-5 h-5 text-red-500" />
+                              Remove Team Member
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to remove <strong>{member.firstName && member.lastName ? `${member.firstName} ${member.lastName}` : member.email}</strong> from your organization? 
+                              <br /><br />
+                              <span className="text-red-600 font-medium">This action will permanently delete their account and cannot be undone.</span>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => removeMemberMutation.mutate(member.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                              disabled={removeMemberMutation.isPending}
+                            >
+                              {removeMemberMutation.isPending ? "Removing..." : "Remove Member"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

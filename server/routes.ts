@@ -310,6 +310,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Remove team member (admin only)
+  app.delete("/api/organization/members/:memberId", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const memberId = parseInt(req.params.memberId);
+      const memberToRemove = await storage.getUserById(memberId);
+      
+      if (!memberToRemove) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      // Check if member belongs to same organization
+      if (memberToRemove.organizationId !== req.session.organizationId) {
+        return res.status(403).json({ message: "Member not in your organization" });
+      }
+
+      // Cannot remove admin accounts
+      if (memberToRemove.role === "admin") {
+        return res.status(403).json({ message: "Cannot remove admin accounts" });
+      }
+
+      // Delete the user account completely
+      await storage.deleteUser(memberId);
+      res.json({ message: "Team member removed successfully" });
+    } catch (error) {
+      console.error("Remove member error:", error);
+      res.status(500).json({ message: "Failed to remove team member" });
+    }
+  });
+
   // Project routes
   app.post("/api/projects", requireAuth, async (req: any, res) => {
     try {

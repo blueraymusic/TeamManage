@@ -32,6 +32,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: number): Promise<User | undefined>;
   getUsersByOrganization(organizationId: number): Promise<User[]>;
+  deleteUser(id: number): Promise<void>;
 
   // Project operations
   createProject(project: InsertProject): Promise<Project>;
@@ -102,6 +103,20 @@ export class DatabaseStorage implements IStorage {
 
   async getUsersByOrganization(organizationId: number): Promise<User[]> {
     return await db.select().from(users).where(eq(users.organizationId, organizationId));
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    // First delete all messages sent by this user
+    await db.delete(messages).where(eq(messages.senderId, id));
+    
+    // Delete all messages received by this user
+    await db.delete(messages).where(eq(messages.recipientId, id));
+    
+    // Delete all reports submitted by this user
+    await db.delete(reports).where(eq(reports.submittedBy, id));
+    
+    // Finally delete the user
+    await db.delete(users).where(eq(users.id, id));
   }
 
   async createProject(project: InsertProject): Promise<Project> {
