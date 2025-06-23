@@ -3,6 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import AuthModals from "@/components/auth-modals";
 import LanguageSwitcher from "@/components/language-switcher";
 import AdelLogo from "@/components/adel-logo";
@@ -27,11 +46,97 @@ import {
   FileText,
   Calendar,
   Settings,
-  Layers
+  Layers,
+  CalendarDays,
+  Clock,
+  Mail,
+  Phone,
+  Building2
 } from "lucide-react";
 
 export default function Landing() {
   const [showAuthModal, setShowAuthModal] = useState<"login" | "register" | null>(null);
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+  const [isSubmittingMeeting, setIsSubmittingMeeting] = useState(false);
+  const [meetingForm, setMeetingForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    phone: "",
+    organizationType: "",
+    teamSize: "",
+    meetingPurpose: "",
+    preferredTime: "",
+    message: ""
+  });
+  const { toast } = useToast();
+
+  const handleMeetingFormChange = (field: string, value: string) => {
+    setMeetingForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleMeetingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingMeeting(true);
+
+    try {
+      // Validate required fields
+      if (!meetingForm.firstName || !meetingForm.lastName || !meetingForm.email || !meetingForm.company) {
+        toast({
+          title: "Missing Information",
+          description: "Please fill in all required fields.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Submit meeting booking request to API
+      const response = await fetch('/api/contact/meeting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(meetingForm),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit meeting request');
+      }
+
+      const data = await response.json();
+
+      toast({
+        title: "Meeting Request Submitted!",
+        description: `Thank you ${meetingForm.firstName}! Our sales team will contact you within 24 hours to schedule your demo. Reference ID: ${data.requestId}`,
+      });
+
+      // Reset form and close modal
+      setMeetingForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        phone: "",
+        organizationType: "",
+        teamSize: "",
+        meetingPurpose: "",
+        preferredTime: "",
+        message: ""
+      });
+      setShowMeetingModal(false);
+
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit meeting request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingMeeting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
@@ -98,6 +203,15 @@ export default function Landing() {
                 
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-3">
+                  <Button
+                    onClick={() => setShowMeetingModal(true)}
+                    variant="outline"
+                    className="border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 px-6 py-2 font-semibold rounded-lg"
+                  >
+                    <CalendarDays className="w-4 h-4 mr-2" />
+                    Book Demo
+                  </Button>
+                  
                   <Button
                     onClick={() => setShowAuthModal("login")}
                     variant="outline"
@@ -386,13 +500,234 @@ export default function Landing() {
                 Get Started Free
                 <Rocket className="w-6 h-6 ml-3" />
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-white/30 text-black hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
-              >
-                Contact Sales
-              </Button>
+              <Dialog open={showMeetingModal} onOpenChange={setShowMeetingModal}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
+                  >
+                    <CalendarDays className="w-6 h-6 mr-3" />
+                    Book a Demo
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-gray-900">
+                      Book Your Personalized Demo
+                    </DialogTitle>
+                    <DialogDescription className="text-gray-600">
+                      Schedule a meeting with our team to see how ADEL can transform your NGO operations.
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <form onSubmit={handleMeetingSubmit} className="space-y-6 mt-6">
+                    {/* Personal Information */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                          First Name *
+                        </Label>
+                        <Input
+                          id="firstName"
+                          value={meetingForm.firstName}
+                          onChange={(e) => handleMeetingFormChange("firstName", e.target.value)}
+                          placeholder="Enter your first name"
+                          className="border-gray-300"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                          Last Name *
+                        </Label>
+                        <Input
+                          id="lastName"
+                          value={meetingForm.lastName}
+                          onChange={(e) => handleMeetingFormChange("lastName", e.target.value)}
+                          placeholder="Enter your last name"
+                          className="border-gray-300"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Mail className="w-4 h-4 mr-2" />
+                          Email Address *
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={meetingForm.email}
+                          onChange={(e) => handleMeetingFormChange("email", e.target.value)}
+                          placeholder="your.email@organization.org"
+                          className="border-gray-300"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Phone className="w-4 h-4 mr-2" />
+                          Phone Number
+                        </Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={meetingForm.phone}
+                          onChange={(e) => handleMeetingFormChange("phone", e.target.value)}
+                          placeholder="+1 (555) 123-4567"
+                          className="border-gray-300"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Organization Details */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="company" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Building2 className="w-4 h-4 mr-2" />
+                          Organization Name *
+                        </Label>
+                        <Input
+                          id="company"
+                          value={meetingForm.company}
+                          onChange={(e) => handleMeetingFormChange("company", e.target.value)}
+                          placeholder="Your NGO or organization name"
+                          className="border-gray-300"
+                          required
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="organizationType" className="text-sm font-medium text-gray-700">
+                            Organization Type
+                          </Label>
+                          <Select value={meetingForm.organizationType} onValueChange={(value) => handleMeetingFormChange("organizationType", value)}>
+                            <SelectTrigger className="border-gray-300">
+                              <SelectValue placeholder="Select organization type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ngo">NGO / Non-Profit</SelectItem>
+                              <SelectItem value="charity">Charity</SelectItem>
+                              <SelectItem value="foundation">Foundation</SelectItem>
+                              <SelectItem value="social-enterprise">Social Enterprise</SelectItem>
+                              <SelectItem value="government">Government Agency</SelectItem>
+                              <SelectItem value="international">International Organization</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="teamSize" className="text-sm font-medium text-gray-700">
+                            Team Size
+                          </Label>
+                          <Select value={meetingForm.teamSize} onValueChange={(value) => handleMeetingFormChange("teamSize", value)}>
+                            <SelectTrigger className="border-gray-300">
+                              <SelectValue placeholder="Select team size" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-10">1-10 members</SelectItem>
+                              <SelectItem value="11-50">11-50 members</SelectItem>
+                              <SelectItem value="51-100">51-100 members</SelectItem>
+                              <SelectItem value="101-500">101-500 members</SelectItem>
+                              <SelectItem value="500+">500+ members</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Meeting Preferences */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="meetingPurpose" className="text-sm font-medium text-gray-700">
+                          What would you like to discuss?
+                        </Label>
+                        <Select value={meetingForm.meetingPurpose} onValueChange={(value) => handleMeetingFormChange("meetingPurpose", value)}>
+                          <SelectTrigger className="border-gray-300">
+                            <SelectValue placeholder="Select meeting purpose" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="product-demo">Product Demo</SelectItem>
+                            <SelectItem value="pricing">Pricing & Plans</SelectItem>
+                            <SelectItem value="implementation">Implementation Support</SelectItem>
+                            <SelectItem value="custom-solutions">Custom Solutions</SelectItem>
+                            <SelectItem value="migration">Data Migration</SelectItem>
+                            <SelectItem value="general">General Discussion</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="preferredTime" className="text-sm font-medium text-gray-700 flex items-center">
+                          <Clock className="w-4 h-4 mr-2" />
+                          Preferred Time
+                        </Label>
+                        <Select value={meetingForm.preferredTime} onValueChange={(value) => handleMeetingFormChange("preferredTime", value)}>
+                          <SelectTrigger className="border-gray-300">
+                            <SelectValue placeholder="Select preferred time" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="morning">Morning (9AM - 12PM)</SelectItem>
+                            <SelectItem value="afternoon">Afternoon (12PM - 5PM)</SelectItem>
+                            <SelectItem value="evening">Evening (5PM - 8PM)</SelectItem>
+                            <SelectItem value="flexible">I'm flexible</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="message" className="text-sm font-medium text-gray-700">
+                          Additional Information
+                        </Label>
+                        <Textarea
+                          id="message"
+                          value={meetingForm.message}
+                          onChange={(e) => handleMeetingFormChange("message", e.target.value)}
+                          placeholder="Tell us about your current challenges, specific requirements, or any questions you have..."
+                          rows={4}
+                          className="border-gray-300"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end space-x-4 pt-6 border-t">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowMeetingModal(false)}
+                        disabled={isSubmittingMeeting}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={isSubmittingMeeting}
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8"
+                      >
+                        {isSubmittingMeeting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <CalendarDays className="w-4 h-4 mr-2" />
+                            Book Meeting
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

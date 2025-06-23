@@ -760,6 +760,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact/Meeting booking endpoint
+  app.post('/api/contact/meeting', async (req, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        company,
+        phone,
+        organizationType,
+        teamSize,
+        meetingPurpose,
+        preferredTime,
+        message
+      } = req.body;
+
+      // Validate required fields
+      if (!firstName || !lastName || !email || !company) {
+        return res.status(400).json({
+          message: "Missing required fields: firstName, lastName, email, and company are required"
+        });
+      }
+
+      // In a real application, you would:
+      // 1. Store the meeting request in the database
+      // 2. Send notification emails to sales team
+      // 3. Integrate with calendar booking systems
+      // 4. Send confirmation email to the user
+
+      console.log('Meeting booking request received:', {
+        firstName,
+        lastName,
+        email,
+        company,
+        organizationType,
+        teamSize,
+        meetingPurpose,
+        preferredTime,
+        message
+      });
+
+      res.json({
+        message: "Meeting request submitted successfully",
+        requestId: `MTG-${Date.now()}` // Generate a simple request ID
+      });
+
+    } catch (error) {
+      console.error("Error processing meeting request:", error);
+      res.status(500).json({ message: "Failed to process meeting request" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
