@@ -63,6 +63,7 @@ import ReportApproval from "./report-approval";
 import ProgressChart from "./progress-chart";
 import AdminChatInterface from "./admin-chat-interface";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
+import MeetingBookingsManager from "./meeting-bookings-manager";
 import AdelLogo from "./adel-logo";
 
 export default function AdminDashboard() {

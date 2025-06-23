@@ -783,32 +783,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // In a real application, you would:
-      // 1. Store the meeting request in the database
-      // 2. Send notification emails to sales team
-      // 3. Integrate with calendar booking systems
-      // 4. Send confirmation email to the user
+      const requestId = `MTG-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-      console.log('Meeting booking request received:', {
+      // Store the meeting booking in the database
+      const booking = await storage.createMeetingBooking({
         firstName,
         lastName,
         email,
         company,
-        organizationType,
-        teamSize,
-        meetingPurpose,
-        preferredTime,
-        message
+        phone: phone || null,
+        organizationType: organizationType || null,
+        teamSize: teamSize || null,
+        meetingPurpose: meetingPurpose || null,
+        preferredTime: preferredTime || null,
+        message: message || null,
+        requestId,
+        status: "pending"
+      });
+
+      // Send email notifications
+      const { emailService } = await import('./emailNotifications');
+      try {
+        await emailService.sendNewBookingNotification(booking);
+        console.log('Email notifications sent for booking:', booking.requestId);
+      } catch (emailError) {
+        console.error('Failed to send email notifications:', emailError);
+        // Don't fail the request if email fails
+      }
+
+      console.log('Meeting booking stored:', {
+        id: booking.id,
+        requestId: booking.requestId,
+        company: booking.company,
+        email: booking.email
       });
 
       res.json({
         message: "Meeting request submitted successfully",
-        requestId: `MTG-${Date.now()}` // Generate a simple request ID
+        requestId: booking.requestId
       });
 
     } catch (error) {
       console.error("Error processing meeting request:", error);
       res.status(500).json({ message: "Failed to process meeting request" });
+    }
+  });
+
+  // Admin endpoint to get meeting bookings
+  app.get('/api/admin/meeting-bookings', async (req, res) => {
+    try {
+      const { status } = req.query;
+      const bookings = await storage.getMeetingBookings(status as string);
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching meeting bookings:", error);
+      res.status(500).json({ message: "Failed to fetch meeting bookings" });
+    }
+  });
+
+  // Admin endpoint to update booking status
+  app.patch('/api/admin/meeting-bookings/:id/status', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+      }
+
+      const updatedBooking = await storage.updateMeetingBookingStatus(parseInt(id), status);
+      res.json(updatedBooking);
+    } catch (error) {
+      console.error("Error updating booking status:", error);
+      res.status(500).json({ message: "Failed to update booking status" });
     }
   });
 

@@ -66,6 +66,25 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Meeting bookings table for sales inquiries
+export const meetingBookings = pgTable("meeting_bookings", {
+  id: serial("id").primaryKey(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  company: text("company").notNull(),
+  phone: text("phone"),
+  organizationType: text("organization_type"),
+  teamSize: text("team_size"),
+  meetingPurpose: text("meeting_purpose"),
+  preferredTime: text("preferred_time"),
+  message: text("message"),
+  status: text("status").notNull().default("pending"), // pending, contacted, scheduled, completed, cancelled
+  requestId: text("request_id").unique().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Relations
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   users: many(users),
@@ -171,5 +190,14 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
   createdAt: true,
 });
 
+export const insertMeetingBookingSchema = createInsertSchema(meetingBookings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+
+export type MeetingBooking = typeof meetingBookings.$inferSelect;
+export type InsertMeetingBooking = z.infer<typeof insertMeetingBookingSchema>;

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import Landing from "@/pages/landing-redesigned";
 import Dashboard from "@/pages/dashboard";
+import OwnerBookings from "@/pages/owner-bookings";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { initializeLanguage } from "@/lib/i18n";

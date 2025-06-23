@@ -4,16 +4,19 @@ import {
   projects,
   reports,
   messages,
+  meetingBookings,
   type Organization,
   type User,
   type Project,
   type Report,
   type Message,
+  type MeetingBooking,
   type InsertOrganization,
   type InsertUser,
   type InsertProject,
   type InsertReport,
   type InsertMessage,
+  type InsertMeetingBooking,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, inArray, sql } from "drizzle-orm";
@@ -57,6 +60,13 @@ export interface IStorage {
   getProjectsForExport(projectIds: number[], organizationId: number): Promise<any[]>;
   bulkUpdateReportStatus(reportIds: number[], status: string, reviewedBy: number, organizationId: number): Promise<void>;
   getReportsForExport(reportIds: number[], organizationId: number): Promise<any[]>;
+
+  // Meeting booking operations
+  createMeetingBooking(booking: InsertMeetingBooking): Promise<MeetingBooking>;
+  getMeetingBookings(status?: string): Promise<MeetingBooking[]>;
+  getMeetingBookingById(id: number): Promise<MeetingBooking | undefined>;
+  updateMeetingBookingStatus(id: number, status: string): Promise<MeetingBooking>;
+  getMeetingBookingByRequestId(requestId: string): Promise<MeetingBooking | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -348,6 +358,53 @@ export class DatabaseStorage implements IStorage {
         .innerJoin(users, eq(reports.submittedBy, users.id))
         .where(eq(projects.organizationId, organizationId));
     }
+  }
+
+  // Meeting booking operations
+  async createMeetingBooking(booking: InsertMeetingBooking): Promise<MeetingBooking> {
+    const [createdBooking] = await db
+      .insert(meetingBookings)
+      .values(booking)
+      .returning();
+    return createdBooking;
+  }
+
+  async getMeetingBookings(status?: string): Promise<MeetingBooking[]> {
+    const query = db.select().from(meetingBookings);
+    
+    if (status) {
+      return await query.where(eq(meetingBookings.status, status)).orderBy(desc(meetingBookings.createdAt));
+    }
+    
+    return await query.orderBy(desc(meetingBookings.createdAt));
+  }
+
+  async getMeetingBookingById(id: number): Promise<MeetingBooking | undefined> {
+    const [booking] = await db
+      .select()
+      .from(meetingBookings)
+      .where(eq(meetingBookings.id, id));
+    return booking;
+  }
+
+  async updateMeetingBookingStatus(id: number, status: string): Promise<MeetingBooking> {
+    const [updatedBooking] = await db
+      .update(meetingBookings)
+      .set({ 
+        status, 
+        updatedAt: new Date() 
+      })
+      .where(eq(meetingBookings.id, id))
+      .returning();
+    return updatedBooking;
+  }
+
+  async getMeetingBookingByRequestId(requestId: string): Promise<MeetingBooking | undefined> {
+    const [booking] = await db
+      .select()
+      .from(meetingBookings)
+      .where(eq(meetingBookings.requestId, requestId));
+    return booking;
   }
 }
 
