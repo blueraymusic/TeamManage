@@ -510,7 +510,7 @@ Best regards`;
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16 mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
+      <footer className="bg-slate-900 text-white py-16 mt-8 lg:mt-12 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             {/* Brand Section */}
