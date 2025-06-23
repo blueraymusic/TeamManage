@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle, AlertCircle, AlertTriangle } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,6 +14,7 @@ interface Message {
   senderId: number;
   recipientId: number;
   organizationId: number;
+  urgency: string;
   isRead: boolean;
   createdAt: string;
   senderName?: string;
@@ -30,6 +31,43 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const getUrgencyConfig = (urgency: string) => {
+    switch (urgency) {
+      case "low":
+        return {
+          color: "text-green-600",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-200",
+          icon: MessageCircle,
+          label: "Low Priority"
+        };
+      case "high":
+        return {
+          color: "text-orange-600",
+          bgColor: "bg-orange-50",
+          borderColor: "border-orange-200",
+          icon: AlertCircle,
+          label: "High Priority"
+        };
+      case "urgent":
+        return {
+          color: "text-red-600",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-200",
+          icon: AlertTriangle,
+          label: "Urgent"
+        };
+      default:
+        return {
+          color: "text-blue-600",
+          bgColor: "bg-blue-50",
+          borderColor: "border-blue-200",
+          icon: MessageCircle,
+          label: "Normal"
+        };
+    }
+  };
 
   const { data: messages = [], isLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages"],
@@ -176,6 +214,8 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 const isCurrentUser = message.senderId === user?.id;
                 const senderName = getUserName(message.senderId);
                 const senderRole = getUserRole(message.senderId);
+                const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
+                const UrgencyIcon = urgencyConfig.icon;
                 
                 return (
                   <div
@@ -183,23 +223,35 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                     className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-3`}
                   >
                     <div
-                      className={`max-w-[75%] rounded-xl p-3 shadow-sm ${
+                      className={`max-w-[75%] rounded-xl shadow-sm ${
                         isCurrentUser
                           ? "bg-blue-500 text-white rounded-br-sm"
-                          : "bg-gray-100 text-gray-900 rounded-bl-sm"
+                          : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-sm`
                       }`}
                     >
-                      {!isCurrentUser && (
-                        <div className="text-xs font-medium opacity-75 mb-1">
-                          {senderName} ({senderRole})
+                      {/* Urgency Indicator for received messages */}
+                      {!isCurrentUser && message.urgency !== "normal" && (
+                        <div className={`px-3 pt-2 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-xl rounded-bl-sm`}>
+                          <UrgencyIcon className={`h-3 w-3 ${urgencyConfig.color}`} />
+                          <span className={`text-xs font-medium ${urgencyConfig.color}`}>
+                            {urgencyConfig.label}
+                          </span>
                         </div>
                       )}
-                      <div className="break-words leading-relaxed">{message.content}</div>
-                      <div className={`text-xs mt-2 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-                        {new Date(message.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                      
+                      <div className="p-3">
+                        {!isCurrentUser && (
+                          <div className="text-xs font-medium opacity-75 mb-1">
+                            {senderName} ({senderRole})
+                          </div>
+                        )}
+                        <div className="break-words leading-relaxed">{message.content}</div>
+                        <div className={`text-xs mt-2 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
+                          {new Date(message.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>

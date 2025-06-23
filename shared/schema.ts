@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -61,6 +61,7 @@ export const messages = pgTable("messages", {
   senderId: integer("sender_id").references(() => users.id).notNull(),
   recipientId: integer("recipient_id").references(() => users.id).notNull(),
   organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  urgency: varchar("urgency", { length: 20 }).default("normal").notNull(), // low, normal, high, urgent
   isRead: boolean("is_read").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

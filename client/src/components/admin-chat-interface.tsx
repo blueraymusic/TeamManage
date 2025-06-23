@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText } from "lucide-react";
+import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,6 +15,7 @@ interface Message {
   senderId: number;
   recipientId: number;
   organizationId: number;
+  urgency: string;
   isRead: boolean;
   createdAt: string;
 }
@@ -31,6 +32,7 @@ export default function AdminChatInterface() {
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedUrgency, setSelectedUrgency] = useState<string>("normal");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
@@ -46,11 +48,12 @@ export default function AdminChatInterface() {
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: async (messageData: { content: string; recipientId: number }) => {
+    mutationFn: async (messageData: { content: string; recipientId: number; urgency?: string }) => {
       return await apiRequest("POST", "/api/messages", messageData);
     },
     onSuccess: () => {
       setNewMessage("");
+      setSelectedUrgency("normal");
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       scrollToBottom();
     },
@@ -110,6 +113,43 @@ export default function AdminChatInterface() {
     }
   };
 
+  const getUrgencyConfig = (urgency: string) => {
+    switch (urgency) {
+      case "low":
+        return {
+          color: "text-green-600",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-200",
+          icon: MessageCircle,
+          label: "Low Priority"
+        };
+      case "high":
+        return {
+          color: "text-orange-600",
+          bgColor: "bg-orange-50",
+          borderColor: "border-orange-200",
+          icon: AlertCircle,
+          label: "High Priority"
+        };
+      case "urgent":
+        return {
+          color: "text-red-600",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-200",
+          icon: AlertTriangle,
+          label: "Urgent"
+        };
+      default:
+        return {
+          color: "text-blue-600",
+          bgColor: "bg-blue-50",
+          borderColor: "border-blue-200",
+          icon: MessageCircle,
+          label: "Normal"
+        };
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if ((!newMessage.trim() && !selectedFile) || !selectedMemberId) return;
@@ -117,7 +157,6 @@ export default function AdminChatInterface() {
     let messageContent = newMessage;
     
     if (selectedFile) {
-      // For now, just send the filename - in a real app you'd upload the file first
       messageContent = `📎 Document: ${selectedFile.name}`;
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -126,6 +165,7 @@ export default function AdminChatInterface() {
     sendMessageMutation.mutate({
       content: messageContent,
       recipientId: selectedMemberId,
+      urgency: selectedUrgency,
     });
   };
 
@@ -238,6 +278,8 @@ export default function AdminChatInterface() {
                   selectedMessages.map(message => {
                     const isCurrentUser = message.senderId === user?.id;
                     const isDocument = message.content.includes('📎');
+                    const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
+                    const UrgencyIcon = urgencyConfig.icon;
                     
                     return (
                       <div
@@ -248,9 +290,18 @@ export default function AdminChatInterface() {
                           className={`max-w-[75%] rounded-2xl shadow-lg transition-all hover:shadow-xl ${
                             isCurrentUser
                               ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
-                              : "bg-white border border-gray-200 text-gray-900 rounded-bl-md"
+                              : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-md`
                           }`}
                         >
+                          {/* Urgency Indicator */}
+                          {!isCurrentUser && message.urgency !== "normal" && (
+                            <div className={`px-4 pt-3 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-2xl rounded-bl-md`}>
+                              <UrgencyIcon className={`h-4 w-4 ${urgencyConfig.color}`} />
+                              <span className={`text-xs font-medium ${urgencyConfig.color}`}>
+                                {urgencyConfig.label}
+                              </span>
+                            </div>
+                          )}
                           {isDocument ? (
                             <div className={`p-4 ${isCurrentUser ? "bg-blue-400/20" : "bg-gray-50"} rounded-t-2xl ${isCurrentUser ? "rounded-br-md" : "rounded-bl-md"}`}>
                               <div className="flex items-center gap-3">
@@ -298,6 +349,33 @@ export default function AdminChatInterface() {
 
               {/* Message Input */}
               <div className="p-4 border-t bg-gradient-to-r from-slate-50 to-gray-50">
+                {/* Urgency Selector */}
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Priority:</span>
+                  <div className="flex gap-1">
+                    {["low", "normal", "high", "urgent"].map((urgency) => {
+                      const config = getUrgencyConfig(urgency);
+                      const Icon = config.icon;
+                      return (
+                        <Button
+                          key={urgency}
+                          variant={selectedUrgency === urgency ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedUrgency(urgency)}
+                          className={`h-8 px-3 text-xs ${
+                            selectedUrgency === urgency 
+                              ? `${config.color} bg-white border-2 ${config.borderColor} shadow-md` 
+                              : "text-gray-600 border-gray-300 hover:border-gray-400"
+                          }`}
+                        >
+                          <Icon className="h-3 w-3 mr-1" />
+                          {config.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {selectedFile && (
                   <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200 flex items-center justify-between">
                     <div className="flex items-center gap-2">
