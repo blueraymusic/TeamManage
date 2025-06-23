@@ -53,7 +53,8 @@ import {
   Plus,
   Star,
   ArrowUpRight,
-  Activity
+  Activity,
+  Mail
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { useLogout } from "@/hooks/use-auth";
@@ -92,6 +93,10 @@ export default function AdminDashboard() {
 
   const { data: stats } = useQuery({
     queryKey: ["/api/dashboard/stats"],
+  });
+
+  const { data: organization } = useQuery({
+    queryKey: ["/api/organization"],
   });
 
   // Update project mutation
@@ -422,7 +427,7 @@ export default function AdminDashboard() {
                 <CardContent>
                   <Button 
                     onClick={() => {
-                      const orgData = organization;
+                      const orgData = organization as any;
                       if (orgData?.code) {
                         const subject = "Invitation to Join Organization - ADEL Platform";
                         const body = `Hello,
@@ -430,7 +435,7 @@ export default function AdminDashboard() {
 You are invited to join our organization on the ADEL platform.
 
 Organization Details:
-- Name: ${orgData.name}
+- Name: ${orgData.name || 'Our Organization'}
 - Join Code: ${orgData.code}
 
 To join:
@@ -442,12 +447,19 @@ To join:
 The ADEL platform helps NGOs manage projects, track progress, and collaborate effectively.
 
 Best regards,
-${orgData.name} Team`;
+${orgData.name || 'Organization'} Team`;
                         
                         window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                      } else {
+                        toast({
+                          title: "Error",
+                          description: "Organization data not loaded yet. Please try again.",
+                          variant: "destructive",
+                        });
                       }
                     }}
                     className="w-full"
+                    disabled={!organization}
                   >
                     <Mail className="w-4 h-4 mr-2" />
                     Send Invitation Email
