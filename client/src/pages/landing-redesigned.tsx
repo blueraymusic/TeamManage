@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,9 +24,55 @@ import {
   Rocket
 } from "lucide-react";
 
+// Hook for intersection observer
+function useIntersectionObserver(options = {}) {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsIntersecting(entry.isIntersecting);
+    }, {
+      threshold: 0.1,
+      rootMargin: '50px',
+      ...options
+    });
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  return [ref, isIntersecting] as const;
+}
+
 export default function LandingRedesigned() {
   const [showAuthModal, setShowAuthModal] = useState<"login" | "register" | null>(null);
   const [currentLang, setCurrentLang] = useState(getCurrentLanguage());
+  
+  // Refs for scroll animations
+  const heroResult = useIntersectionObserver();
+  const heroRef = heroResult[0];
+  const heroInView = heroResult[1];
+  
+  const featuresResult = useIntersectionObserver();
+  const featuresRef = featuresResult[0];
+  const featuresInView = featuresResult[1];
+  
+  const workflowResult = useIntersectionObserver();
+  const workflowRef = workflowResult[0];
+  const workflowInView = workflowResult[1];
+  
+  const ctaResult = useIntersectionObserver();
+  const ctaRef = ctaResult[0];
+  const ctaInView = ctaResult[1];
 
   useEffect(() => {
     const handleLanguageChange = () => {
@@ -148,10 +194,12 @@ Best regards,
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32 transition-all duration-700 ease-in-out">
+      <section ref={heroRef} className="relative py-24 lg:py-32 transition-all duration-700 ease-in-out">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10 transition-all duration-700"></div>
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="text-center max-w-5xl mx-auto animate-in fade-in duration-1000">
+          <div className={`text-center max-w-5xl mx-auto transition-all duration-1000 ${
+            heroInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <div className="mb-8">
               <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 text-lg font-medium mb-8 inline-block">
                 NGO Project Management Platform
@@ -206,9 +254,11 @@ Best regards,
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 lg:py-32 mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
+      <section ref={featuresRef} id="features" className="py-24 lg:py-32 mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 transition-all duration-1000 delay-200 ${
+            featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               {t('features.title')}
             </h2>
@@ -217,7 +267,9 @@ Best regards,
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-300 ${
+            featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             {/* Project Management */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <CardContent className="p-8">
@@ -296,9 +348,11 @@ Best regards,
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-gradient-to-r from-slate-50 to-blue-50 transition-all duration-700 ease-in-out">
+      <section ref={workflowRef} id="how-it-works" className="py-24 lg:py-32 mt-16 lg:mt-20 bg-gradient-to-r from-slate-50 to-blue-50 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 transition-all duration-1000 delay-200 ${
+            workflowInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               {t('workflow.title')}
             </h2>
@@ -307,7 +361,9 @@ Best regards,
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className={`grid grid-cols-1 lg:grid-cols-3 gap-12 transition-all duration-1000 delay-400 ${
+            workflowInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <div className="text-center">
               <div className="relative mb-8">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-2xl mx-auto flex items-center justify-center mb-6">
@@ -357,9 +413,11 @@ Best regards,
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out">
+      <section ref={ctaRef} className="py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 xl:px-12">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-8 lg:p-12 text-center text-white max-w-5xl mx-auto">
+          <div className={`bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl p-8 lg:p-12 text-center text-white max-w-5xl mx-auto transition-all duration-1000 ${
+            ctaInView ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-95'
+          }`}>
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
               Ready to Transform Your NGO?
             </h2>
