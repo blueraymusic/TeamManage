@@ -42,7 +42,7 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
 
   const sendMessageMutation = useMutation({
     mutationFn: async (messageData: { content: string; recipientId: number }) => {
-      return await apiRequest("/api/messages", "POST", messageData);
+      return await apiRequest("POST", "/api/messages", messageData);
     },
     onSuccess: () => {
       setNewMessage("");
