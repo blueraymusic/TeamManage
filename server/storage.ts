@@ -252,6 +252,12 @@ export class DatabaseStorage implements IStorage {
 
   // Bulk operations
   async bulkDeleteProjects(projectIds: number[], organizationId: number): Promise<void> {
+    // First delete all reports associated with these projects
+    await db
+      .delete(reports)
+      .where(inArray(reports.projectId, projectIds));
+    
+    // Then delete the projects
     await db
       .delete(projects)
       .where(
