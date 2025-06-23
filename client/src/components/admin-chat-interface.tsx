@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, User } from "lucide-react";
+import { Send, MessageCircle, User, ArrowLeft } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -150,26 +150,35 @@ export default function AdminChatInterface() {
                   <button
                     key={officer.id}
                     onClick={() => setSelectedMemberId(officer.id)}
-                    className={`w-full p-3 text-left hover:bg-gray-50 border-b transition-colors ${
-                      isSelected ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
+                    className={`w-full p-4 text-left hover:bg-gray-100 border-b transition-all duration-200 ${
+                      isSelected 
+                        ? "bg-blue-50 border-l-4 border-l-blue-500 shadow-sm" 
+                        : "hover:shadow-sm"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium text-sm">
-                          {getMemberName(officer)}
-                        </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium ${
+                          isSelected ? "bg-blue-500" : "bg-gray-400"
+                        }`}>
+                          {getMemberName(officer).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <span className="font-medium text-sm text-gray-900">
+                            {getMemberName(officer)}
+                          </span>
+                          <div className="text-xs text-gray-500">Officer</div>
+                        </div>
                       </div>
                       {unreadCount > 0 && (
-                        <Badge variant="destructive" className="text-xs">
+                        <Badge variant="destructive" className="text-xs min-w-[20px] h-5">
                           {unreadCount}
                         </Badge>
                       )}
                     </div>
                     {lastMessage && (
-                      <div className="mt-1 text-xs text-gray-500 truncate">
-                        {lastMessage.content}
+                      <div className="text-xs text-gray-600 truncate pl-13">
+                        {lastMessage.senderId === user?.id ? "You: " : ""}{lastMessage.content}
                       </div>
                     )}
                   </button>
@@ -186,6 +195,14 @@ export default function AdminChatInterface() {
           <>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedMemberId(null)}
+                  className="p-1 h-8 w-8"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
                 <MessageCircle className="h-5 w-5" />
                 Chat with {getMemberName(officers.find(o => o.id === selectedMemberId)!)}
               </CardTitle>
