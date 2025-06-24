@@ -208,7 +208,7 @@ export default function AdminChatInterface() {
   return (
     <div className="flex h-[600px] gap-4">
       {/* Conversations List */}
-      <Card className="w-80">
+      <Card className="w-80 h-fit">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
@@ -221,7 +221,7 @@ export default function AdminChatInterface() {
               No officers in organization
             </div>
           ) : (
-            <>
+            <div>
               {/* Search Box */}
               <div className="p-3 border-b">
                 <div className="relative">
@@ -306,7 +306,7 @@ export default function AdminChatInterface() {
                   )}
                 </div>
               </div>
-            </>
+            </div>
           )}
         </CardContent>
       </Card>
