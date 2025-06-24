@@ -162,6 +162,8 @@ export class DatabaseStorage implements IStorage {
         reviewNotes: reports.reviewNotes,
         submittedAt: reports.submittedAt,
         reviewedAt: reports.reviewedAt,
+        projectName: projects.name,
+        createdAt: reports.submittedAt,
       })
       .from(reports)
       .innerJoin(projects, eq(reports.projectId, projects.id))

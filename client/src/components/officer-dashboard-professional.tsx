@@ -262,10 +262,10 @@ export default function OfficerDashboard() {
                 <ReportForm onSuccess={() => {}} />
               </div>
 
-              {/* Reports List - Shows 3 items at a time with scroll */}
-              <div className="overflow-y-auto" style={{ maxHeight: '240px' }}>
-                <div className="grid grid-cols-1 gap-4">
-                  {(reports as any)?.map((report: any) => (
+              {/* Reports List - Shows max 3 items with scroll */}
+              <div className="overflow-y-auto" style={{ maxHeight: '180px' }}>
+                <div className="grid grid-cols-1 gap-3">
+                  {(reports as any)?.slice(0, 3).map((report: any) => (
                     <Card key={report.id} className="bg-white border border-slate-200 shadow-sm">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between">
