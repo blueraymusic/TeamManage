@@ -8,6 +8,8 @@ import Landing from "@/pages/landing-redesigned";
 import Dashboard from "@/pages/dashboard";
 import OwnerBookings from "@/pages/owner-bookings";
 import NotFound from "@/pages/not-found";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
 import { useEffect } from "react";
 import { initializeLanguage } from "@/lib/i18n";
 
@@ -29,7 +31,12 @@ function Router() {
   return (
     <Switch>
       {!isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/owner-bookings" component={OwnerBookings} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+        </>
       ) : (
         <>
           <Route path="/" component={Dashboard} />

@@ -1,8 +1,6 @@
 import AdelLogo from "@/components/adel-logo";
-import { useLanguage } from "@/lib/i18n";
 
 export default function PrivacyPolicy() {
-  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
