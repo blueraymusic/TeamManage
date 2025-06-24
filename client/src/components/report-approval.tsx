@@ -33,6 +33,21 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [reviewNotes, setReviewNotes] = useState("");
+  
+  // Fetch organization members to get officer names
+  const { data: organizationMembers = [] } = useQuery({
+    queryKey: ["/api/organization/members"],
+  });
+  
+  // Function to get officer name by ID
+  const getOfficerName = (userId: number) => {
+    const officer = organizationMembers.find((member: any) => member.id === userId);
+    if (officer) {
+      const fullName = `${officer.firstName || ''} ${officer.lastName || ''}`.trim();
+      return fullName || officer.email;
+    }
+    return `User #${userId}`;
+  };
 
   const handleDownloadFile = async (file: any) => {
     try {
@@ -282,6 +297,21 @@ export default function ReportApproval() {
   const { data: pendingReports, isLoading: pendingLoading } = useQuery({
     queryKey: ["/api/reports/pending"],
   });
+  
+  // Fetch organization members to get officer names
+  const { data: organizationMembers = [] } = useQuery({
+    queryKey: ["/api/organization/members"],
+  });
+  
+  // Function to get officer name by ID
+  const getOfficerName = (userId: number) => {
+    const officer = organizationMembers.find((member: any) => member.id === userId);
+    if (officer) {
+      const fullName = `${officer.firstName || ''} ${officer.lastName || ''}`.trim();
+      return fullName || officer.email;
+    }
+    return `User #${userId}`;
+  };
 
   const filteredReports = allReports?.filter((report: any) => {
     if (statusFilter === "all") return true;
