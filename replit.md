@@ -129,7 +129,8 @@ Changelog:
 - June 24, 2025. Enhanced footer with social media links and extended Quick Links (Pricing, FAQ, Support, Documentation)
 - June 24, 2025. Created Privacy Policy and Terms of Service pages with professional content and routing
 - June 24, 2025. Enhanced legal pages with modern design featuring hero sections, color-coded cards, glassmorphism effects, and professional iconography
-- June 24, 2025. Completely redesigned Privacy Policy and Terms of Service with dark theme, animated backgrounds, floating effects, and smooth transitions
+- June 24, 2025. Updated legal pages to match main site theme with light gradient backgrounds instead of dark theme
+- June 24, 2025. Redesigned contact sections in legal pages with enhanced card-based layout, availability indicators, and improved visual hierarchy
 ```
 
 ## User Preferences

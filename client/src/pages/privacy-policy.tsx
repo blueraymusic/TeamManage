@@ -193,18 +193,30 @@ export default function PrivacyPolicy() {
                   <Mail className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
-                  <p className="text-gray-700 leading-relaxed mb-6">
-                    Have questions about this Privacy Policy or our data practices? We're here to help and ensure complete transparency about how we handle your information.
-                  </p>
-                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-6 text-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div className="flex items-center space-x-3">
-                      <Mail className="w-5 h-5 animate-pulse" />
-                      <a href="mailto:sissokoadel057@gmail.com" className="text-white hover:underline font-medium">
-                        sissokoadel057@gmail.com
-                      </a>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
+                  <div className="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-xl p-8 border border-indigo-200">
+                    <p className="text-gray-700 leading-relaxed text-lg mb-8">
+                      Have questions about this Privacy Policy or our data practices? We're here to help and ensure complete transparency about how we handle your information.
+                    </p>
+                    <div className="bg-white rounded-lg p-6 border border-indigo-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                            <Mail className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <a href="mailto:sissokoadel057@gmail.com" className="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200">
+                              sissokoadel057@gmail.com
+                            </a>
+                            <p className="text-gray-600 text-sm mt-1">We typically respond within 24 hours</p>
+                          </div>
+                        </div>
+                        <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span>Available</span>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-blue-100 text-sm mt-2">We typically respond within 24 hours</p>
                   </div>
                 </div>
               </div>
