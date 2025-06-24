@@ -123,9 +123,9 @@ function ProjectFormDialog({ project, onSuccess }: ProjectFormProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-8">
-          <Plus className="w-3 h-3 mr-1" />
-          {project ? "Edit Project" : "Create New Project"}
+        <Button size="sm" className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium">
+          <Plus className="w-4 h-4 mr-2" />
+          {project ? "Edit Project" : "New Project"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

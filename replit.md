@@ -137,6 +137,7 @@ Changelog:
 - June 25, 2025. Implemented scrollable conversations list with search functionality for admin chat interface
 - June 25, 2025. Optimized conversations display to show exactly 7 conversations at a time with matching layout
 - June 25, 2025. Adjusted conversations to show 7 full conversations with 8th partially visible for better scrolling indication
+- June 25, 2025. Enhanced key action buttons (Add Report, New Project) with improved visibility, sizing, and color-coding for better user experience
 ```
 
 ## User Preferences

@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Upload, X, FileText, Image, Paperclip } from "lucide-react";
+import { Upload, X, FileText, Image, Paperclip, Plus } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const reportSchema = z.object({
   title: z.string().min(3, "Report title must be at least 3 characters"),
@@ -24,6 +25,7 @@ interface ReportFormProps {
 }
 
 export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -74,6 +76,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       });
       form.reset();
       setSelectedFiles([]);
+      setIsOpen(false);
       onSuccess?.();
     },
     onError: (error) => {
@@ -122,8 +125,23 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+    <>
+      <Button 
+        onClick={() => setIsOpen(true)}
+        className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white font-medium"
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Add Report
+      </Button>
+      
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Submit New Report</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 p-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div>
           <Label htmlFor="title">Report Title *</Label>
           <Input
@@ -281,5 +299,8 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
         </div>
       </form>
     </div>
+  </DialogContent>
+</Dialog>
+    </>
   );
 }
