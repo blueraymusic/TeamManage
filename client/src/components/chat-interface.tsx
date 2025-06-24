@@ -420,7 +420,7 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           )}
           
           {/* File Upload Status */}
-          {selectedFile ? (
+          {selectedFile && (
             <div className="mb-3 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -440,21 +440,6 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 </Button>
               </div>
             </div>
-          ) : (
-            <div className="mb-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-              <Button
-                type="button"
-                onClick={() => {
-                  console.log('Main Attach File button clicked');
-                  fileInputRef.current?.click();
-                }}
-                disabled={sendMessageMutation.isPending || isUploading}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg shadow-sm"
-              >
-                <Paperclip className="h-4 w-4 mr-2" />
-                Attach File
-              </Button>
-            </div>
           )}
           
           <form onSubmit={handleSendMessage} className="flex gap-3">
@@ -473,6 +458,19 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
                 className="hidden"
               />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  console.log('Paperclip attach button clicked');
+                  fileInputRef.current?.click();
+                }}
+                disabled={sendMessageMutation.isPending || isUploading}
+                className="w-12 h-10 border-2 border-blue-500 bg-blue-50 text-blue-600 hover:text-blue-700 hover:bg-blue-100 hover:border-blue-600 shadow-sm"
+                title="Click to attach file"
+              >
+                <Paperclip className="h-5 w-5" />
+              </Button>
             </div>
             <Button
               type="submit"
