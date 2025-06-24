@@ -325,6 +325,12 @@ export default function ReportApproval() {
     return `User #${userId}`;
   };
 
+  // Function to get project name by ID
+  const getProjectName = (projectId: number) => {
+    const project = projects.find((proj: any) => proj.id === projectId);
+    return project ? project.name : `Project #${projectId}`;
+  };
+
   const filteredReports = allReports?.filter((report: any) => {
     if (statusFilter === "all") return true;
     return report.status === statusFilter;
