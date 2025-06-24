@@ -13,11 +13,12 @@ export default function OverdueNotifications({ className = "" }: OverdueNotifica
     queryKey: ["/api/projects"],
   });
 
-  // Filter overdue projects that are still active
+  // Filter overdue projects that are still active (not completed or cancelled)
   const overdueProjects = (projects as any)?.filter((project: any) => 
     project.isOverdue && 
     project.status !== 'completed' && 
-    project.status !== 'cancelled'
+    project.status !== 'cancelled' &&
+    (project.progress || 0) < 100  // Also check progress - if 100% then consider completed
   ) || [];
 
   if (overdueProjects.length === 0) {

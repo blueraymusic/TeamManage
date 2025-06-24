@@ -188,7 +188,10 @@ export default function OfficerDashboard() {
                   Projects
                   {(() => {
                     const overdueCount = (projects as any)?.filter((p: any) => 
-                      p.isOverdue && p.status !== 'completed' && p.status !== 'cancelled'
+                      p.isOverdue && 
+                      p.status !== 'completed' && 
+                      p.status !== 'cancelled' &&
+                      (p.progress || 0) < 100
                     ).length || 0;
                     return overdueCount > 0 ? (
                       <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
