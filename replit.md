@@ -135,7 +135,8 @@ Changelog:
 - June 25, 2025. Implemented scrollable team members list with 4 visible members at a time for better organization management
 - June 25, 2025. Added search functionality to team members list for quick member lookup by name or email
 - June 25, 2025. Implemented scrollable conversations list with search functionality for admin chat interface
-- June 25, 2025. Optimized conversations display to show exactly 7 conversations at a time with proper scrolling and matching layout
+- June 25, 2025. Optimized conversations display to show exactly 7 conversations at a time with matching layout
+- June 25, 2025. Adjusted conversations to show 7 full conversations with 8th partially visible for better scrolling indication
 ```
 
 ## User Preferences
