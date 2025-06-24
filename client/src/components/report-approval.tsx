@@ -184,8 +184,9 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
               </div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">Project ID:</span> #{report.projectId}
+              <div className="flex items-center text-sm text-gray-600">
+                <FileText className="w-4 h-4 mr-2" />
+                <span>Project: {getProjectName(report.projectId)}</span>
               </div>
               {report.reviewedAt && (
                 <div className="text-sm text-gray-600">
