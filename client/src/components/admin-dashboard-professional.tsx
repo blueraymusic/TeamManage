@@ -66,6 +66,7 @@ import AdminChatInterface from "./admin-chat-interface";
 import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 import MeetingBookingsManager from "./meeting-bookings-manager";
 import AdelLogo from "./adel-logo";
+import DeadlineBadge from "./deadline-badge";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -383,6 +384,16 @@ export default function AdminDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm text-slate-600">{project.description}</p>
+                          <div className="flex items-center gap-2">
+                            <DeadlineBadge project={project} />
+                            <Badge variant={project.status === 'active' ? 'default' : project.status === 'overdue' ? 'destructive' : 'secondary'}>
+                              {project.status}
+                            </Badge>
+                          </div>
+                        </div>
+                        
                         <div>
                           <div className="flex justify-between text-sm mb-1">
                             <span className="text-slate-600">Progress</span>

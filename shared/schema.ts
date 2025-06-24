@@ -31,8 +31,11 @@ export const projects = pgTable("projects", {
   budget: decimal("budget", { precision: 10, scale: 2 }),
   budgetUsed: decimal("budget_used", { precision: 10, scale: 2 }).default("0"), // Amount spent so far
   deadline: timestamp("deadline"),
+  daysLeft: integer("days_left"),
+  isOverdue: boolean("is_overdue").default(false),
+  overdueNotificationSent: boolean("overdue_notification_sent").default(false),
   goals: text("goals"),
-  status: text("status").notNull().default("active"), // 'active', 'on-hold', 'completed', 'cancelled'
+  status: text("status").notNull().default("active"), // 'active', 'on-hold', 'completed', 'cancelled', 'overdue'
   progress: integer("progress").default(0), // Progress percentage 0-100
   organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   createdBy: integer("created_by").references(() => users.id).notNull(),
