@@ -675,8 +675,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const uploadsDir = path.resolve(process.cwd(), "uploads");
       const filePath = path.join(uploadsDir, filename);
       
-      console.log("File download request - filename:", filename);
+      console.log("=== FILE DOWNLOAD REQUEST ===");
+      console.log("Filename:", filename);
       console.log("File path:", filePath);
+      console.log("User ID:", req.session.userId);
       console.log("User role:", req.session.userRole);
       console.log("Organization ID:", req.session.organizationId);
       
@@ -691,7 +693,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Found messages for organization:", messages.length);
       
       const messageWithFile = messages.find(msg => msg.fileUrl === `/api/files/${filename}`);
+      console.log("Looking for message with file URL:", `/api/files/${filename}`);
+      console.log("Message with file found:", messageWithFile ? 'Yes' : 'No');
+      if (messageWithFile) {
+        console.log("File message details:", {
+          id: messageWithFile.id,
+          senderId: messageWithFile.senderId,
+          recipientId: messageWithFile.recipientId,
+          content: messageWithFile.content
+        });
+      }
+      
       if (!messageWithFile) {
+        console.log("File access denied - message not found");
         return res.status(403).json({ message: "File access denied" });
       }
       
