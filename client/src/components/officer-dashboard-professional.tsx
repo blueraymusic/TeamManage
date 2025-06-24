@@ -33,9 +33,12 @@ import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function OfficerDashboard() {
   const logout = useLogout();
+  const queryClient = useQueryClient();
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
@@ -162,7 +165,19 @@ export default function OfficerDashboard() {
 
         {/* Simple Tabs */}
         <div className="bg-white border border-gray-200 rounded-lg">
-          <Tabs defaultValue="overview" className="w-full">
+          <Tabs defaultValue="overview" className="w-full" onValueChange={(value) => {
+            if (value === "messages") {
+              // Mark all unread messages as read when messages tab is opened
+              setTimeout(() => {
+                apiRequest('PATCH', '/api/messages/mark-all-read', {})
+                  .then(() => {
+                    queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+                    queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+                  })
+                  .catch(console.error);
+              }, 100);
+            }
+          }}>
             <div className="border-b border-gray-200 px-4">
               <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
@@ -302,7 +317,10 @@ export default function OfficerDashboard() {
             </TabsContent>
 
             <TabsContent value="messages" className="p-6">
-              <ChatInterface />
+              <ChatInterface onTabOpen={() => {
+                // Mark messages as read when tab is opened
+                queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+              }} />
             </TabsContent>
           </Tabs>
         </div>

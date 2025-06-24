@@ -54,6 +54,7 @@ export interface IStorage {
   getAllMessagesForOrganization(organizationId: number): Promise<Message[]>;
   getUnreadMessagesForUser(userId: number, organizationId: number): Promise<Message[]>;
   markMessageAsRead(messageId: number): Promise<void>;
+  markAllMessagesAsReadForUser(userId: number, organizationId: number): Promise<void>;
 
   // Bulk operations
   bulkDeleteProjects(projectIds: number[], organizationId: number): Promise<void>;
@@ -263,6 +264,19 @@ export class DatabaseStorage implements IStorage {
       .update(messages)
       .set({ isRead: true })
       .where(eq(messages.id, messageId));
+  }
+
+  async markAllMessagesAsReadForUser(userId: number, organizationId: number): Promise<void> {
+    await db
+      .update(messages)
+      .set({ isRead: true })
+      .where(
+        and(
+          eq(messages.recipientId, userId),
+          eq(messages.organizationId, organizationId),
+          eq(messages.isRead, false)
+        )
+      );
   }
 
   // Bulk operations

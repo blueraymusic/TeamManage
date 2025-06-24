@@ -820,6 +820,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mark all messages as read for current user
+  app.patch("/api/messages/mark-all-read", requireAuth, async (req: any, res) => {
+    try {
+      await storage.markAllMessagesAsReadForUser(req.session.userId, req.session.organizationId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Mark all messages as read error:", error);
+      res.status(500).json({ message: "Failed to mark all messages as read" });
+    }
+  });
+
   // Get all messages for current user
   app.get("/api/messages", requireAuth, async (req: any, res) => {
     try {
