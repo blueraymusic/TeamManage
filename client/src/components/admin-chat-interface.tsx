@@ -223,21 +223,21 @@ export default function AdminChatInterface() {
           ) : (
             <>
               {/* Search Box */}
-              <div className="p-4 border-b">
+              <div className="p-3 border-b">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder="Search conversations..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 h-9"
                   />
                 </div>
               </div>
               
               {/* Conversations List */}
-              <div className="flex-1 overflow-y-auto max-h-80">
-                <div className="space-y-1">
+              <div className="flex-1 overflow-y-auto">
+                <div>
                   {officers
                     .filter(officer => {
                       if (!searchTerm) return true;
@@ -255,21 +255,21 @@ export default function AdminChatInterface() {
                   <button
                     key={officer.id}
                     onClick={() => setSelectedMemberId(officer.id)}
-                    className={`w-full p-4 text-left hover:bg-gray-100 border-b transition-all duration-200 ${
+                    className={`w-full p-3 text-left hover:bg-gray-100 border-b transition-all duration-200 ${
                       isSelected 
                         ? "bg-blue-50 border-l-4 border-l-blue-500 shadow-sm" 
                         : "hover:shadow-sm"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium ${
+                      <div className="flex items-center gap-2">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium ${
                           isSelected ? "bg-blue-500" : "bg-gray-400"
                         }`}>
                           {getMemberName(officer).charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <span className="font-medium text-sm text-gray-900">
+                          <span className="font-medium text-xs text-gray-900">
                             {getMemberName(officer)}
                           </span>
                           <div className="text-xs text-gray-500">Officer</div>
@@ -282,7 +282,7 @@ export default function AdminChatInterface() {
                       )}
                     </div>
                     {lastMessage && (
-                      <div className="text-xs text-gray-600 truncate pl-13">
+                      <div className="text-xs text-gray-600 truncate pl-10 mt-1">
                         {lastMessage.senderId === user?.id ? "You: " : ""}{lastMessage.content}
                       </div>
                     )}
