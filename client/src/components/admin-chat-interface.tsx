@@ -76,6 +76,8 @@ export default function AdminChatInterface() {
 
   // Get officers only
   const officers = organizationMembers.filter(member => member.role === "officer");
+  const selectedRecipient = officers.find(o => o.id === selectedMemberId);
+  const isUploading = sendMessageMutation.isPending;
 
   // Get messages for selected conversation
   const selectedMessages = selectedMemberId 
@@ -103,6 +105,46 @@ export default function AdminChatInterface() {
     return conversation.length > 0 
       ? conversation.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
       : null;
+  };
+
+  const getMemberName = (member: Member) => {
+    return member ? `${member.firstName || ''} ${member.lastName || ''}`.trim() || member.email : '';
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedMemberId || (!newMessage.trim() && !selectedFile)) return;
+
+    const formData = new FormData();
+    formData.append('recipientId', selectedMemberId.toString());
+    formData.append('content', newMessage);
+    formData.append('urgency', selectedUrgency);
+    if (selectedFile) {
+      formData.append('file', selectedFile);
+    }
+
+    sendMessageMutation.mutate(formData, {
+      onSuccess: () => {
+        setNewMessage("");
+        setSelectedFile(null);
+        setSelectedUrgency("normal");
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send message",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    setNewMessage("");
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,28 +192,7 @@ export default function AdminChatInterface() {
     }
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if ((!newMessage.trim() && !selectedFile) || !selectedMemberId) return;
 
-    let messageContent = newMessage;
-    
-    if (selectedFile) {
-      messageContent = `📎 Document: ${selectedFile.name}`;
-      setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-
-    sendMessageMutation.mutate({
-      content: messageContent,
-      recipientId: selectedMemberId,
-      urgency: selectedUrgency,
-    });
-  };
-
-  const getMemberName = (member: Member) => {
-    return `${member.firstName || ""} ${member.lastName || ""}`.trim() || member.email;
-  };
 
   if (messagesLoading) {
     return (
@@ -352,7 +373,7 @@ export default function AdminChatInterface() {
                         size="sm"
                         onClick={clearSelectedFile}
                       >
-                        <Download className="h-4 w-4" />
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
                   )}
