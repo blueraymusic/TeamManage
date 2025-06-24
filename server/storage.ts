@@ -162,6 +162,20 @@ export class DatabaseStorage implements IStorage {
       updates.overdueNotificationSent = false; // Reset notification flag when deadline changes
     }
 
+    // Auto-update status based on progress and overdue state
+    if (updates.progress !== undefined) {
+      // Get current project data first
+      const [currentProject] = await db.select().from(projects).where(eq(projects.id, id));
+      
+      if (updates.progress >= 100) {
+        updates.status = 'completed';
+      } else if (currentProject?.isOverdue && updates.progress < 100) {
+        updates.status = 'overdue';
+      } else if (updates.progress < 100 && updates.status === 'completed') {
+        updates.status = 'active'; // Revert from completed to active if progress drops
+      }
+    }
+
     const [updated] = await db.update(projects).set({...updates, updatedAt: new Date()}).where(eq(projects.id, id)).returning();
     return updated;
   }
