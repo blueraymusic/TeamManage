@@ -21,7 +21,9 @@ import {
   User,
   Shield,
   Play,
-  Rocket
+  Rocket,
+  X,
+  Send
 } from "lucide-react";
 
 // Hook for intersection observer
@@ -56,6 +58,16 @@ function useIntersectionObserver(options = {}) {
 export default function LandingRedesigned() {
   const [showAuthModal, setShowAuthModal] = useState<"login" | "register" | null>(null);
   const [currentLang, setCurrentLang] = useState(getCurrentLanguage());
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    name: '',
+    email: '',
+    organization: '',
+    phone: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   
   // Refs for scroll animations
   const heroResult = useIntersectionObserver();
@@ -82,6 +94,31 @@ export default function LandingRedesigned() {
     window.addEventListener('languageChanged', handleLanguageChange);
     return () => window.removeEventListener('languageChanged', handleLanguageChange);
   }, []);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setSubmitted(true);
+    setIsSubmitting(false);
+    setContactFormData({ name: '', email: '', organization: '', phone: '', message: '' });
+    
+    // Reset success message and close modal after 2 seconds
+    setTimeout(() => {
+      setSubmitted(false);
+      setShowContactModal(false);
+    }, 2000);
+  };
+
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContactFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -478,25 +515,7 @@ Best regards,
             {/* Secondary Contact Button */}
             <div className="mt-8">
               <Button
-                onClick={() => {
-                  const subject = "Contact Request - ADEL Platform";
-                  const body = `Hello,
-
-I would like to get in touch regarding the ADEL platform.
-
-My Information:
-- Name: [Your name]
-- Organization: [Your organization]
-- Email: [Your email]
-- Phone: [Your phone number]
-
-How can we help you?
-[Please describe your inquiry or interest]
-
-Best regards`;
-                  
-                  window.location.href = `mailto:sissokoadel057@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                }}
+                onClick={() => setShowContactModal(true)}
                 variant="outline"
                 size="lg" 
                 className="bg-transparent border-2 border-white/50 text-black hover:text-white hover:bg-white/20 transition-all duration-300 px-8 py-3 font-semibold rounded-xl"
@@ -605,21 +624,21 @@ Best regards`;
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-blue-400" />
-                  <a 
-                    href="mailto:sissokoadel057@gmail.com"
+                  <button 
+                    onClick={() => setShowContactModal(true)}
                     className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                   >
-                    sissokoadel057@gmail.com
-                  </a>
+                    Contact Support
+                  </button>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CalendarDays className="w-5 h-5 text-blue-400" />
-                  <a 
-                    href="mailto:sissokoadel057@gmail.com?subject=Meeting Request - ADEL Platform"
+                  <button 
+                    onClick={() => setShowContactModal(true)}
                     className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                   >
                     Schedule a Meeting
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -655,6 +674,130 @@ Best regards`;
 
       {/* Auth Modals */}
       <AuthModals showModal={showAuthModal} onClose={() => setShowAuthModal(null)} />
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Contact Us</h3>
+                <button
+                  onClick={() => setShowContactModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              {submitted ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Send className="w-8 h-8 text-white" />
+                  </div>
+                  <h4 className="text-xl font-semibold text-green-800 mb-2">Message Sent!</h4>
+                  <p className="text-green-600">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="modal-name" className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-name"
+                        name="name"
+                        required
+                        value={contactFormData.name}
+                        onChange={handleContactChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2">
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        id="modal-email"
+                        name="email"
+                        required
+                        value={contactFormData.email}
+                        onChange={handleContactChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="modal-organization" className="block text-sm font-medium text-gray-700 mb-2">
+                      Organization
+                    </label>
+                    <input
+                      type="text"
+                      id="modal-organization"
+                      name="organization"
+                      value={contactFormData.organization}
+                      onChange={handleContactChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                      placeholder="Your NGO name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="modal-phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="modal-phone"
+                      name="phone"
+                      value={contactFormData.phone}
+                      onChange={handleContactChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                      placeholder="+1 (555) 123-4567"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="modal-message" className="block text-sm font-medium text-gray-700 mb-2">
+                      Message *
+                    </label>
+                    <textarea
+                      id="modal-message"
+                      name="message"
+                      required
+                      rows={4}
+                      value={contactFormData.message}
+                      onChange={handleContactChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                      placeholder="Tell us about your organization and how we can help..."
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Send Message</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

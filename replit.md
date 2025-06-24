@@ -131,6 +131,7 @@ Changelog:
 - June 24, 2025. Enhanced legal pages with modern design featuring hero sections, color-coded cards, glassmorphism effects, and professional iconography
 - June 24, 2025. Updated legal pages to match main site theme with light gradient backgrounds instead of dark theme
 - June 24, 2025. Redesigned contact sections in legal pages with enhanced card-based layout, availability indicators, and improved visual hierarchy
+- June 24, 2025. Replaced all mailto links with popup contact forms across landing, Privacy Policy, and Terms of Service pages for better user experience
 ```
 
 ## User Preferences
