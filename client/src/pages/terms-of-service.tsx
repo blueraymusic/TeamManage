@@ -61,11 +61,13 @@ export default function TermsOfService() {
                     <Gavel className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Agreement to Terms</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Agreement to Terms</h2>
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-                      <p className="text-gray-700 leading-relaxed text-lg">
-                        By accessing and using ADEL's project management platform, you agree to be bound by these Terms of Service. 
-                        If you disagree with any part of these terms, you may not access the service.
+                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
+                        By accessing and using ADEL's project management platform, you agree to be bound by these Terms of Service.
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        These terms ensure a fair and secure environment for all NGOs using our platform. If you disagree with any part of these terms, please contact us before using the service.
                       </p>
                     </div>
                   </div>
@@ -79,12 +81,29 @@ export default function TermsOfService() {
                     <FileText className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Description of Service</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Description of Service</h2>
                     <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
-                      <p className="text-gray-700 leading-relaxed text-lg">
-                        ADEL provides a web-based project management platform specifically designed for NGOs and non-profit organizations. 
-                        Our service includes project tracking, team collaboration, report management, and communication tools.
+                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
+                        ADEL provides a comprehensive web-based project management platform specifically designed for NGOs and non-profit organizations.
                       </p>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                          <span className="text-gray-700">Project tracking</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                          <span className="text-gray-700">Team collaboration</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                          <span className="text-gray-700">Report management</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                          <span className="text-gray-700">Communication tools</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -99,30 +118,31 @@ export default function TermsOfService() {
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">User Responsibilities</h2>
                     <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200">
-                      <ul className="space-y-3">
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Provide accurate and complete registration information</span>
+                      <p className="text-gray-700 mb-4">As a user of ADEL, you agree to:</p>
+                      <ul className="space-y-4">
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Provide accurate and complete registration information</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Maintain the security of your account credentials</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Maintain the security of your account credentials</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Use the service only for lawful purposes</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Use the service only for lawful purposes and NGO activities</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Respect other users and maintain professional conduct</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Respect other users and maintain professional conduct</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Not attempt to compromise the security of our platform</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Never attempt to compromise the security of our platform</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Comply with all applicable laws and regulations</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Comply with all applicable laws and regulations</span>
                         </li>
                       </ul>
                     </div>
@@ -183,17 +203,18 @@ export default function TermsOfService() {
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Information</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
                     <p className="text-gray-700 leading-relaxed mb-6">
-                      For questions about these Terms of Service, please contact us:
+                      Need clarification on these Terms of Service? Our team is available to help you understand how these terms apply to your NGO's specific use case.
                     </p>
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                       <div className="flex items-center space-x-3">
-                        <Mail className="w-5 h-5" />
+                        <Mail className="w-5 h-5 animate-pulse" />
                         <a href="mailto:sissokoadel057@gmail.com" className="text-white hover:underline font-medium">
                           sissokoadel057@gmail.com
                         </a>
                       </div>
+                      <p className="text-blue-100 text-sm mt-2">Professional support for all legal inquiries</p>
                     </div>
                   </div>
                 </div>

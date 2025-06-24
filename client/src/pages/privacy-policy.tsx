@@ -61,11 +61,15 @@ export default function PrivacyPolicy() {
                     <Eye className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                      At ADEL, we are committed to protecting your privacy and ensuring the security of your personal information. 
-                      This Privacy Policy explains how we collect, use, and safeguard your data when you use our NGO project management platform.
-                    </p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Introduction</h2>
+                    <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
+                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
+                        At ADEL, we are committed to protecting your privacy and ensuring the security of your personal information.
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        This Privacy Policy explains how we collect, use, and safeguard your data when you use our NGO project management platform, ensuring transparency in all our data practices.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -114,26 +118,27 @@ export default function PrivacyPolicy() {
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">How We Use Your Information</h2>
                     <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200">
-                      <ul className="space-y-3">
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Provide and maintain our project management services</span>
+                      <p className="text-gray-700 mb-4">We use your information responsibly to deliver the best possible service:</p>
+                      <ul className="space-y-4">
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Provide and maintain our comprehensive project management services</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Enable collaboration within your organization</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Enable seamless collaboration within your organization</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Send important updates and notifications</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Send important updates and notifications about your projects</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Improve our platform and develop new features</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Continuously improve our platform and develop new features</span>
                         </li>
-                        <li className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">Ensure security and prevent unauthorized access</span>
+                        <li className="flex items-start space-x-3 group">
+                          <div className="w-3 h-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
+                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Ensure robust security and prevent unauthorized access</span>
                         </li>
                       </ul>
                     </div>
@@ -148,12 +153,31 @@ export default function PrivacyPolicy() {
                     <Lock className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Security</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Data Security</h2>
                     <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100">
-                      <p className="text-gray-700 leading-relaxed text-lg">
-                        We implement industry-standard security measures to protect your data, including encryption, 
-                        secure servers, and regular security audits. Your organization's data is isolated and accessible 
-                        only to authorized members of your team.
+                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
+                        We implement industry-standard security measures to protect your data, including:
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span className="text-gray-700">End-to-end encryption</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          <span className="text-gray-700">Secure cloud servers</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span className="text-gray-700">Regular security audits</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          <span className="text-gray-700">Data isolation protocols</span>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">
+                        Your organization's data remains completely isolated and accessible only to authorized members of your team.
                       </p>
                     </div>
                   </div>
@@ -167,17 +191,18 @@ export default function PrivacyPolicy() {
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
                     <p className="text-gray-700 leading-relaxed mb-6">
-                      If you have any questions about this Privacy Policy or our data practices, please contact us:
+                      Have questions about this Privacy Policy or our data practices? We're here to help and ensure complete transparency about how we handle your information.
                     </p>
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                       <div className="flex items-center space-x-3">
-                        <Mail className="w-5 h-5" />
+                        <Mail className="w-5 h-5 animate-pulse" />
                         <a href="mailto:sissokoadel057@gmail.com" className="text-white hover:underline font-medium">
                           sissokoadel057@gmail.com
                         </a>
                       </div>
+                      <p className="text-blue-100 text-sm mt-2">We typically respond within 24 hours</p>
                     </div>
                   </div>
                 </div>
