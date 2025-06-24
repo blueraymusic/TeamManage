@@ -95,6 +95,11 @@ export default function AdminDashboard() {
     queryKey: ["/api/dashboard/stats"],
   });
 
+  // Get unread message count for notification
+  const { data: unreadMessages } = useQuery({
+    queryKey: ["/api/messages/unread"],
+  });
+
   const { data: organization } = useQuery({
     queryKey: ["/api/organization"],
   });
@@ -311,8 +316,13 @@ export default function AdminDashboard() {
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Messages
+                  {unreadMessages && unreadMessages.count > 0 && (
+                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
+                      {unreadMessages.count}
+                    </Badge>
+                  )}
                 </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team

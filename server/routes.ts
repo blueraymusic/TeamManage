@@ -791,6 +791,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get unread messages count for current user
+  app.get("/api/messages/unread", requireAuth, async (req: any, res) => {
+    try {
+      console.log("Getting unread messages for user:", req.session.userId, "org:", req.session.organizationId);
+      
+      if (!req.session.userId || !req.session.organizationId) {
+        return res.status(400).json({ message: "Invalid session data" });
+      }
+      
+      const unreadMessages = await storage.getUnreadMessagesForUser(req.session.userId, req.session.organizationId);
+      res.json({ count: unreadMessages.length, messages: unreadMessages });
+    } catch (error) {
+      console.error("Get unread messages error:", error);
+      res.status(500).json({ message: "Failed to get unread messages" });
+    }
+  });
+
+  // Mark message as read
+  app.patch("/api/messages/:messageId/read", requireAuth, async (req: any, res) => {
+    try {
+      const { messageId } = req.params;
+      await storage.markMessageAsRead(parseInt(messageId));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Mark message as read error:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
   // Get all messages for current user
   app.get("/api/messages", requireAuth, async (req: any, res) => {
     try {

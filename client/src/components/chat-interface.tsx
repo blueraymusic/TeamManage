@@ -361,6 +361,17 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                                     recipientId: message.recipientId,
                                     fileName: message.fileName
                                   });
+                                  
+                                  // Mark message as read when clicked
+                                  if (!message.isRead) {
+                                    apiRequest('PATCH', `/api/messages/${message.id}/read`, {})
+                                      .then(() => {
+                                        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+                                        queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+                                      })
+                                      .catch(console.error);
+                                  }
+                                  
                                   window.open(message.fileUrl, '_blank');
                                 }}
                                 className={`h-8 w-8 p-0 ${
