@@ -471,38 +471,7 @@ Best regards,
                 <Rocket className="w-6 h-6 ml-3" />
               </Button>
               <Button
-                onClick={() => {
-                  const subject = "ADEL Demo Request";
-                  const body = `Hello,
-
-I'm interested in learning more about ADEL for our organization.
-
-Organization Details:
-- Company/NGO: [Your organization name]
-- Team Size: [Number of team members]
-- Organization Type: [NGO/Government/Corporate/Other]
-
-Meeting Purpose:
-- [ ] Product Demo
-- [ ] Implementation Planning  
-- [ ] Pricing Discussion
-- [ ] Technical Integration
-
-Preferred Meeting Time:
-- [ ] Morning (9 AM - 12 PM)
-- [ ] Afternoon (12 PM - 5 PM)
-- [ ] Evening (5 PM - 8 PM)
-
-Additional Information:
-[Please share any specific requirements or questions]
-
-Best regards,
-[Your name]
-[Your email]
-[Your phone number]`;
-                  
-                  window.location.href = `mailto:sissokoadel057@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                }}
+                onClick={() => setShowContactModal(true)}
                 variant="outline"
                 size="lg"
                 className="border-2 border-white/30 text-black hover:bg-white/10 backdrop-blur-sm transition-all duration-300 px-12 py-4 text-lg font-semibold rounded-2xl"
