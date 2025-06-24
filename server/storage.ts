@@ -121,6 +121,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProject(project: InsertProject): Promise<Project> {
+    // Calculate days left if deadline is provided
+    if (project.deadline) {
+      const deadline = new Date(project.deadline);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      deadline.setHours(0, 0, 0, 0);
+      const diffTime = deadline.getTime() - now.getTime();
+      const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      project.daysLeft = daysLeft;
+      project.isOverdue = daysLeft < 0;
+    }
+
     const [created] = await db.insert(projects).values(project).returning();
     return created;
   }
@@ -135,7 +148,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateProject(id: number, updates: Partial<Project>): Promise<Project> {
-    const [updated] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
+    // If deadline is being updated, recalculate days left
+    if (updates.deadline) {
+      const deadline = new Date(updates.deadline);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      deadline.setHours(0, 0, 0, 0);
+      const diffTime = deadline.getTime() - now.getTime();
+      const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      updates.daysLeft = daysLeft;
+      updates.isOverdue = daysLeft < 0;
+      updates.overdueNotificationSent = false; // Reset notification flag when deadline changes
+    }
+
+    const [updated] = await db.update(projects).set({...updates, updatedAt: new Date()}).where(eq(projects.id, id)).returning();
     return updated;
   }
 
