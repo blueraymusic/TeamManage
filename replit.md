@@ -124,6 +124,7 @@ Changelog:
 - June 24, 2025. Implemented message notification system with unread badges
 - June 24, 2025. Fixed file upload UI consistency between admin and officer
 - June 24, 2025. Added comprehensive file download debugging for admin-to-officer transfers
+- June 24, 2025. Fixed React hooks violation in chat interface and implemented granular message read tracking
 ```
 
 ## User Preferences

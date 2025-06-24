@@ -312,24 +312,6 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
                 const UrgencyIcon = urgencyConfig.icon;
                 
-                // Mark message as read when it appears in view for the recipient
-                React.useEffect(() => {
-                  if (!message.isRead && message.recipientId === user?.id) {
-                    const markAsRead = () => {
-                      apiRequest('PATCH', `/api/messages/${message.id}/read`, {})
-                        .then(() => {
-                          queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-                          queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
-                        })
-                        .catch(console.error);
-                    };
-                    
-                    // Mark as read after a short delay (user has "seen" it)
-                    const timer = setTimeout(markAsRead, 1000);
-                    return () => clearTimeout(timer);
-                  }
-                }, [message.id, message.isRead, message.recipientId, user?.id]);
-                
                 return (
                   <MessageComponent 
                     key={message.id}
