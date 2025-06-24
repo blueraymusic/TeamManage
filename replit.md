@@ -128,6 +128,7 @@ Changelog:
 - June 24, 2025. Fixed report review display to show officer names and project names instead of IDs
 - June 24, 2025. Enhanced footer with social media links and extended Quick Links (Pricing, FAQ, Support, Documentation)
 - June 24, 2025. Created Privacy Policy and Terms of Service pages with professional content and routing
+- June 24, 2025. Enhanced legal pages with modern design featuring hero sections, color-coded cards, glassmorphism effects, and professional iconography
 ```
 
 ## User Preferences
