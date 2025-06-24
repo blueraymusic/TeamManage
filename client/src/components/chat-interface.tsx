@@ -353,7 +353,16 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => window.open(message.fileUrl, '_blank')}
+                                onClick={() => {
+                                  console.log('Download button clicked for file:', message.fileUrl);
+                                  console.log('Message details:', {
+                                    id: message.id,
+                                    senderId: message.senderId,
+                                    recipientId: message.recipientId,
+                                    fileName: message.fileName
+                                  });
+                                  window.open(message.fileUrl, '_blank');
+                                }}
                                 className={`h-8 w-8 p-0 ${
                                   isCurrentUser 
                                     ? "text-blue-100 hover:bg-blue-600" 
@@ -433,9 +442,6 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
             </div>
           ) : (
             <div className="mb-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-              <div className="text-sm font-semibold text-blue-800 mb-2 text-center">
-                📎 File Attachments
-              </div>
               <Button
                 type="button"
                 onClick={() => {
@@ -446,7 +452,7 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg shadow-sm"
               >
                 <Paperclip className="h-4 w-4 mr-2" />
-                Choose File to Attach
+                Attach File
               </Button>
             </div>
           )}
