@@ -262,45 +262,48 @@ export default function OfficerDashboard() {
                 <ReportForm onSuccess={() => {}} />
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
-                {(reports as any)?.map((report: any) => (
-                  <Card key={report.id} className="bg-white border border-slate-200 shadow-sm">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-800 mb-1">{report.title}</h3>
-                          <p className="text-sm text-slate-600 mb-2">{report.content}</p>
-                          <div className="flex items-center space-x-4 text-sm text-slate-500">
-                            <span>Project: {report.projectName || 'Unknown'}</span>
-                            <span>Submitted: {new Date(report.createdAt).toLocaleDateString()}</span>
+              {/* Reports List - Shows 3 items at a time with scroll */}
+              <div className="overflow-y-auto" style={{ maxHeight: '240px' }}>
+                <div className="grid grid-cols-1 gap-4">
+                  {(reports as any)?.map((report: any) => (
+                    <Card key={report.id} className="bg-white border border-slate-200 shadow-sm">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-slate-800 mb-1">{report.title}</h3>
+                            <p className="text-sm text-slate-600 mb-2">{report.content}</p>
+                            <div className="flex items-center space-x-4 text-sm text-slate-500">
+                              <span>Project: {report.projectName || 'Unknown'}</span>
+                              <span>Submitted: {new Date(report.createdAt).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <Badge variant={
+                              report.status === 'approved' ? 'default' : 
+                              report.status === 'rejected' ? 'destructive' : 
+                              'secondary'
+                            }>
+                              {report.status}
+                            </Badge>
                           </div>
                         </div>
-                        <div className="ml-4">
-                          <Badge variant={
-                            report.status === 'approved' ? 'default' : 
-                            report.status === 'rejected' ? 'destructive' : 
-                            'secondary'
-                          }>
-                            {report.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      {report.reviewNotes && (
-                        <div className="mt-4 p-3 bg-slate-50 rounded-lg">
-                          <p className="text-sm text-slate-600">
-                            <span className="font-medium">Review Notes:</span> {report.reviewNotes}
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )) || (
-                  <div className="text-center py-12">
-                    <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                    <p className="text-slate-500 text-lg">No reports submitted yet</p>
-                    <p className="text-slate-400">Submit your first report to get started</p>
-                  </div>
-                )}
+                        {report.reviewNotes && (
+                          <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+                            <p className="text-sm text-slate-600">
+                              <span className="font-medium">Review Notes:</span> {report.reviewNotes}
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )) || (
+                    <div className="text-center py-12">
+                      <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                      <p className="text-slate-500 text-lg">No reports submitted yet</p>
+                      <p className="text-slate-400">Submit your first report to get started</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </TabsContent>
 
