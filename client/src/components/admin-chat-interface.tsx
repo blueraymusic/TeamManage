@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap } from "lucide-react";
+import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -109,7 +109,7 @@ export default function AdminChatInterface() {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setNewMessage(`📎 ${file.name}`);
+      setNewMessage(`📎 Document: ${file.name}`);
     }
   };
 
@@ -268,6 +268,96 @@ export default function AdminChatInterface() {
             </CardHeader>
             
             <CardContent className="flex-1 flex flex-col p-0">
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[400px]">
+                {selectedMessages.length === 0 ? (
+                  <div className="text-center text-gray-500 py-8">
+                    No messages yet. Start the conversation!
+                  </div>
+                ) : (
+                  selectedMessages.map(message => {
+                    const isCurrentUser = message.senderId === user?.id;
+                    const isDocument = message.content.includes('📎');
+                    const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
+                    const UrgencyIcon = urgencyConfig.icon;
+                    
+                    return (
+                      <AdminMessageComponent 
+                        key={message.id}
+                        message={message}
+                        isCurrentUser={isCurrentUser}
+                        isDocument={isDocument}
+                        urgencyConfig={urgencyConfig}
+                        UrgencyIcon={UrgencyIcon}
+                        user={user}
+                      />
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Message Form */}
+              <div className="border-t p-4">
+                <form onSubmit={handleSendMessage} className="space-y-3">
+                  <div className="flex gap-2 items-end">
+                    <div className="flex-1">
+                      <Input
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder={selectedRecipient ? `Message ${getMemberName(selectedRecipient)}...` : "Select a recipient first..."}
+                        className="resize-none"
+                        disabled={!selectedRecipient}
+                      />
+                    </div>
+                    
+                    {/* File Upload Button */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="shrink-0 px-3"
+                      disabled={isUploading || !selectedRecipient}
+                    >
+                      <Paperclip className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button type="submit" size="sm" disabled={isUploading || !selectedRecipient || (!newMessage.trim() && !selectedFile)}>
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    accept="*"
+                  />
+
+                  {/* Selected file preview */}
+                  {selectedFile && (
+                    <div className="flex items-center justify-between bg-gray-50 p-2 rounded border">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm text-gray-700">{selectedFile.name}</span>
+                        <span className="text-xs text-gray-500">
+                          ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearSelectedFile}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </form>
+              </div>
             </CardContent>
           </>
         ) : (
