@@ -268,183 +268,117 @@ export default function AdminChatInterface() {
             </CardHeader>
             
             <CardContent className="flex-1 flex flex-col p-0">
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[400px]">
-                {selectedMessages.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
-                    No messages yet. Start the conversation!
-                  </div>
-                ) : (
-                  selectedMessages.map(message => {
-                    const isCurrentUser = message.senderId === user?.id;
-                    const isDocument = message.content.includes('📎');
-                    const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
-                    const UrgencyIcon = urgencyConfig.icon;
-                    
-                    return (
-                      <div
-                        key={message.id}
-                        className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4`}
-                      >
-                        <div
-                          className={`max-w-[75%] rounded-2xl shadow-lg transition-all hover:shadow-xl ${
-                            isCurrentUser
-                              ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
-                              : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-md`
-                          }`}
-                        >
-                          {/* Urgency Indicator */}
-                          {!isCurrentUser && message.urgency !== "normal" && (
-                            <div className={`px-4 pt-3 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-2xl rounded-bl-md`}>
-                              <UrgencyIcon className={`h-4 w-4 ${urgencyConfig.color}`} />
-                              <span className={`text-xs font-medium ${urgencyConfig.color}`}>
-                                {urgencyConfig.label}
-                              </span>
-                            </div>
-                          )}
-                          {isDocument ? (
-                            <div className={`p-4 ${isCurrentUser ? "bg-blue-400/20" : "bg-gray-50"} rounded-t-2xl ${isCurrentUser ? "rounded-br-md" : "rounded-bl-md"}`}>
-                              <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${isCurrentUser ? "bg-white/20" : "bg-blue-100"}`}>
-                                  <FileText className={`h-4 w-4 ${isCurrentUser ? "text-white" : "text-blue-600"}`} />
-                                </div>
-                                <div>
-                                  <div className={`font-medium text-sm ${isCurrentUser ? "text-white" : "text-gray-900"}`}>
-                                    {message.content.replace('📎 Document: ', '')}
-                                  </div>
-                                  <div className={`text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-                                    Document attachment
-                                  </div>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className={`ml-auto h-8 w-8 p-0 ${isCurrentUser ? "text-white hover:bg-white/20" : "text-gray-600 hover:bg-gray-100"}`}
-                                >
-                                  <Download className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="p-4">
-                              <div className="break-words leading-relaxed">{message.content}</div>
-                            </div>
-                          )}
-                          <div className={`px-4 pb-3 text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-                            {new Date(message.createdAt).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                            {isCurrentUser && (
-                              <span className="ml-2 opacity-75">Sent</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Message Input */}
-              <div className="p-4 border-t bg-gradient-to-r from-slate-50 to-gray-50">
-                {/* Urgency Selector */}
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Priority:</span>
-                  <div className="flex gap-1">
-                    {["low", "normal", "high", "urgent"].map((urgency) => {
-                      const config = getUrgencyConfig(urgency);
-                      const Icon = config.icon;
-                      return (
-                        <Button
-                          key={urgency}
-                          variant={selectedUrgency === urgency ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setSelectedUrgency(urgency)}
-                          className={`h-8 px-3 text-xs ${
-                            selectedUrgency === urgency 
-                              ? `${config.color} bg-white border-2 ${config.borderColor} shadow-md` 
-                              : "text-gray-600 border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          <Icon className="h-3 w-3 mr-1" />
-                          {config.label}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {selectedFile && (
-                  <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm text-blue-800 font-medium">{selectedFile.name}</span>
-                      <span className="text-xs text-blue-600">({(selectedFile.size / 1024).toFixed(1)} KB)</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedFile(null);
-                        setNewMessage("");
-                        if (fileInputRef.current) fileInputRef.current.value = '';
-                      }}
-                      className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-100"
-                    >
-                      ×
-                    </Button>
-                  </div>
-                )}
-                <form onSubmit={handleSendMessage} className="flex gap-3 items-end">
-                  <div className="flex-1 relative">
-                    <Input
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Type your message..."
-                      disabled={sendMessageMutation.isPending}
-                      className="pr-12 rounded-full border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                    />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileSelect}
-                        className="hidden"
-                        accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
-                      >
-                        <Paperclip className="h-4 w-4 text-gray-500" />
-                      </Button>
-                    </div>
-                  </div>
-                  <Button
-                    type="submit"
-                    disabled={(!newMessage.trim() && !selectedFile) || sendMessageMutation.isPending}
-                    className="rounded-full w-12 h-12 p-0 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Send className="h-5 w-5" />
-                  </Button>
-                </form>
-              </div>
             </CardContent>
           </>
         ) : (
-          <CardContent className="flex-1 flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Select a conversation to start chatting</p>
-            </div>
+          <CardContent className="flex-1 flex items-center justify-center text-gray-500">
+            Select a team member to start messaging
           </CardContent>
         )}
       </Card>
+    </div>
+  );
+}
+
+// Individual message component for admin interface  
+function AdminMessageComponent({ 
+  message, 
+  isCurrentUser, 
+  isDocument,
+  urgencyConfig, 
+  UrgencyIcon,
+  user
+}: {
+  message: any;
+  isCurrentUser: boolean;
+  isDocument: boolean;
+  urgencyConfig: any;
+  UrgencyIcon: any;
+  user: any;
+}) {
+  // Mark message as read when it appears in view for the recipient
+  useEffect(() => {
+    if (!message.isRead && message.recipientId === user?.id) {
+      const timer = setTimeout(() => {
+        apiRequest("PATCH", `/api/messages/${message.id}/read`, {})
+          .then(() => {
+            queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+          })
+          .catch(console.error);
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [message.id, message.isRead, message.recipientId, user?.id]);
+
+  return (
+    <div
+      className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4 ${
+        !message.isRead && message.recipientId === user?.id ? "relative" : ""
+      }`}
+    >
+      {/* Unread indicator for received messages */}
+      {!message.isRead && message.recipientId === user?.id && (
+        <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
+      )}
+      
+      <div
+        className={`max-w-[75%] rounded-2xl shadow-lg transition-all hover:shadow-xl ${
+          isCurrentUser
+            ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
+            : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-md ${
+                !message.isRead && message.recipientId === user?.id ? "ring-2 ring-red-200" : ""
+              }`
+        }`}
+      >
+        {/* Urgency Indicator */}
+        {!isCurrentUser && message.urgency !== "normal" && (
+          <div className={`px-4 pt-3 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-2xl rounded-bl-md`}>
+            <UrgencyIcon className={`h-4 w-4 ${urgencyConfig.color}`} />
+            <span className={`text-xs font-medium ${urgencyConfig.color}`}>
+              {urgencyConfig.label}
+            </span>
+          </div>
+        )}
+        {isDocument ? (
+          <div className={`p-4 ${isCurrentUser ? "bg-blue-400/20" : "bg-gray-50"} rounded-t-2xl ${isCurrentUser ? "rounded-br-md" : "rounded-bl-md"}`}>
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-full ${isCurrentUser ? "bg-white/20" : "bg-blue-100"}`}>
+                <FileText className={`h-4 w-4 ${isCurrentUser ? "text-white" : "text-blue-600"}`} />
+              </div>
+              <div>
+                <div className={`font-medium text-sm ${isCurrentUser ? "text-white" : "text-gray-900"}`}>
+                  {message.content.replace("📎 Document: ", "")}
+                </div>
+                <div className={`text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
+                  Document attachment
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`ml-auto h-8 w-8 p-0 ${isCurrentUser ? "text-white hover:bg-white/20" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4">
+            <div className="break-words leading-relaxed">{message.content}</div>
+          </div>
+        )}
+        <div className={`px-4 pb-3 text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
+          {new Date(message.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+          {isCurrentUser && (
+            <span className="ml-2 opacity-75">Sent</span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
