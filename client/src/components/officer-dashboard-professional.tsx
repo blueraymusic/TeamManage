@@ -25,9 +25,11 @@ import {
   Activity,
   CheckCircle2,
   TrendingUp,
-  Target
+  Target,
+  Search
 } from "lucide-react";
 import { t } from "@/lib/i18n";
+import { Input } from "@/components/ui/input";
 import { useLogout } from "@/hooks/use-auth";
 import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
@@ -42,6 +44,8 @@ export default function OfficerDashboard() {
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
+  const [reportSearchTerm, setReportSearchTerm] = useState("");
+
   const { data: projects, isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
   });
@@ -49,6 +53,13 @@ export default function OfficerDashboard() {
   const { data: reports, isLoading: reportsLoading } = useQuery({
     queryKey: ["/api/reports"],
   });
+
+  // Filter reports based on search term
+  const filteredReports = (reports as any)?.filter((report: any) =>
+    report.title?.toLowerCase().includes(reportSearchTerm.toLowerCase()) ||
+    report.content?.toLowerCase().includes(reportSearchTerm.toLowerCase()) ||
+    report.projectName?.toLowerCase().includes(reportSearchTerm.toLowerCase())
+  ) || [];
 
   // Get unread message count for notification
   const { data: unreadMessages } = useQuery({
@@ -262,10 +273,23 @@ export default function OfficerDashboard() {
                 <ReportForm onSuccess={() => {}} />
               </div>
 
-              {/* Reports List - Shows max 3 items with scroll */}
-              <div className="overflow-y-auto" style={{ maxHeight: '180px' }}>
+              {/* Search Reports */}
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    placeholder="Search reports by title or content..."
+                    value={reportSearchTerm}
+                    onChange={(e) => setReportSearchTerm(e.target.value)}
+                    className="pl-10 h-9"
+                  />
+                </div>
+              </div>
+
+              {/* Reports List - Shows 3-3.5 reports at a time */}
+              <div className="overflow-y-auto" style={{ maxHeight: '280px' }}>
                 <div className="grid grid-cols-1 gap-3">
-                  {(reports as any)?.slice(0, 3).map((report: any) => (
+                  {filteredReports?.slice(0, 100).map((report: any) => (
                     <Card key={report.id} className="bg-white border border-slate-200 shadow-sm">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between">
@@ -296,14 +320,19 @@ export default function OfficerDashboard() {
                         )}
                       </CardContent>
                     </Card>
-                  )) || (
-                    <div className="text-center py-12">
-                      <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                      <p className="text-slate-500 text-lg">No reports submitted yet</p>
-                      <p className="text-slate-400">Submit your first report to get started</p>
-                    </div>
-                  )}
+                  ))}
                 </div>
+                {filteredReports.length === 0 && (
+                  <div className="text-center py-12">
+                    <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-500 text-lg">
+                      {reportSearchTerm ? "No reports match your search" : "No reports submitted yet"}
+                    </p>
+                    <p className="text-slate-400">
+                      {reportSearchTerm ? "Try adjusting your search terms" : "Submit your first report to get started"}
+                    </p>
+                  </div>
+                )}
               </div>
             </TabsContent>
 

@@ -422,8 +422,8 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-semibold text-slate-800">Report Management</h2>
                 <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
               </div>
-              {/* Reports List - Shows max 3 items with scroll */}
-              <div className="overflow-y-auto" style={{ maxHeight: '180px' }}>
+              {/* Reports List - Shows 3-3.5 reports at a time */}
+              <div className="overflow-y-auto" style={{ maxHeight: '280px' }}>
                 <ReportApproval />
               </div>
             </TabsContent>

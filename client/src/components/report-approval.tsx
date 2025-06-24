@@ -301,6 +301,7 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
 
 export default function ReportApproval() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: allReports, isLoading: allReportsLoading } = useQuery({
     queryKey: ["/api/reports"],
@@ -337,8 +338,13 @@ export default function ReportApproval() {
   };
 
   const filteredReports = allReports?.filter((report: any) => {
-    if (statusFilter === "all") return true;
-    return report.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || report.status === statusFilter;
+    const matchesSearch = !searchTerm || 
+      report.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getProjectName(report.projectId)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getOfficerName(report.submittedBy)?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesStatus && matchesSearch;
   }) || [];
 
   const getStatusIcon = (status: string) => {
@@ -450,20 +456,32 @@ export default function ReportApproval() {
         <TabsContent value="all">
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>All Reports</CardTitle>
-                <div className="flex items-center space-x-2">
-                  <Filter className="w-4 h-4 text-gray-500" />
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border border-gray-300 rounded px-3 py-1 text-sm"
-                  >
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-slate-600" />
+                  All Reports
+                </CardTitle>
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Input
+                      placeholder="Search reports..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 w-64"
+                    />
+                  </div>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardHeader>
