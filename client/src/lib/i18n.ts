@@ -96,7 +96,7 @@ const translations: Record<string, Translations> = {
     'dashboard.recentSubmissions': 'Recent Submissions',
     
     // Footer
-    'footer.description': 'Empowering NGOs and non-profit organizations with modern project management tools to maximize their social impact.',
+    'footer.description': 'Transform your NGO operations with intuitive project management, seamless team collaboration, and powerful progress tracking designed specifically for non-profit organizations.',
     'footer.platform': 'Platform',
     'footer.support': 'Support',
     'footer.demo': 'Demo',

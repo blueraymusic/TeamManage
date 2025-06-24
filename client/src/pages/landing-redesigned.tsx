@@ -636,13 +636,13 @@ Best regards`;
               </div>
               <div className="flex space-x-6 text-sm">
                 <a 
-                  href="mailto:sissokoadel057@gmail.com?subject=Privacy Policy Request"
+                  href="/privacy-policy"
                   className="text-gray-500 hover:text-blue-400 transition-colors duration-300"
                 >
                   Privacy Policy
                 </a>
                 <a 
-                  href="mailto:sissokoadel057@gmail.com?subject=Terms of Service Request"
+                  href="/terms-of-service"
                   className="text-gray-500 hover:text-blue-400 transition-colors duration-300"
                 >
                   Terms of Service
