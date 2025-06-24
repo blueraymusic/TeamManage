@@ -1,224 +1,144 @@
 import AdelLogo from "@/components/adel-logo";
-import { FileText, Users, Shield, Gavel, AlertCircle, Mail } from "lucide-react";
+import { FileText, Users, Shield, Gavel, AlertCircle, Mail, ChevronRight, Sparkles, Scale } from "lucide-react";
 
 export default function TermsOfService() {
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
+      <header className="relative z-50 bg-black/50 backdrop-blur-xl border-b border-white/10 sticky top-0">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 group">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl blur-md opacity-75"></div>
-                <div className="relative p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
                   <AdelLogo size="sm" className="filter brightness-0 invert" />
                 </div>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">
                 ADEL
               </span>
             </div>
             <a
               href="/"
-              className="px-4 py-2 text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 rounded-lg transition-all duration-300 font-medium"
+              className="group flex items-center space-x-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-xl transition-all duration-300 text-white hover:shadow-lg hover:shadow-purple-500/25 backdrop-blur-sm"
             >
-              Back to Home
+              <span>Back to Home</span>
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </a>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <div className="relative py-16 lg:py-24">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10"></div>
-        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6">
-            <Gavel className="w-8 h-8 text-white" />
+      <div className="relative py-20 lg:py-32">
+        <div className="relative max-w-6xl mx-auto px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl mb-8 shadow-2xl shadow-purple-500/25 animate-float">
+            <Scale className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-5xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent leading-tight">
             Terms of Service
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl lg:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
             Clear and fair terms that govern the use of our NGO management platform
           </p>
-          <div className="inline-flex items-center space-x-2 text-sm text-gray-500 bg-white/50 backdrop-blur-sm rounded-full px-4 py-2">
+          <div className="inline-flex items-center space-x-3 text-sm text-gray-400 bg-white/5 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10">
+            <Sparkles className="w-4 h-4 text-purple-400" />
             <span>Last updated: June 24, 2025</span>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 lg:px-8 pb-16">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-          <div className="p-8 lg:p-12">
-            <div className="space-y-12">
-              {/* Agreement to Terms */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                    <Gavel className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Agreement to Terms</h2>
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
-                        By accessing and using ADEL's project management platform, you agree to be bound by these Terms of Service.
-                      </p>
-                      <p className="text-gray-700 leading-relaxed">
-                        These terms ensure a fair and secure environment for all NGOs using our platform. If you disagree with any part of these terms, please contact us before using the service.
-                      </p>
-                    </div>
-                  </div>
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-8 pb-20">
+        <div className="grid gap-8 lg:gap-12">
+          
+          {/* Agreement to Terms */}
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+            <div className="relative bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 lg:p-12 hover:bg-white/10 transition-all duration-500 hover:border-white/30">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+                  <Gavel className="w-7 h-7 text-white" />
                 </div>
-              </section>
+                <h2 className="text-3xl font-bold text-white">Agreement to Terms</h2>
+              </div>
+              <div className="space-y-4 text-gray-300 leading-relaxed">
+                <p className="text-lg">
+                  By accessing and using ADEL's project management platform, you agree to be bound by these Terms of Service.
+                </p>
+                <p>
+                  These terms ensure a fair and secure environment for all NGOs using our platform. If you disagree with any part of these terms, please contact us before using the service.
+                </p>
+              </div>
+            </div>
+          </div>
 
-              {/* Description of Service */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Description of Service</h2>
-                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
-                      <p className="text-gray-700 leading-relaxed text-lg mb-4">
-                        ADEL provides a comprehensive web-based project management platform specifically designed for NGOs and non-profit organizations.
-                      </p>
-                      <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                          <span className="text-gray-700">Project tracking</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                          <span className="text-gray-700">Team collaboration</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                          <span className="text-gray-700">Report management</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                          <span className="text-gray-700">Communication tools</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          {/* Service Description */}
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+            <div className="relative bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 lg:p-12 hover:bg-white/10 transition-all duration-500 hover:border-white/30">
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                  <FileText className="w-7 h-7 text-white" />
                 </div>
-              </section>
+                <h2 className="text-3xl font-bold text-white">Description of Service</h2>
+              </div>
+              <p className="text-gray-300 mb-8 text-lg">
+                ADEL provides a comprehensive web-based project management platform specifically designed for NGOs and non-profit organizations.
+              </p>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-300">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  <span className="text-gray-300">Project tracking</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-300">
+                  <div className="w-3 h-3 bg-teal-500 rounded-full"></div>
+                  <span className="text-gray-300">Team collaboration</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-300">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  <span className="text-gray-300">Report management</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-300">
+                  <div className="w-3 h-3 bg-teal-500 rounded-full"></div>
+                  <span className="text-gray-300">Communication tools</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-              {/* User Responsibilities */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">User Responsibilities</h2>
-                    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200">
-                      <p className="text-gray-700 mb-4">As a user of ADEL, you agree to:</p>
-                      <ul className="space-y-4">
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Provide accurate and complete registration information</span>
-                        </li>
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Maintain the security of your account credentials</span>
-                        </li>
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Use the service only for lawful purposes and NGO activities</span>
-                        </li>
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Respect other users and maintain professional conduct</span>
-                        </li>
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Never attempt to compromise the security of our platform</span>
-                        </li>
-                        <li className="flex items-start space-x-3 group">
-                          <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-1.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
-                          <span className="text-gray-700 group-hover:text-gray-900 transition-colors duration-200">Comply with all applicable laws and regulations</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+          {/* Contact */}
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+            <div className="relative bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 lg:p-12 hover:bg-white/10 transition-all duration-500 hover:border-white/30">
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                  <Mail className="w-7 h-7 text-white" />
                 </div>
-              </section>
-
-              {/* Account Management */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Account Management</h2>
-                    <div className="grid gap-6">
-                      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                          <Users className="w-5 h-5 mr-2 text-orange-600" />
-                          Organization Accounts
-                        </h3>
-                        <p className="text-gray-700">Each organization receives a unique code for team member registration. Administrators are responsible for managing team access and permissions.</p>
-                      </div>
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                          <Shield className="w-5 h-5 mr-2 text-blue-600" />
-                          Data Ownership
-                        </h3>
-                        <p className="text-gray-700">You retain ownership of all data and content uploaded to your organization's workspace.</p>
-                      </div>
-                    </div>
-                  </div>
+                <h2 className="text-3xl font-bold text-white">Contact Information</h2>
+              </div>
+              <p className="text-gray-300 leading-relaxed mb-8 text-lg">
+                Need clarification on these Terms of Service? Our team is available to help you understand how these terms apply to your NGO's specific use case.
+              </p>
+              <div className="group/contact bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl p-6 border border-blue-500/30 hover:bg-gradient-to-r hover:from-blue-500/30 hover:to-purple-500/30 transition-all duration-300 hover:border-blue-400/50 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25">
+                <div className="flex items-center space-x-3 mb-3">
+                  <Mail className="w-6 h-6 text-blue-400 group-hover/contact:animate-pulse" />
+                  <a href="mailto:sissokoadel057@gmail.com" className="text-white hover:underline font-medium text-lg">
+                    sissokoadel057@gmail.com
+                  </a>
                 </div>
-              </section>
-
-              {/* Limitation of Liability */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center">
-                    <AlertCircle className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitation of Liability</h2>
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-100">
-                      <p className="text-gray-700 leading-relaxed text-lg">
-                        ADEL is provided "as is" without warranties of any kind. We are not liable for any indirect, 
-                        incidental, or consequential damages arising from your use of our service.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Contact */}
-              <section className="relative">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-                    <p className="text-gray-700 leading-relaxed mb-6">
-                      Need clarification on these Terms of Service? Our team is available to help you understand how these terms apply to your NGO's specific use case.
-                    </p>
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                      <div className="flex items-center space-x-3">
-                        <Mail className="w-5 h-5 animate-pulse" />
-                        <a href="mailto:sissokoadel057@gmail.com" className="text-white hover:underline font-medium">
-                          sissokoadel057@gmail.com
-                        </a>
-                      </div>
-                      <p className="text-blue-100 text-sm mt-2">Professional support for all legal inquiries</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
+                <p className="text-blue-200 text-sm">Professional support for all legal inquiries</p>
+              </div>
             </div>
           </div>
         </div>
