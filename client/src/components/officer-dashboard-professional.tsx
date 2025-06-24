@@ -35,6 +35,7 @@ import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
+import DeadlineBadge from "./deadline-badge";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
 
