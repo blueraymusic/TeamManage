@@ -399,23 +399,48 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           )}
           
           {/* File Upload Instructions */}
-          {!selectedFile && (
-            <div className="mb-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="text-xs text-yellow-800 text-center font-medium">
-                ⚠️ Important: Click the blue 📎 button below to attach actual files
+          <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="text-sm font-semibold text-blue-800 mb-1">
+                  📎 File Attachments
+                </div>
+                <div className="text-xs text-blue-700">
+                  Click the blue button below to attach documents, images, or files
+                </div>
               </div>
-              <div className="text-xs text-yellow-700 text-center mt-1">
-                Don't type "📎 Document: filename" - use the attachment button instead
-              </div>
+              <Button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={sendMessageMutation.isPending || isUploading}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg shadow-sm"
+              >
+                <Paperclip className="h-4 w-4 mr-2" />
+                Attach File
+              </Button>
             </div>
-          )}
+          </div>
           
           <form onSubmit={handleSendMessage} className="flex gap-3">
             <div className="flex-1 flex gap-2">
               <Input
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message..."}
+                onChange={(e) => {
+                  // Prevent typing emoji filenames or file patterns
+                  const value = e.target.value;
+                  if (value.includes('📎') || 
+                      value.toLowerCase().includes('document:') ||
+                      /\.(pdf|doc|docx|txt|png|jpg|jpeg|xlsx|xls|ppt|pptx)$/i.test(value)) {
+                    toast({
+                      title: "File Upload Required",
+                      description: "Use the 'Attach File' button above to share documents",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setNewMessage(value);
+                }}
+                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message... (No emojis or filenames!)"}
                 disabled={sendMessageMutation.isPending || isUploading}
                 className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
               />
