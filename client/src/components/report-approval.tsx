@@ -315,6 +315,11 @@ export default function ReportApproval() {
     queryKey: ["/api/organization/members"],
   });
   
+  // Fetch projects to get project names
+  const { data: projects = [] } = useQuery({
+    queryKey: ["/api/projects"],
+  });
+  
   // Function to get officer name by ID
   const getOfficerName = (userId: number) => {
     const officer = organizationMembers.find((member: any) => member.id === userId);
