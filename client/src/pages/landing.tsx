@@ -352,7 +352,7 @@ export default function Landing() {
             Empowering NGOs worldwide with efficient management tools
           </p>
           <p className="text-gray-500 text-sm">
-            © 2024 ADEL. All rights reserved.
+            © 2025 ADEL. All rights reserved.
           </p>
         </div>
       </footer>

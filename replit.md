@@ -125,6 +125,8 @@ Changelog:
 - June 24, 2025. Fixed file upload UI consistency between admin and officer
 - June 24, 2025. Added comprehensive file download debugging for admin-to-officer transfers
 - June 24, 2025. Fixed React hooks violation in chat interface and implemented granular message read tracking
+- June 24, 2025. Fixed report review display to show officer names and project names instead of IDs
+- June 24, 2025. Enhanced footer with social media links and extended Quick Links (Pricing, FAQ, Support, Documentation)
 ```
 
 ## User Preferences
