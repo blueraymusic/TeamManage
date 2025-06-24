@@ -132,7 +132,14 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() && !selectedFile) return;
+    console.log('=== SEND MESSAGE DEBUG ===');
+    console.log('selectedFile:', selectedFile);
+    console.log('newMessage:', newMessage.trim());
+    console.log('targetRecipientId:', targetRecipientId);
+    if (!newMessage.trim() && !selectedFile) {
+      console.log('Nothing to send - no message and no file');
+      return;
+    }
 
     let targetRecipientId = recipientId;
 
@@ -174,7 +181,12 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
 
     if (selectedFile) {
       // Handle file upload
-      console.log('Starting file upload process:', selectedFile.name);
+      console.log('=== FILE UPLOAD PATH ===');
+      console.log('File details:', {
+        name: selectedFile.name,
+        size: selectedFile.size,
+        type: selectedFile.type
+      });
       setIsUploading(true);
       try {
         const formData = new FormData();
@@ -182,9 +194,9 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
         formData.append('recipientId', targetRecipientId!.toString());
         formData.append('content', newMessage.trim() || `📎 Document: ${selectedFile.name}`);
 
-        console.log('Sending file upload request to /api/messages/upload');
+        console.log('Sending to /api/messages/upload...');
         const response = await apiRequest('POST', '/api/messages/upload', formData);
-        console.log('File upload successful:', response);
+        console.log('✅ File upload successful:', response);
         
         setNewMessage("");
         setSelectedFile(null);
@@ -398,49 +410,53 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
             </div>
           )}
           
-          {/* File Upload Instructions */}
-          <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="text-sm font-semibold text-blue-800 mb-1">
-                  📎 File Attachments
+          {/* File Upload Status */}
+          {selectedFile ? (
+            <div className="mb-3 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <File className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
+                  </span>
                 </div>
-                <div className="text-xs text-blue-700">
-                  Click the blue button below to attach documents, images, or files
-                </div>
+                <Button
+                  type="button"
+                  onClick={handleRemoveFile}
+                  variant="ghost"
+                  size="sm"
+                  className="text-green-600 hover:bg-green-100"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+              <div className="text-sm font-semibold text-blue-800 mb-2 text-center">
+                📎 File Attachments
               </div>
               <Button
                 type="button"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  console.log('Main Attach File button clicked');
+                  fileInputRef.current?.click();
+                }}
                 disabled={sendMessageMutation.isPending || isUploading}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg shadow-sm"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg shadow-sm"
               >
                 <Paperclip className="h-4 w-4 mr-2" />
-                Attach File
+                Choose File to Attach
               </Button>
             </div>
-          </div>
+          )}
           
           <form onSubmit={handleSendMessage} className="flex gap-3">
             <div className="flex-1 flex gap-2">
               <Input
                 value={newMessage}
-                onChange={(e) => {
-                  // Prevent typing emoji filenames or file patterns
-                  const value = e.target.value;
-                  if (value.includes('📎') || 
-                      value.toLowerCase().includes('document:') ||
-                      /\.(pdf|doc|docx|txt|png|jpg|jpeg|xlsx|xls|ppt|pptx)$/i.test(value)) {
-                    toast({
-                      title: "File Upload Required",
-                      description: "Use the 'Attach File' button above to share documents",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  setNewMessage(value);
-                }}
-                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message... (No emojis or filenames!)"}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message..."}
                 disabled={sendMessageMutation.isPending || isUploading}
                 className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
               />
@@ -451,16 +467,6 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
                 className="hidden"
               />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={sendMessageMutation.isPending || isUploading}
-                className="w-12 h-10 border-2 border-blue-500 bg-blue-50 text-blue-600 hover:text-blue-700 hover:bg-blue-100 hover:border-blue-600 shadow-sm"
-                title="Click to attach file"
-              >
-                <Paperclip className="h-5 w-5" />
-              </Button>
             </div>
             <Button
               type="submit"
