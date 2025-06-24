@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Users, Building2, Calendar, Mail, UserCheck, UserX, AlertTriangle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Copy, Users, Building2, Calendar, Mail, UserCheck, UserX, AlertTriangle, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { t } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +23,7 @@ import {
 export default function OrganizationInfo() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [searchTerm, setSearchTerm] = useState("");
   
   const { data: organization = {}, isLoading } = useQuery({
     queryKey: ["/api/organization"],
@@ -137,6 +140,21 @@ export default function OrganizationInfo() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
+          {/* Search Box */}
+          {Array.isArray(teamMembers) && teamMembers.length > 0 && (
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search team members..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          )}
+          
           {membersLoading ? (
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
@@ -151,7 +169,15 @@ export default function OrganizationInfo() {
             </div>
           ) : Array.isArray(teamMembers) && teamMembers.length > 0 ? (
             <div className="max-h-80 overflow-y-auto space-y-3 pr-2">
-              {teamMembers.map((member: any) => (
+              {teamMembers
+                .filter((member: any) => {
+                  if (!searchTerm) return true;
+                  const fullName = `${member.firstName || ''} ${member.lastName || ''}`.toLowerCase();
+                  const email = member.email.toLowerCase();
+                  const search = searchTerm.toLowerCase();
+                  return fullName.includes(search) || email.includes(search);
+                })
+                .map((member: any) => (
                 <div key={member.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">

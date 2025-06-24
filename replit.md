@@ -133,6 +133,7 @@ Changelog:
 - June 24, 2025. Redesigned contact sections in legal pages with enhanced card-based layout, availability indicators, and improved visual hierarchy
 - June 24, 2025. Replaced all mailto links with popup contact forms across landing, Privacy Policy, and Terms of Service pages for better user experience
 - June 25, 2025. Implemented scrollable team members list with 4 visible members at a time for better organization management
+- June 25, 2025. Added search functionality to team members list for quick member lookup by name or email
 ```
 
 ## User Preferences
