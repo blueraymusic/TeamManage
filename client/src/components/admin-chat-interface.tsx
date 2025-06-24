@@ -208,20 +208,20 @@ export default function AdminChatInterface() {
   return (
     <div className="flex h-[600px] gap-4">
       {/* Conversations List */}
-      <Card className="w-80 h-fit">
+      <Card className="w-80 flex flex-col">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
             Conversations
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="flex-1 p-0 overflow-y-auto">
           {officers.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
               No officers in organization
             </div>
           ) : (
-            <div>
+            <>
               {/* Search Box */}
               <div className="p-3 border-b">
                 <div className="relative">
@@ -235,9 +235,9 @@ export default function AdminChatInterface() {
                 </div>
               </div>
               
-              {/* Conversations List - Shows 6 items at a time */}
-              <div className="overflow-y-auto" style={{ height: '360px' }}>
-                <div>
+              {/* Conversations List - Shows 7 items at a time */}
+              <div className="overflow-y-auto" style={{ maxHeight: '420px' }}>
+                <div className="space-y-1">
                   {officers
                     .filter(officer => {
                       if (!searchTerm) return true;
@@ -306,7 +306,7 @@ export default function AdminChatInterface() {
                   )}
                 </div>
               </div>
-            </div>
+            </>
           )}
         </CardContent>
       </Card>
