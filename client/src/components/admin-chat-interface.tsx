@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X } from "lucide-react";
+import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X, Search } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -33,6 +33,7 @@ export default function AdminChatInterface() {
   const [newMessage, setNewMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedUrgency, setSelectedUrgency] = useState<string>("normal");
+  const [searchTerm, setSearchTerm] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
@@ -214,14 +215,38 @@ export default function AdminChatInterface() {
             Conversations
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 p-0 overflow-y-auto">
+        <CardContent className="flex-1 p-0 flex flex-col">
           {officers.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
               No officers in organization
             </div>
           ) : (
-            <div className="space-y-1">
-              {officers.map(officer => {
+            <>
+              {/* Search Box */}
+              <div className="p-4 border-b">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search conversations..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              {/* Conversations List */}
+              <div className="flex-1 overflow-y-auto max-h-80">
+                <div className="space-y-1">
+                  {officers
+                    .filter(officer => {
+                      if (!searchTerm) return true;
+                      const memberName = getMemberName(officer).toLowerCase();
+                      const email = officer.email.toLowerCase();
+                      const search = searchTerm.toLowerCase();
+                      return memberName.includes(search) || email.includes(search);
+                    })
+                    .map(officer => {
                 const unreadCount = getUnreadCount(officer.id);
                 const lastMessage = getLastMessage(officer.id);
                 const isSelected = selectedMemberId === officer.id;
@@ -264,7 +289,24 @@ export default function AdminChatInterface() {
                   </button>
                 );
               })}
-            </div>
+                  
+                  {/* No results message */}
+                  {officers.filter(officer => {
+                    if (!searchTerm) return true;
+                    const memberName = getMemberName(officer).toLowerCase();
+                    const email = officer.email.toLowerCase();
+                    const search = searchTerm.toLowerCase();
+                    return memberName.includes(search) || email.includes(search);
+                  }).length === 0 && searchTerm && (
+                    <div className="p-4 text-center text-gray-500">
+                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                      <p className="text-sm">No conversations found matching "{searchTerm}"</p>
+                      <p className="text-xs">Try searching with a different name or email</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
