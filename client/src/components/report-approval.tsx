@@ -165,7 +165,7 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
             <div className="space-y-2">
               <div className="flex items-center text-sm text-gray-600">
                 <User className="w-4 h-4 mr-2" />
-                <span>Submitted by: User #{report.submittedBy}</span>
+                <span>Submitted by: {getOfficerName(report.submittedBy)}</span>
               </div>
               <div className="flex items-center text-sm text-gray-600">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -390,7 +390,7 @@ export default function ReportApproval() {
                             <div className="flex items-center space-x-4 text-xs text-gray-500">
                               <div className="flex items-center">
                                 <User className="w-3 h-3 mr-1" />
-                                User #{report.submittedBy}
+                                {getOfficerName(report.submittedBy)}
                               </div>
                               <div className="flex items-center">
                                 <Calendar className="w-3 h-3 mr-1" />
@@ -478,7 +478,7 @@ export default function ReportApproval() {
                             <div className="flex items-center space-x-4 text-xs text-gray-500">
                               <div className="flex items-center">
                                 <User className="w-3 h-3 mr-1" />
-                                User #{report.submittedBy}
+                                {getOfficerName(report.submittedBy)}
                               </div>
                               <div className="flex items-center">
                                 <Calendar className="w-3 h-3 mr-1" />
