@@ -206,7 +206,7 @@ export default function PrivacyPolicy() {
                           </div>
                           <div>
                             <a href="mailto:sissokoadel057@gmail.com" className="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200">
-                              sissokoadel057@gmail.com
+                              Contact Support
                             </a>
                             <p className="text-gray-600 text-sm mt-1">We typically respond within 24 hours</p>
                           </div>
