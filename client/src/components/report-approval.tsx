@@ -39,6 +39,11 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
     queryKey: ["/api/organization/members"],
   });
   
+  // Fetch projects to get project names
+  const { data: projects = [] } = useQuery({
+    queryKey: ["/api/projects"],
+  });
+  
   // Function to get officer name by ID
   const getOfficerName = (userId: number) => {
     const officer = organizationMembers.find((member: any) => member.id === userId);
@@ -47,6 +52,12 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
       return fullName || officer.email;
     }
     return `User #${userId}`;
+  };
+  
+  // Function to get project name by ID
+  const getProjectName = (projectId: number) => {
+    const project = projects.find((proj: any) => proj.id === projectId);
+    return project ? project.name : `Project #${projectId}`;
   };
 
   const handleDownloadFile = async (file: any) => {
@@ -398,7 +409,7 @@ export default function ReportApproval() {
                               </div>
                               <div className="flex items-center">
                                 <FileText className="w-3 h-3 mr-1" />
-                                {getProjectName(report.projectId)}
+                                getProjectName(report.projectId)
                               </div>
                               {report.files && report.files.length > 0 && (
                                 <div>
@@ -486,7 +497,7 @@ export default function ReportApproval() {
                               </div>
                               <div className="flex items-center">
                                 <FileText className="w-3 h-3 mr-1" />
-                                {getProjectName(report.projectId)}
+                                getProjectName(report.projectId)
                               </div>
                               {report.files && report.files.length > 0 && (
                                 <div>
