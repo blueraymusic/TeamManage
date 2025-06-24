@@ -677,6 +677,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("File download request - filename:", filename);
       console.log("File path:", filePath);
+      console.log("User role:", req.session.userRole);
+      console.log("Organization ID:", req.session.organizationId);
       
       // Check if file exists
       if (!fs.existsSync(filePath)) {
@@ -684,10 +686,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "File not found" });
       }
       
-      // Get original filename from database
+      // Get all messages from organization for file access verification
       const messages = await storage.getAllMessagesForOrganization(req.session.organizationId);
+      console.log("Found messages for organization:", messages.length);
+      
       const messageWithFile = messages.find(msg => msg.fileUrl === `/api/files/${filename}`);
-      const originalName = messageWithFile?.fileName || filename;
+      if (!messageWithFile) {
+        return res.status(403).json({ message: "File access denied" });
+      }
+      
+      const originalName = messageWithFile.fileName || filename;
       
       // Set proper headers for file download
       res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
