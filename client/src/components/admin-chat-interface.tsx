@@ -235,8 +235,8 @@ export default function AdminChatInterface() {
                 </div>
               </div>
               
-              {/* Conversations List */}
-              <div className="flex-1 overflow-y-auto">
+              {/* Conversations List - Shows 6 items at a time */}
+              <div className="overflow-y-auto" style={{ maxHeight: '360px' }}>
                 <div>
                   {officers
                     .filter(officer => {
