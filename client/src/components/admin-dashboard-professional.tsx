@@ -67,6 +67,7 @@ import { BulkProjectOperations, BulkReportOperations } from "./bulk-operations";
 import MeetingBookingsManager from "./meeting-bookings-manager";
 import AdelLogo from "./adel-logo";
 import DeadlineBadge from "./deadline-badge";
+import OverdueNotifications from "./overdue-notifications";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -311,8 +312,18 @@ export default function AdminDashboard() {
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Projects
+                  {(() => {
+                    const overdueCount = (projects as any)?.filter((p: any) => 
+                      p.isOverdue && p.status !== 'completed' && p.status !== 'cancelled'
+                    ).length || 0;
+                    return overdueCount > 0 ? (
+                      <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
+                        {overdueCount}
+                      </Badge>
+                    ) : null;
+                  })()}
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
@@ -350,6 +361,9 @@ export default function AdminDashboard() {
                   <ProjectForm onSuccess={refetch} />
                 </div>
               </div>
+
+              {/* Overdue Notifications */}
+              <OverdueNotifications />
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(projects as any)?.map((project: any) => (

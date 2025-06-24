@@ -36,6 +36,7 @@ import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
 import DeadlineBadge from "./deadline-badge";
+import OverdueNotifications from "./overdue-notifications";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -183,8 +184,18 @@ export default function OfficerDashboard() {
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Projects
+                  {(() => {
+                    const overdueCount = (projects as any)?.filter((p: any) => 
+                      p.isOverdue && p.status !== 'completed' && p.status !== 'cancelled'
+                    ).length || 0;
+                    return overdueCount > 0 ? (
+                      <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
+                        {overdueCount}
+                      </Badge>
+                    ) : null;
+                  })()}
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
@@ -215,6 +226,9 @@ export default function OfficerDashboard() {
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-slate-800">Available Projects</h2>
               </div>
+
+              {/* Overdue Notifications */}
+              <OverdueNotifications />
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(projects as any)?.map((project: any) => (
