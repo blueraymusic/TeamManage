@@ -135,13 +135,14 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
     console.log('=== SEND MESSAGE DEBUG ===');
     console.log('selectedFile:', selectedFile);
     console.log('newMessage:', newMessage.trim());
+    
+    let targetRecipientId = recipientId;
     console.log('targetRecipientId:', targetRecipientId);
+    
     if (!newMessage.trim() && !selectedFile) {
       console.log('Nothing to send - no message and no file');
       return;
     }
-
-    let targetRecipientId = recipientId;
 
     // If no specific recipient, determine based on user role
     if (!targetRecipientId) {
@@ -189,9 +190,18 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
       });
       setIsUploading(true);
       try {
+        if (!targetRecipientId) {
+          toast({
+            title: "Error",
+            description: "No recipient selected",
+            variant: "destructive",
+          });
+          return;
+        }
+
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('recipientId', targetRecipientId!.toString());
+        formData.append('recipientId', targetRecipientId.toString());
         formData.append('content', newMessage.trim() || `📎 Document: ${selectedFile.name}`);
 
         console.log('Sending to /api/messages/upload...');
@@ -221,9 +231,18 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
       }
     } else {
       // Handle text message
+      if (!targetRecipientId) {
+        toast({
+          title: "Error",
+          description: "No recipient selected",
+          variant: "destructive",
+        });
+        return;
+      }
+
       sendMessageMutation.mutate({
         content: newMessage,
-        recipientId: targetRecipientId!,
+        recipientId: targetRecipientId,
       });
     }
   };

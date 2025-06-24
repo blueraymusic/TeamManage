@@ -52,9 +52,10 @@ ADEL is a comprehensive web-based project management platform designed specifica
 
 ### Team Collaboration
 - Organization-based team management
-- Real-time messaging system with urgency levels
-- File sharing capabilities within messages
+- Real-time messaging system with urgency levels and unread notification badges
+- File sharing capabilities within messages with consistent UI across roles
 - Admin oversight of team communications
+- Automatic message read status tracking and updates
 
 ### Internationalization
 - Multi-language support (English/French)
@@ -120,6 +121,9 @@ ADEL is a comprehensive web-based project management platform designed specifica
 ```
 Changelog:
 - June 24, 2025. Initial setup
+- June 24, 2025. Implemented message notification system with unread badges
+- June 24, 2025. Fixed file upload UI consistency between admin and officer
+- June 24, 2025. Added comprehensive file download debugging for admin-to-officer transfers
 ```
 
 ## User Preferences
