@@ -1,7 +1,38 @@
 import AdelLogo from "@/components/adel-logo";
-import { Shield, Lock, Eye, Database, UserCheck, Mail, ChevronRight, Sparkles } from "lucide-react";
+import { Shield, Lock, Eye, Database, UserCheck, Mail, ChevronRight, Sparkles, Send } from "lucide-react";
+import { useState } from "react";
 
 export default function PrivacyPolicy() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    organization: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setSubmitted(true);
+    setIsSubmitting(false);
+    setFormData({ name: '', email: '', organization: '', message: '' });
+    
+    // Reset success message after 3 seconds
+    setTimeout(() => setSubmitted(false), 3000);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -198,25 +229,96 @@ export default function PrivacyPolicy() {
                     <p className="text-gray-700 leading-relaxed text-lg mb-8">
                       Have questions about this Privacy Policy or our data practices? We're here to help and ensure complete transparency about how we handle your information.
                     </p>
-                    <div className="bg-white rounded-lg p-6 border border-indigo-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                            <Mail className="w-6 h-6 text-white" />
+                    {submitted ? (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Send className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
+                        <p className="text-green-600">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 border border-indigo-100 shadow-sm space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                              Full Name *
+                            </label>
+                            <input
+                              type="text"
+                              id="name"
+                              name="name"
+                              required
+                              value={formData.name}
+                              onChange={handleChange}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                              placeholder="Your full name"
+                            />
                           </div>
                           <div>
-                            <a href="mailto:sissokoadel057@gmail.com" className="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200">
-                              Contact Support
-                            </a>
-                            <p className="text-gray-600 text-sm mt-1">We typically respond within 24 hours</p>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                              Email Address *
+                            </label>
+                            <input
+                              type="email"
+                              id="email"
+                              name="email"
+                              required
+                              value={formData.email}
+                              onChange={handleChange}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                              placeholder="your.email@example.com"
+                            />
                           </div>
                         </div>
-                        <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span>Available</span>
+                        <div>
+                          <label htmlFor="organization" className="block text-sm font-medium text-gray-700 mb-2">
+                            Organization
+                          </label>
+                          <input
+                            type="text"
+                            id="organization"
+                            name="organization"
+                            value={formData.organization}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                            placeholder="Your NGO or organization name"
+                          />
                         </div>
-                      </div>
-                    </div>
+                        <div>
+                          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                            Message *
+                          </label>
+                          <textarea
+                            id="message"
+                            name="message"
+                            required
+                            rows={4}
+                            value={formData.message}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                            placeholder="Please describe your questions about our privacy practices..."
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span>Sending...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Send className="w-4 h-4" />
+                              <span>Send Message</span>
+                            </>
+                          )}
+                        </button>
+                      </form>
+                    )}
                   </div>
                 </div>
               </div>
