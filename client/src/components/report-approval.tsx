@@ -398,7 +398,7 @@ export default function ReportApproval() {
                               </div>
                               <div className="flex items-center">
                                 <FileText className="w-3 h-3 mr-1" />
-                                Project #{report.projectId}
+                                {getProjectName(report.projectId)}
                               </div>
                               {report.files && report.files.length > 0 && (
                                 <div>
@@ -486,7 +486,7 @@ export default function ReportApproval() {
                               </div>
                               <div className="flex items-center">
                                 <FileText className="w-3 h-3 mr-1" />
-                                Project #{report.projectId}
+                                {getProjectName(report.projectId)}
                               </div>
                               {report.files && report.files.length > 0 && (
                                 <div>
