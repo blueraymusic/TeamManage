@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -312,210 +312,235 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
                 const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
                 const UrgencyIcon = urgencyConfig.icon;
                 
+                // Mark message as read when it appears in view for the recipient
+                React.useEffect(() => {
+                  if (!message.isRead && message.recipientId === user?.id) {
+                    const markAsRead = () => {
+                      apiRequest('PATCH', `/api/messages/${message.id}/read`, {})
+                        .then(() => {
+                          queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+                          queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+                        })
+                        .catch(console.error);
+                    };
+                    
+                    // Mark as read after a short delay (user has "seen" it)
+                    const timer = setTimeout(markAsRead, 1000);
+                    return () => clearTimeout(timer);
+                  }
+                }, [message.id, message.isRead, message.recipientId, user?.id]);
+                
                 return (
-                  <div
+                  <MessageComponent 
                     key={message.id}
-                    className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-3`}
-                  >
-                    <div
-                      className={`max-w-[75%] rounded-xl shadow-sm ${
-                        isCurrentUser
-                          ? "bg-blue-500 text-white rounded-br-sm"
-                          : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-sm`
-                      }`}
-                    >
-                      {/* Urgency Indicator for received messages */}
-                      {!isCurrentUser && message.urgency !== "normal" && (
-                        <div className={`px-3 pt-2 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-xl rounded-bl-sm`}>
-                          <UrgencyIcon className={`h-3 w-3 ${urgencyConfig.color}`} />
-                          <span className={`text-xs font-medium ${urgencyConfig.color}`}>
-                            {urgencyConfig.label}
-                          </span>
-                        </div>
-                      )}
-                      
-                      <div className="p-3">
-                        {!isCurrentUser && (
-                          <div className="text-xs font-medium opacity-75 mb-1">
-                            {senderName} ({senderRole})
-                          </div>
-                        )}
-                        <div className="break-words leading-relaxed">{message.content}</div>
-                        
-                        {/* File Attachment Display */}
-                        {message.fileUrl && (
-                          <div className={`mt-3 p-2 rounded-lg border ${
-                            isCurrentUser 
-                              ? "bg-blue-400 border-blue-300" 
-                              : "bg-gray-50 border-gray-200"
-                          }`}>
-                            <div className="flex items-center gap-2">
-                              {message.fileType?.startsWith('image/') ? (
-                                <Image className={`h-4 w-4 ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`} />
-                              ) : (
-                                <File className={`h-4 w-4 ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`} />
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <div className={`text-sm font-medium truncate ${
-                                  isCurrentUser ? "text-blue-100" : "text-gray-800"
-                                }`}>
-                                  {message.fileName}
-                                </div>
-                                {message.fileSize && (
-                                  <div className={`text-xs ${
-                                    isCurrentUser ? "text-blue-200" : "text-gray-500"
-                                  }`}>
-                                    {(message.fileSize / 1024).toFixed(1)} KB
-                                  </div>
-                                )}
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  console.log('Download button clicked for file:', message.fileUrl);
-                                  console.log('Message details:', {
-                                    id: message.id,
-                                    senderId: message.senderId,
-                                    recipientId: message.recipientId,
-                                    fileName: message.fileName
-                                  });
-                                  
-                                  // Mark message as read when clicked
-                                  if (!message.isRead) {
-                                    apiRequest('PATCH', `/api/messages/${message.id}/read`, {})
-                                      .then(() => {
-                                        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-                                        queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
-                                      })
-                                      .catch(console.error);
-                                  }
-                                  
-                                  window.open(message.fileUrl, '_blank');
-                                }}
-                                className={`h-8 w-8 p-0 ${
-                                  isCurrentUser 
-                                    ? "text-blue-100 hover:bg-blue-600" 
-                                    : "text-gray-600 hover:bg-gray-200"
-                                }`}
-                              >
-                                <File className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                        <div className={`text-xs mt-2 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-                          {new Date(message.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    message={message}
+                    isCurrentUser={isCurrentUser}
+                    senderName={senderName}
+                    senderRole={senderRole}
+                    urgencyConfig={urgencyConfig}
+                    UrgencyIcon={urgencyConfig.icon}
+                    user={user}
+                    onMarkAsRead={() => {
+                      if (!message.isRead && message.recipientId === user?.id) {
+                        apiRequest('PATCH', `/api/messages/${message.id}/read`, {})
+                          .then(() => {
+                            queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+                            queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+                          })
+                          .catch(console.error);
+                      }
+                    }}
+                  />
                 );
               })
           )}
-          <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input */}
-        <div className="p-4 border-t bg-gray-50">
-          {/* File Upload Preview */}
-          {selectedFile && (
-            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {selectedFile.type.startsWith('image/') ? (
-                  <Image className="h-4 w-4 text-blue-600" />
-                ) : (
-                  <File className="h-4 w-4 text-blue-600" />
-                )}
-                <span className="text-sm text-blue-800 font-medium">
-                  {selectedFile.name}
-                </span>
-                <span className="text-xs text-blue-600">
-                  ({(selectedFile.size / 1024).toFixed(1)} KB)
-                </span>
+        {/* Message Form */}
+        <div className="border-t p-4">
+          <form onSubmit={handleSendMessage} className="space-y-3">
+            <div className="flex gap-2 items-end">
+              <div className="flex-1">
+                <Input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  className="resize-none"
+                />
               </div>
+              
+              {/* File Upload Button */}
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                onClick={handleRemoveFile}
-                className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-100"
+                onClick={() => fileInputRef.current?.click()}
+                className="shrink-0 px-3"
+                disabled={isUploading}
               >
-                <X className="h-3 w-3" />
+                <Paperclip className="h-4 w-4" />
+              </Button>
+              
+              <Button type="submit" size="sm" disabled={isUploading || (!newMessage.trim() && !selectedFile)}>
+                <Send className="h-4 w-4" />
               </Button>
             </div>
-          )}
-          
-          {/* File Upload Status */}
-          {selectedFile && (
-            <div className="mb-3 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
-              <div className="flex items-center justify-between">
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              onChange={handleFileSelect}
+              className="hidden"
+              accept="*"
+            />
+
+            {/* Selected file preview */}
+            {selectedFile && (
+              <div className="flex items-center justify-between bg-gray-50 p-2 rounded border">
                 <div className="flex items-center gap-2">
-                  <File className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
+                  <File className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">{selectedFile.name}</span>
+                  <span className="text-xs text-gray-500">
+                    ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
                   </span>
                 </div>
                 <Button
                   type="button"
-                  onClick={handleRemoveFile}
                   variant="ghost"
                   size="sm"
-                  className="text-green-600 hover:bg-green-100"
+                  onClick={clearSelectedFile}
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
-          )}
-          
-          <form onSubmit={handleSendMessage} className="flex gap-3">
-            <div className="flex-1 flex gap-2">
-              <Input
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={selectedFile ? "Add a message (optional)..." : "Type your message..."}
-                disabled={sendMessageMutation.isPending || isUploading}
-                className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
-              />
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
-                className="hidden"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  console.log('Paperclip attach button clicked');
-                  fileInputRef.current?.click();
-                }}
-                disabled={sendMessageMutation.isPending || isUploading}
-                className="w-12 h-10 border-2 border-blue-500 bg-blue-50 text-blue-600 hover:text-blue-700 hover:bg-blue-100 hover:border-blue-600 shadow-sm"
-                title="Click to attach file"
-              >
-                <Paperclip className="h-5 w-5" />
-              </Button>
-            </div>
-            <Button
-              type="submit"
-              disabled={(!newMessage.trim() && !selectedFile) || sendMessageMutation.isPending || isUploading}
-              className="rounded-full w-10 h-10 p-0 bg-blue-500 hover:bg-blue-600"
-            >
-              {isUploading ? (
-                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-            </Button>
+            )}
           </form>
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+// Separate component for individual messages to handle useEffect properly
+function MessageComponent({ 
+  message, 
+  isCurrentUser, 
+  senderName, 
+  senderRole, 
+  urgencyConfig, 
+  UrgencyIcon,
+  user,
+  onMarkAsRead 
+}: {
+  message: Message;
+  isCurrentUser: boolean;
+  senderName: string;
+  senderRole: string;
+  urgencyConfig: any;
+  UrgencyIcon: any;
+  user: any;
+  onMarkAsRead: () => void;
+}) {
+  // Mark message as read when it appears in view for the recipient
+  useEffect(() => {
+    if (!message.isRead && message.recipientId === user?.id) {
+      const timer = setTimeout(() => {
+        onMarkAsRead();
+      }, 1500); // Mark as read after 1.5 seconds of being visible
+      
+      return () => clearTimeout(timer);
+    }
+  }, [message.id, message.isRead, message.recipientId, user?.id, onMarkAsRead]);
+
+  return (
+    <div
+      className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-3 ${
+        !message.isRead && message.recipientId === user?.id ? 'relative' : ''
+      }`}
+    >
+      {/* Unread indicator for received messages */}
+      {!message.isRead && message.recipientId === user?.id && (
+        <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
+      )}
+      
+      <div
+        className={`max-w-[75%] rounded-xl shadow-sm ${
+          isCurrentUser
+            ? "bg-blue-500 text-white rounded-br-sm"
+            : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-sm ${
+                !message.isRead && message.recipientId === user?.id ? 'ring-2 ring-red-200' : ''
+              }`
+        }`}
+      >
+        {/* Urgency Indicator for received messages */}
+        {!isCurrentUser && message.urgency !== "normal" && (
+          <div className={`px-3 pt-2 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-xl rounded-bl-sm`}>
+            <UrgencyIcon className="h-3 w-3" />
+            <span className="text-xs font-medium uppercase tracking-wide">{message.urgency}</span>
+          </div>
+        )}
+        
+        {/* Message Content */}
+        <div className="px-4 py-3">
+          {/* Sender Info */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`text-xs font-medium ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`}>
+              {senderName}
+            </span>
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              isCurrentUser 
+                ? "bg-blue-400 text-blue-100" 
+                : senderRole === "admin" 
+                  ? "bg-purple-100 text-purple-800" 
+                  : "bg-blue-100 text-blue-800"
+            }`}>
+              {senderRole}
+            </span>
+          </div>
+          
+          {/* File attachment or regular message */}
+          {message.fileUrl ? (
+            <div className="space-y-2">
+              <div className={`text-sm ${isCurrentUser ? "text-white" : "text-gray-900"}`}>
+                {message.content}
+              </div>
+              <div className={`flex items-center gap-2 p-2 rounded border ${
+                isCurrentUser ? "bg-blue-400 border-blue-300" : "bg-gray-50 border-gray-200"
+              }`}>
+                <File className={`h-4 w-4 ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`} />
+                <a 
+                  href={message.fileUrl} 
+                  download={message.fileName}
+                  className={`text-sm hover:underline ${
+                    isCurrentUser ? "text-blue-100" : "text-blue-600"
+                  }`}
+                  onClick={(e) => {
+                    console.log('File download clicked:', message.fileUrl);
+                    console.log('File name:', message.fileName);
+                  }}
+                >
+                  {message.fileName}
+                </a>
+                {message.fileSize && (
+                  <span className={`text-xs ${isCurrentUser ? "text-blue-200" : "text-gray-500"}`}>
+                    ({(message.fileSize / 1024 / 1024).toFixed(2)} MB)
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className={`text-sm ${isCurrentUser ? "text-white" : "text-gray-900"}`}>
+              {message.content}
+            </div>
+          )}
+          
+          {/* Timestamp */}
+          <div className={`text-xs mt-2 ${isCurrentUser ? "text-blue-200" : "text-gray-500"}`}>
+            {new Date(message.createdAt).toLocaleString()}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
