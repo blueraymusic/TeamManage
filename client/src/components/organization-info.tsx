@@ -150,7 +150,7 @@ export default function OrganizationInfo() {
               ))}
             </div>
           ) : Array.isArray(teamMembers) && teamMembers.length > 0 ? (
-            <div className="space-y-3">
+            <div className="max-h-80 overflow-y-auto space-y-3 pr-2">
               {teamMembers.map((member: any) => (
                 <div key={member.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
