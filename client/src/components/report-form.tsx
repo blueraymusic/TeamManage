@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Upload, X, FileText, Image, Paperclip, Plus, Brain, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import AIReportReviewer from "./ai-report-reviewer";
 
 const reportSchema = z.object({
   title: z.string().min(3, "Report title must be at least 3 characters"),
@@ -31,7 +30,6 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   const queryClient = useQueryClient();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
-  const [showAIReview, setShowAIReview] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -81,7 +79,6 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       form.reset();
       setSelectedFiles([]);
       setAiAnalysis(null);
-      setShowAIReview(false);
       setIsOpen(false);
       onSuccess?.();
     },
@@ -147,7 +144,6 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       const analysis = await response.json();
 
       setAiAnalysis(analysis);
-      setShowAIReview(true);
       
       const readinessMessage = getReadinessMessage(analysis.readinessLevel);
       toast({
@@ -272,7 +268,6 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                     form.setValue("projectId", value);
                     // Reset AI analysis when project changes
                     setAiAnalysis(null);
-                    setShowAIReview(false);
                   }} 
                   value={form.watch("projectId")}
                 >
@@ -391,18 +386,66 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
               </div>
 
               {/* AI Report Review Section */}
-              {showAIReview && aiAnalysis && (
+              {aiAnalysis && (
                 <div className="mt-6 pt-6 border-t">
-                  <AIReportReviewer
-                    reportData={{
-                      title: form.watch("title") || "",
-                      content: form.watch("content") || "",
-                      projectId: parseInt(form.watch("projectId") || "0"),
-                    }}
-                    onAnalysisComplete={(analysis) => {
-                      setAiAnalysis(analysis);
-                    }}
-                  />
+                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                          <Brain className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">AI Analysis Results</h3>
+                        <p className="text-sm text-gray-600">Score: {aiAnalysis.overallScore}/100</p>
+                      </div>
+                      <div className="ml-auto">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          aiAnalysis.readinessLevel === 'excellent' ? 'bg-green-100 text-green-800' :
+                          aiAnalysis.readinessLevel === 'good' ? 'bg-blue-100 text-blue-800' :
+                          aiAnalysis.readinessLevel === 'needs-minor-improvements' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {aiAnalysis.readinessLevel.replace(/-/g, ' ').toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2">Overall Feedback</h4>
+                        <p className="text-sm text-gray-700 bg-white p-3 rounded border">{aiAnalysis.overallFeedback}</p>
+                      </div>
+                      
+                      {aiAnalysis.strengthsIdentified?.length > 0 && (
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-2">Strengths Identified</h4>
+                          <ul className="text-sm text-green-700 space-y-1">
+                            {aiAnalysis.strengthsIdentified.map((strength, index) => (
+                              <li key={index} className="flex items-start">
+                                <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                                {strength}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {aiAnalysis.priorityImprovements?.length > 0 && (
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-2">Priority Improvements</h4>
+                          <ul className="text-sm text-orange-700 space-y-1">
+                            {aiAnalysis.priorityImprovements.map((improvement, index) => (
+                              <li key={index} className="flex items-start">
+                                <span className="w-4 h-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0">⚡</span>
+                                {improvement}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 
