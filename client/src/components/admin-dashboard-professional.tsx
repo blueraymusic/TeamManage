@@ -162,7 +162,13 @@ export default function AdminDashboard() {
     setEditProgress([project.progress || 0]);
     setEditBudget(project.budget?.toString() || "");
     setEditBudgetUsed(project.budgetUsed?.toString() || "0");
-    setEditDeadline(project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : "");
+    setEditDeadline(project.deadline ? (() => {
+      const date = new Date(project.deadline);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    })() : "");
     setIsEditDialogOpen(true);
   };
 
@@ -592,7 +598,14 @@ ${orgData.name || 'Organization'} Team`;
                 <Input
                   id="edit-original-deadline"
                   type="date"
-                  value={editingProject?.deadline ? new Date(editingProject.deadline).toISOString().split('T')[0] : ""}
+                  value={editingProject?.deadline ? (() => {
+                    const date = new Date(editingProject.deadline);
+                    // Ensure we get the correct local date without timezone issues
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                  })() : ""}
                   readOnly
                   className="bg-gray-50 text-gray-600"
                 />
