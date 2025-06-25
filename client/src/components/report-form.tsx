@@ -133,22 +133,18 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       // Find the selected project to get its description
       const selectedProject = (projects as any)?.find((p: any) => p.id.toString() === formData.projectId);
       
-      const analysis = await apiRequest("/api/reports/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          content: formData.content,
-          projectId: parseInt(formData.projectId),
-          projectDescription: selectedProject?.description || "",
-          projectGoals: selectedProject?.goals || "",
-          hasAttachments: selectedFiles.length > 0,
-          attachmentCount: selectedFiles.length,
-          attachmentTypes: selectedFiles.map(f => f.type),
-        }),
+      const response = await apiRequest("POST", "/api/reports/analyze", {
+        title: formData.title,
+        content: formData.content,
+        projectId: parseInt(formData.projectId),
+        projectDescription: selectedProject?.description || "",
+        projectGoals: selectedProject?.goals || "",
+        hasAttachments: selectedFiles.length > 0,
+        attachmentCount: selectedFiles.length,
+        attachmentTypes: selectedFiles.map(f => f.type),
       });
+
+      const analysis = await response.json();
 
       setAiAnalysis(analysis);
       setShowAIReview(true);
