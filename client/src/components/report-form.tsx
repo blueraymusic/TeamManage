@@ -215,7 +215,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   };
 
   const isReadyForSubmission = () => {
-    return aiAnalysis && aiAnalysis.overallScore >= 50;
+    return aiAnalysis && aiAnalysis.overallScore >= 40;
   };
 
   const handleSubmit = async (data: z.infer<typeof reportSchema>) => {
@@ -236,7 +236,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     if (!isReadyForSubmission()) {
       toast({
         title: "Report Needs Improvement",
-        description: `Your report scored ${aiAnalysis.overallScore}/100. Please improve it to reach at least 50% before submitting.`,
+        description: `Your report scored ${aiAnalysis.overallScore}/100. Please improve it to reach at least 40% before submitting.`,
         variant: "destructive",
       });
       return;
