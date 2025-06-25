@@ -251,7 +251,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                     <SelectValue placeholder="Select a project" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(projects as any)?.filter((project: any) => project.status !== 'completed')?.map((project: any) => (
+                    {(projects as any)?.map((project: any) => (
                       <SelectItem key={project.id} value={project.id.toString()}>
                         {project.name}
                       </SelectItem>
