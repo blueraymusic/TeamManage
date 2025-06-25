@@ -171,8 +171,16 @@ export class DatabaseStorage implements IStorage {
         updates.status = 'completed';
       } else if (currentProject?.isOverdue && updates.progress < 100) {
         updates.status = 'overdue';
-      } else if (updates.progress < 100 && updates.status === 'completed') {
+      } else if (updates.progress < 100 && (currentProject?.status === 'completed' || updates.status === 'completed')) {
         updates.status = 'active'; // Revert from completed to active if progress drops
+      }
+    }
+    
+    // Also check if we're updating progress without explicit status change
+    if (updates.progress !== undefined && !updates.status) {
+      const [currentProject] = await db.select().from(projects).where(eq(projects.id, id));
+      if (currentProject?.status === 'completed' && updates.progress < 100) {
+        updates.status = 'active';
       }
     }
 

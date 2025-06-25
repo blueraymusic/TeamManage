@@ -146,6 +146,8 @@ Changelog:
 - June 25, 2025. Fixed asymmetric file sharing in messaging system between admin and officer roles
 - June 25, 2025. Resolved message sending validation errors by fixing data transmission between client and server
 - June 25, 2025. Updated AdminChatInterface to properly handle both text messages and file uploads with separate endpoints
+- June 25, 2025. Added deadline and original deadline fields to Edit Project form with proper date formatting
+- June 25, 2025. Fixed project status logic to automatically revert completed projects to active when progress drops below 100%
 ```
 
 ## User Preferences
