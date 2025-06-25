@@ -51,7 +51,6 @@ export const reports = pgTable("reports", {
   status: text("status").notNull().default("pending"), // 'pending', 'approved', 'rejected'
   projectId: integer("project_id").references(() => projects.id).notNull(),
   submittedBy: integer("submitted_by").references(() => users.id).notNull(),
-  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   reviewedBy: integer("reviewed_by").references(() => users.id),
   reviewNotes: text("review_notes"),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),

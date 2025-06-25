@@ -520,7 +520,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: req.body.content,
         projectId: projectId,
         submittedBy: req.session.userId,
-        organizationId: req.session.organizationId,
         files: files.length > 0 ? files : null,
       };
 
