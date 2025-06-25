@@ -77,6 +77,7 @@ export default function AdminDashboard() {
   const [editProgress, setEditProgress] = useState([0]);
   const [editBudget, setEditBudget] = useState("");
   const [editBudgetUsed, setEditBudgetUsed] = useState("");
+  const [editDeadline, setEditDeadline] = useState("");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -161,6 +162,7 @@ export default function AdminDashboard() {
     setEditProgress([project.progress || 0]);
     setEditBudget(project.budget?.toString() || "");
     setEditBudgetUsed(project.budgetUsed?.toString() || "0");
+    setEditDeadline(project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : "");
     setIsEditDialogOpen(true);
   };
 
@@ -173,7 +175,7 @@ export default function AdminDashboard() {
         name: editName,
         progress: editProgress[0],
         description: editingProject.description,
-        deadline: editingProject.deadline,
+        deadline: editDeadline || null,
         budget: editBudget ? parseFloat(editBudget) : null,
         budgetUsed: editBudgetUsed ? parseFloat(editBudgetUsed) : 0,
       },
@@ -572,6 +574,27 @@ ${orgData.name || 'Organization'} Team`;
                   value={editBudgetUsed}
                   onChange={(e) => setEditBudgetUsed(e.target.value)}
                   placeholder="0"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-deadline">Deadline</Label>
+                <Input
+                  id="edit-deadline"
+                  type="date"
+                  value={editDeadline}
+                  onChange={(e) => setEditDeadline(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-created">Created Date</Label>
+                <Input
+                  id="edit-created"
+                  type="date"
+                  value={editingProject?.createdAt ? new Date(editingProject.createdAt).toISOString().split('T')[0] : ""}
+                  readOnly
+                  className="bg-gray-50 text-gray-600"
                 />
               </div>
             </div>
