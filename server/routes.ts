@@ -713,8 +713,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if this is a report file first
       const reports = await storage.getReportsByOrganization(req.session.organizationId);
+      console.log("Checking reports for file:", filename);
+      console.log("Found reports:", reports.length);
+      
       const reportWithFile = reports.find(report => {
         if (report.files && Array.isArray(report.files)) {
+          console.log("Report", report.id, "files:", report.files);
           return report.files.some((file: any) => file.filename === filename);
         }
         return false;
@@ -724,6 +728,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("File found in report:", reportWithFile.id);
         const fileInfo = reportWithFile.files.find((file: any) => file.filename === filename);
         const originalName = fileInfo?.originalName || filename;
+        
+        console.log("Serving report file:", {
+          filename,
+          originalName,
+          filePath,
+          fileExists: fs.existsSync(filePath)
+        });
         
         // Set proper headers for file download
         res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
