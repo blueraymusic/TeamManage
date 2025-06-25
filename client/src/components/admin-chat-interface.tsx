@@ -50,7 +50,11 @@ export default function AdminChatInterface() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (messageData: { content: string; recipientId: number; urgency?: string }) => {
-      return await apiRequest("POST", "/api/messages", messageData);
+      console.log("Admin sending message data:", messageData);
+      const response = await apiRequest("POST", "/api/messages", messageData);
+      const result = await response.json();
+      console.log("Admin message response:", result);
+      return result;
     },
     onSuccess: () => {
       setNewMessage("");
@@ -114,32 +118,53 @@ export default function AdminChatInterface() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Admin handleSendMessage called");
+    console.log("selectedMemberId:", selectedMemberId);
+    console.log("newMessage:", newMessage.trim());
+    console.log("selectedFile:", selectedFile);
+    
     if (!selectedMemberId || (!newMessage.trim() && !selectedFile)) return;
 
-    const formData = new FormData();
-    formData.append('recipientId', selectedMemberId.toString());
-    formData.append('content', newMessage);
-    formData.append('urgency', selectedUrgency);
     if (selectedFile) {
+      // Handle file upload via the upload endpoint
+      console.log("Sending file message via upload endpoint");
+      const formData = new FormData();
+      formData.append('recipientId', selectedMemberId.toString());
+      formData.append('content', newMessage || `📎 Document: ${selectedFile.name}`);
       formData.append('file', selectedFile);
-    }
 
-    sendMessageMutation.mutate(formData, {
-      onSuccess: () => {
+      try {
+        const response = await apiRequest("POST", "/api/messages/upload", formData);
+        const result = await response.json();
+        console.log("File upload result:", result);
+        
         setNewMessage("");
         setSelectedFile(null);
         setSelectedUrgency("normal");
         if (fileInputRef.current) fileInputRef.current.value = '';
         queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-      },
-      onError: (error: any) => {
+        
+        toast({
+          title: "Success",
+          description: "File sent successfully",
+        });
+      } catch (error: any) {
+        console.error("File upload error:", error);
         toast({
           title: "Error",
-          description: error.message || "Failed to send message",
+          description: error.message || "Failed to send file",
           variant: "destructive",
         });
-      },
-    });
+      }
+    } else {
+      // Handle text message
+      console.log("Sending text message");
+      sendMessageMutation.mutate({
+        content: newMessage,
+        recipientId: selectedMemberId,
+        urgency: selectedUrgency,
+      });
+    }
   };
 
   const clearSelectedFile = () => {

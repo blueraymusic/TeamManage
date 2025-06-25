@@ -143,6 +143,9 @@ Changelog:
 - June 25, 2025. Fixed deadline calculation accuracy and automatic status updates based on progress completion levels
 - June 25, 2025. Deployed AI Assistant for Officer-Side Report Review with OpenAI integration for intelligent report analysis and improvement suggestions
 - June 25, 2025. Enhanced AI analysis system with comprehensive file parsing (Excel, CSV, JSON, XML, text files) and reduced submission threshold to 40% for more accessible report approval
+- June 25, 2025. Fixed asymmetric file sharing in messaging system between admin and officer roles
+- June 25, 2025. Resolved message sending validation errors by fixing data transmission between client and server
+- June 25, 2025. Updated AdminChatInterface to properly handle both text messages and file uploads with separate endpoints
 ```
 
 ## User Preferences

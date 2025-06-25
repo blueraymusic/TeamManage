@@ -139,9 +139,11 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
     console.log('=== SEND MESSAGE DEBUG ===');
     console.log('selectedFile:', selectedFile);
     console.log('newMessage:', newMessage.trim());
+    console.log('user:', user);
+    console.log('organizationMembers:', organizationMembers);
     
     let targetRecipientId = recipientId;
-    console.log('targetRecipientId:', targetRecipientId);
+    console.log('initial targetRecipientId:', targetRecipientId);
     
     if (!newMessage.trim() && !selectedFile) {
       console.log('Nothing to send - no message and no file');
@@ -244,6 +246,11 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
         return;
       }
 
+      console.log("About to send message:", {
+        content: newMessage,
+        recipientId: targetRecipientId,
+      });
+      
       sendMessageMutation.mutate({
         content: newMessage,
         recipientId: targetRecipientId,
