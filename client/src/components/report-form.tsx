@@ -135,6 +135,9 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       
       const analysis = await apiRequest("/api/reports/analyze", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           title: formData.title,
           content: formData.content,
