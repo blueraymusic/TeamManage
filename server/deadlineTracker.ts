@@ -119,7 +119,6 @@ export class DeadlineTracker {
           .update(projects)
           .set({
             overdueNotificationSent: true,
-            updatedAt: new Date(),
           })
           .where(eq(projects.id, project.id));
       }
@@ -238,15 +237,23 @@ This is an automated notification from ADEL Project Management System.
    * Start the daily deadline tracking
    */
   start(): void {
-    // Run immediately on start
-    this.updateProjectDeadlines();
+    try {
+      // Run immediately on start (async, don't block)
+      this.updateProjectDeadlines().catch(error => {
+        console.error("Error in initial deadline update:", error);
+      });
 
-    // Then run every 24 hours (86400000 ms)
-    this.intervalId = setInterval(() => {
-      this.updateProjectDeadlines();
-    }, 86400000);
+      // Then run every 24 hours (86400000 ms)
+      this.intervalId = setInterval(() => {
+        this.updateProjectDeadlines().catch(error => {
+          console.error("Error in scheduled deadline update:", error);
+        });
+      }, 86400000);
 
-    console.log("Deadline tracker started - running daily updates");
+      console.log("Deadline tracker started - running daily updates");
+    } catch (error) {
+      console.error("Failed to start deadline tracker:", error);
+    }
   }
 
   /**
