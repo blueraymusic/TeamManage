@@ -909,23 +909,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Report Review endpoint
   app.post('/api/reports/analyze', requireAuth, async (req: any, res) => {
     try {
-      const { title, content, projectId, challengesFaced, nextSteps, budgetNotes } = req.body;
+      const { 
+        title, 
+        content, 
+        projectId, 
+        projectDescription, 
+        projectGoals, 
+        hasAttachments, 
+        attachmentCount, 
+        attachmentTypes,
+        challengesFaced, 
+        nextSteps, 
+        budgetNotes 
+      } = req.body;
       
       if (!title || !content) {
         return res.status(400).json({ message: "Title and content are required" });
       }
 
-      // Get project details for context
-      let projectName = "Unknown Project";
+      // Get full project details for context
+      let project = null;
       if (projectId) {
-        const project = await storage.getProjectById(projectId);
-        projectName = project?.name || "Unknown Project";
+        project = await storage.getProjectById(projectId);
       }
 
       const analysis = await aiReportReviewer.analyzeReport({
         title,
         content,
-        projectName,
+        projectName: project?.name || "Unknown Project",
+        projectDescription: project?.description || projectDescription || "",
+        projectGoals: project?.goals || projectGoals || "",
+        projectBudget: project?.budget || 0,
+        projectStatus: project?.status || "active",
+        hasAttachments,
+        attachmentCount: attachmentCount || 0,
+        attachmentTypes: attachmentTypes || [],
         challengesFaced,
         nextSteps,
         budgetNotes

@@ -26,6 +26,13 @@ export class AIReportReviewer {
     title: string;
     content: string;
     projectName: string;
+    projectDescription?: string;
+    projectGoals?: string;
+    projectBudget?: number;
+    projectStatus?: string;
+    hasAttachments?: boolean;
+    attachmentCount?: number;
+    attachmentTypes?: string[];
     progress?: number;
     challengesFaced?: string;
     nextSteps?: string;
