@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,16 +46,29 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     },
   });
 
+  // Reset form when projectId prop changes
+  React.useEffect(() => {
+    if (projectId) {
+      form.setValue("projectId", projectId.toString());
+    }
+  }, [projectId, form]);
+
   const submitReportMutation = useMutation({
-    mutationFn: async (data: z.infer<typeof reportSchema>) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("content", data.content);
-      formData.append("projectId", data.projectId);
+    mutationFn: async (data: FormData | z.infer<typeof reportSchema>) => {
+      let formData: FormData;
       
-      selectedFiles.forEach((file) => {
-        formData.append("files", file);
-      });
+      if (data instanceof FormData) {
+        formData = data;
+      } else {
+        formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("content", data.content);
+        formData.append("projectId", data.projectId);
+        
+        selectedFiles.forEach((file) => {
+          formData.append("files", file);
+        });
+      }
 
       const response = await fetch("/api/reports", {
         method: "POST",
@@ -236,10 +249,21 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     console.log("AI Analysis:", aiAnalysis);
     
     // Validate form data
-    if (!data.title || !data.content || !data.projectId) {
+    if (!data.title || !data.content || !data.projectId || data.projectId === 'undefined') {
       toast({
         title: "Missing Required Fields",
         description: "Please fill in title, content, and select a project.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Ensure projectId is a valid number
+    const projectIdNum = parseInt(data.projectId);
+    if (isNaN(projectIdNum)) {
+      toast({
+        title: "Invalid Project",
+        description: "Please select a valid project from the dropdown.",
         variant: "destructive",
       });
       return;
@@ -268,7 +292,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("projectId", data.projectId);
+    formData.append("projectId", projectIdNum.toString());
     
     // Append files
     selectedFiles.forEach((file) => {
