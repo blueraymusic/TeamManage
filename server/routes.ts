@@ -909,6 +909,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Report Review endpoint
   app.post('/api/reports/analyze', requireAuth, async (req: any, res) => {
     try {
+      console.log('AI Analysis Request received:', {
+        bodyKeys: Object.keys(req.body),
+        userId: req.session.userId,
+        hasOpenAI: !!process.env.OPENAI_API_KEY,
+        title: req.body.title,
+        contentLength: req.body.content?.length
+      });
+
       const { 
         title, 
         content, 
@@ -931,9 +939,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let project = null;
       if (projectId) {
         project = await storage.getProjectById(projectId);
+        console.log('Project found:', project);
       }
 
-      const analysis = await aiReportReviewer.analyzeReport({
+      const reportData = {
         title,
         content,
         projectName: project?.name || "Unknown Project",
@@ -947,12 +956,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         challengesFaced,
         nextSteps,
         budgetNotes
-      });
+      };
+
+      console.log('Calling AI with data:', reportData);
+      const analysis = await aiReportReviewer.analyzeReport(reportData);
+      console.log('AI Analysis completed:', analysis);
 
       res.json(analysis);
     } catch (error) {
-      console.error("AI Report Analysis Error:", error);
-      res.status(500).json({ message: "Failed to analyze report", error: error.message });
+      console.error("AI Report Analysis Error Details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      res.status(500).json({ 
+        message: "Failed to analyze report", 
+        error: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
     }
   });
 

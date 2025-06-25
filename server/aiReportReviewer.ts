@@ -39,14 +39,16 @@ export class AIReportReviewer {
     budgetNotes?: string;
   }): Promise<ReportAnalysis> {
     try {
+      console.log('Building AI analysis prompt...');
       const prompt = this.buildAnalysisPrompt(reportData);
       
+      console.log('Calling OpenAI API with model gpt-4o...');
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
             role: "system",
-            content: "You are an expert NGO project management consultant specializing in progress report analysis. Provide constructive, specific feedback to help officers improve their reporting quality. Focus on clarity, completeness, actionable insights, and professional development."
+            content: "You are an expert NGO project management consultant. Always respond with valid JSON in the exact format requested."
           },
           {
             role: "user",
@@ -55,13 +57,25 @@ export class AIReportReviewer {
         ],
         response_format: { type: "json_object" },
         temperature: 0.3,
+        max_tokens: 2000,
       });
 
+      console.log('OpenAI response received, parsing...');
       const analysis = JSON.parse(response.choices[0].message.content || '{}');
-      return this.validateAndFormatAnalysis(analysis);
+      console.log('Analysis parsed successfully:', analysis);
+      
+      const validatedAnalysis = this.validateAndFormatAnalysis(analysis);
+      console.log('Analysis validated:', validatedAnalysis);
+      
+      return validatedAnalysis;
     } catch (error) {
-      console.error('AI Report Analysis Error:', error);
-      throw new Error('Failed to analyze report. Please try again.');
+      console.error('AI Report Analysis Error Details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        apiKeyExists: !!process.env.OPENAI_API_KEY
+      });
+      throw new Error(`Failed to analyze report: ${error.message}`);
     }
   }
 

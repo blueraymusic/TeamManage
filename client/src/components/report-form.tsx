@@ -157,9 +157,10 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       });
     } catch (error) {
       console.error("Analysis error:", error);
+      const errorMessage = error.message || "Unable to analyze report. Please try again.";
       toast({
         title: "Analysis Failed",
-        description: "Unable to analyze report. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
