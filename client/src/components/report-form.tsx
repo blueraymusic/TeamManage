@@ -117,6 +117,67 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const analyzeReport = async () => {
+    const formData = form.getValues();
+    if (!formData.title || !formData.content) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both title and content before analyzing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const analysis = await apiRequest("/api/reports/analyze", {
+        method: "POST",
+        body: JSON.stringify({
+          title: formData.title,
+          content: formData.content,
+          projectId: parseInt(formData.projectId),
+        }),
+      });
+
+      setAiAnalysis(analysis);
+      setShowAIReview(true);
+      
+      const readinessMessage = getReadinessMessage(analysis.readinessLevel);
+      toast({
+        title: "Analysis Complete",
+        description: readinessMessage,
+      });
+    } catch (error) {
+      console.error("Analysis error:", error);
+      toast({
+        title: "Analysis Failed",
+        description: "Unable to analyze report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const getReadinessMessage = (level: string): string => {
+    switch (level) {
+      case 'excellent':
+        return 'Report is comprehensive and ready for submission!';
+      case 'good':
+        return 'Report is solid with minor areas for enhancement.';
+      case 'needs-minor-improvements':
+        return 'Report needs some refinements before submission.';
+      case 'needs-major-improvements':
+        return 'Report requires significant improvements before submission.';
+      default:
+        return 'Report analysis completed.';
+    }
+  };
+
+  const isReadyForSubmission = () => {
+    return aiAnalysis && (aiAnalysis.readinessLevel === 'excellent' || aiAnalysis.readinessLevel === 'good');
+  };
+
   const getFileIcon = (file: File) => {
     if (file.type.startsWith("image/")) {
       return <Image className="w-4 h-4" />;
@@ -177,12 +238,20 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
 
               <div>
                 <Label htmlFor="projectId">Project *</Label>
-                <Select onValueChange={(value) => form.setValue("projectId", value)} value={form.getValues("projectId")}>
+                <Select 
+                  onValueChange={(value) => {
+                    form.setValue("projectId", value);
+                    // Reset AI analysis when project changes
+                    setAiAnalysis(null);
+                    setShowAIReview(false);
+                  }} 
+                  value={form.watch("projectId")}
+                >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select a project" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(projects as any)?.map((project: any) => (
+                    {(projects as any)?.filter((project: any) => project.status !== 'completed')?.map((project: any) => (
                       <SelectItem key={project.id} value={project.id.toString()}>
                         {project.name}
                       </SelectItem>
@@ -270,17 +339,89 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3">
-                <Button type="button" variant="outline">
-                  Save as Draft
-                </Button>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium text-blue-900 mb-1">
+                      Report Submission Guidelines
+                    </h3>
+                    <div className="text-sm text-blue-700 space-y-1">
+                      <p>• Be specific and detailed about your progress and achievements</p>
+                      <p>• Include any challenges faced and how you addressed them</p>
+                      <p>• Mention next steps and planned activities</p>
+                      <p>• Attach relevant photos or documents if available</p>
+                      <p className="font-medium text-purple-700">• Use AI Review to improve your report quality before submission</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Report Review Section */}
+              {showAIReview && aiAnalysis && (
+                <div className="mt-6 pt-6 border-t">
+                  <AIReportReviewer
+                    reportData={{
+                      title: form.watch("title") || "",
+                      content: form.watch("content") || "",
+                      projectId: parseInt(form.watch("projectId") || "0"),
+                    }}
+                    onAnalysisComplete={(analysis) => {
+                      setAiAnalysis(analysis);
+                    }}
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-4">
                 <Button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-600"
-                  disabled={submitReportMutation.isPending}
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsOpen(false)}
+                  className="flex-1"
                 >
-                  {submitReportMutation.isPending ? "Submitting..." : "Submit Report"}
+                  Cancel
                 </Button>
+                
+                {!aiAnalysis ? (
+                  <Button
+                    type="button"
+                    onClick={analyzeReport}
+                    disabled={isAnalyzing || !form.watch("title") || !form.watch("content")}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Brain className="w-4 h-4 mr-2" />
+                    {isAnalyzing ? "Analyzing..." : "Analyze Report"}
+                  </Button>
+                ) : isReadyForSubmission() ? (
+                  <Button
+                    type="submit"
+                    disabled={submitReportMutation.isPending}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    {submitReportMutation.isPending ? "Submitting..." : "Submit Report"}
+                  </Button>
+                ) : (
+                  <div className="flex-1 space-y-2">
+                    <Button
+                      type="button"
+                      onClick={analyzeReport}
+                      disabled={isAnalyzing}
+                      className="w-full bg-purple-600 hover:bg-purple-700"
+                    >
+                      <Brain className="w-4 h-4 mr-2" />
+                      {isAnalyzing ? "Re-analyzing..." : "Re-analyze Report"}
+                    </Button>
+                    <p className="text-xs text-orange-600 text-center">
+                      Please improve your report based on AI feedback before submitting
+                    </p>
+                  </div>
+                )}
               </div>
             </form>
           </div>

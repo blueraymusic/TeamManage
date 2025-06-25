@@ -12,6 +12,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import { z } from "zod";
 import { insertUserSchema, insertProjectSchema, insertReportSchema, insertMessageSchema } from "@shared/schema";
+import { deadlineTracker } from "./deadlineTracker";
+import { emailService } from "./emailNotifications";
+import { aiReportReviewer } from "./aiReportReviewer";
 
 // Extend session types
 declare module "express-session" {
