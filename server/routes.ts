@@ -801,13 +801,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Messaging routes
   app.post("/api/messages", requireAuth, async (req: any, res) => {
     try {
-      const messageData = insertMessageSchema.parse({
-        ...req.body,
-        senderId: req.session.userId,
-        organizationId: req.session.organizationId,
+      console.log("Message request body:", req.body);
+      console.log("Session data:", {
+        userId: req.session.userId,
+        organizationId: req.session.organizationId
       });
 
-      const message = await storage.sendMessage(messageData);
+      const messageData = {
+        content: req.body.content,
+        recipientId: req.body.recipientId,
+        senderId: req.session.userId,
+        organizationId: req.session.organizationId,
+        urgency: req.body.urgency || "normal",
+      };
+
+      console.log("Prepared message data:", messageData);
+      const validatedData = insertMessageSchema.parse(messageData);
+      console.log("Validated message data:", validatedData);
+
+      const message = await storage.sendMessage(validatedData);
       res.json(message);
     } catch (error) {
       console.error("Send message error:", error);
