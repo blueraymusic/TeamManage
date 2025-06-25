@@ -579,7 +579,7 @@ ${orgData.name || 'Organization'} Team`;
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="edit-deadline">Deadline</Label>
+                <Label htmlFor="edit-deadline">New Deadline</Label>
                 <Input
                   id="edit-deadline"
                   type="date"
@@ -588,11 +588,11 @@ ${orgData.name || 'Organization'} Team`;
                 />
               </div>
               <div>
-                <Label htmlFor="edit-created">Created Date</Label>
+                <Label htmlFor="edit-original-deadline">Original Deadline</Label>
                 <Input
-                  id="edit-created"
+                  id="edit-original-deadline"
                   type="date"
-                  value={editingProject?.createdAt ? new Date(editingProject.createdAt).toISOString().split('T')[0] : ""}
+                  value={editingProject?.deadline ? new Date(editingProject.deadline).toISOString().split('T')[0] : ""}
                   readOnly
                   className="bg-gray-50 text-gray-600"
                 />
