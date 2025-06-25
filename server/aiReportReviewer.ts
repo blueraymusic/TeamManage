@@ -66,13 +66,24 @@ export class AIReportReviewer {
   }
 
   private buildAnalysisPrompt(reportData: any): string {
+    const attachmentInfo = reportData.hasAttachments ? 
+      `\nATTACHMENTS: ${reportData.attachmentCount} files (${reportData.attachmentTypes?.join(', ') || 'various types'})` : 
+      '\nATTACHMENTS: None provided';
+
     return `
 Analyze this NGO progress report and provide detailed feedback in JSON format:
 
+**Project Context:**
+- Project Name: ${reportData.projectName}
+- Project Description: ${reportData.projectDescription || 'Not provided'}
+- Project Goals: ${reportData.projectGoals || 'Not provided'}
+- Project Budget: ${reportData.projectBudget ? `$${reportData.projectBudget}` : 'Not specified'}
+- Project Status: ${reportData.projectStatus || 'Active'}
+
 **Report Details:**
-- Project: ${reportData.projectName}
 - Title: ${reportData.title}
 - Content: ${reportData.content}
+${attachmentInfo}
 - Progress: ${reportData.progress || 'Not specified'}%
 - Challenges: ${reportData.challengesFaced || 'Not provided'}
 - Next Steps: ${reportData.nextSteps || 'Not provided'}
@@ -81,16 +92,24 @@ Analyze this NGO progress report and provide detailed feedback in JSON format:
 **Analysis Requirements:**
 Evaluate the report on these criteria:
 1. **Clarity**: Is the language clear, professional, and easy to understand?
-2. **Completeness**: Are all sections adequately detailed?
-3. **Specificity**: Does it include concrete details, numbers, and examples?
-4. **Actionability**: Are next steps and challenges clearly defined?
-5. **Impact**: Does it demonstrate project impact and outcomes?
+2. **Completeness**: Are all sections adequately detailed with specific information?
+3. **Specificity**: Does it include concrete details, metrics, dates, and quantifiable outcomes?
+4. **Evidence**: Are there supporting attachments and documentation?
+5. **Alignment**: Does the report align with stated project goals and objectives?
+6. **Actionability**: Are next steps and challenges clearly defined with solutions?
+7. **Impact**: Does it demonstrate measurable project impact and outcomes?
+8. **Professional Standards**: Does it meet NGO reporting best practices?
+
+**Attachment Assessment:**
+${reportData.hasAttachments ? 
+  `Consider if the ${reportData.attachmentCount} attachment(s) likely provide adequate supporting evidence. Visual documentation (images) and detailed documentation (PDFs) enhance credibility when appropriate for the content type.` :
+  `Note the absence of supporting attachments and suggest when visual evidence or documentation would strengthen the report.`}
 
 **Response Format (JSON):**
 {
   "overallScore": <number 0-100>,
   "readinessLevel": "<needs-major-improvements|needs-minor-improvements|good|excellent>",
-  "overallFeedback": "<2-3 sentence summary of report quality>",
+  "overallFeedback": "<detailed assessment including attachment evaluation>",
   "sectionAnalysis": [
     {
       "section": "<section name>",
@@ -107,9 +126,10 @@ Evaluate the report on these criteria:
 - Be constructive and encouraging
 - Provide specific, actionable suggestions
 - Identify at least 2-3 strengths
-- Flag vague language like "some issues" or "going well"
-- Suggest quantitative details where missing
-- Consider NGO reporting best practices
+- Flag vague language and suggest concrete alternatives
+- Recommend quantitative details where missing
+- Consider project context and goals in evaluation
+- Assess if attachments enhance or are needed for the report
 `;
   }
 
