@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
+import * as XLSX from 'xlsx';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY environment variable is required");
@@ -32,15 +33,53 @@ export class AIReportReviewer {
         return `File not found: ${filePath}`;
       }
 
+      // Parse different file types
       if (fileType.includes('pdf')) {
         return `PDF File attached: ${filePath} (PDF parsing temporarily disabled)`;
       } else if (fileType.includes('text') || fileType.includes('txt')) {
         const content = fs.readFileSync(fullPath, 'utf8');
         return `Text File Content:\n${content.slice(0, 5000)}`;
+      } else if (fileType.includes('csv')) {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const lines = content.split('\n').slice(0, 50); // First 50 rows
+        return `CSV File Content (first 50 rows):\n${lines.join('\n')}`;
+      } else if (fileType.includes('excel') || fileType.includes('spreadsheet') || 
+                 filePath.endsWith('.xlsx') || filePath.endsWith('.xls')) {
+        const workbook = XLSX.readFile(fullPath);
+        const sheetNames = workbook.SheetNames;
+        let content = `Excel File Content (${sheetNames.length} sheets):\n`;
+        
+        // Parse first sheet
+        if (sheetNames.length > 0) {
+          const worksheet = workbook.Sheets[sheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          const rows = jsonData.slice(0, 20); // First 20 rows
+          content += `Sheet "${sheetNames[0]}" (first 20 rows):\n`;
+          content += rows.map(row => (row as any[]).join('\t')).join('\n');
+        }
+        
+        return content.slice(0, 5000);
+      } else if (fileType.includes('json')) {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        try {
+          const jsonData = JSON.parse(content);
+          return `JSON File Content:\n${JSON.stringify(jsonData, null, 2).slice(0, 5000)}`;
+        } catch {
+          return `JSON File Content (raw):\n${content.slice(0, 5000)}`;
+        }
+      } else if (fileType.includes('xml')) {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        return `XML File Content:\n${content.slice(0, 5000)}`;
       } else if (fileType.includes('image')) {
         return `Image file attached: ${filePath} (visual content not analyzed)`;
       } else {
-        return `File attached: ${filePath} (content type: ${fileType})`;
+        // Try to read as text for any other file type
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          return `File Content (${fileType}):\n${content.slice(0, 3000)}`;
+        } catch {
+          return `File attached: ${filePath} (content type: ${fileType}, binary file not parsed)`;
+        }
       }
     } catch (error) {
       console.error('Error parsing file:', error);

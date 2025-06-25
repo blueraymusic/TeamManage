@@ -136,12 +136,26 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
         const fileContents = await Promise.all(
           selectedFiles.map(async (file) => {
             try {
-              if (file.type.includes('text') || file.type.includes('txt')) {
-                return `Text File (${file.name}):\n${await file.text()}`;
+              if (file.type.includes('text') || file.type.includes('txt') || 
+                  file.type.includes('csv') || file.type.includes('json') || 
+                  file.type.includes('xml')) {
+                const content = await file.text();
+                return `${file.type} File (${file.name}):\n${content.slice(0, 3000)}`;
               } else if (file.type.includes('pdf')) {
                 return `PDF File (${file.name}): Content will be analyzed server-side`;
+              } else if (file.type.includes('excel') || file.type.includes('spreadsheet') ||
+                         file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                return `Excel File (${file.name}): Content will be analyzed server-side`;
+              } else if (file.type.includes('image')) {
+                return `Image File (${file.name}): Visual content attached`;
               } else {
-                return `File (${file.name}): ${file.type}`;
+                // Try to read as text for other file types
+                try {
+                  const content = await file.text();
+                  return `File (${file.name}, ${file.type}):\n${content.slice(0, 2000)}`;
+                } catch {
+                  return `File (${file.name}): Binary file, ${file.type}`;
+                }
               }
             } catch (error) {
               return `File (${file.name}): Error reading content`;
@@ -204,7 +218,11 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     return aiAnalysis && aiAnalysis.overallScore >= 50;
   };
 
-  const handleSubmit = (data: z.infer<typeof reportSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof reportSchema>) => {
+    console.log("handleSubmit called with data:", data);
+    console.log("Selected files:", selectedFiles);
+    console.log("AI Analysis:", aiAnalysis);
+    
     // Only submit if AI analysis approves OR user explicitly chooses to submit anyway
     if (!aiAnalysis) {
       toast({
@@ -224,7 +242,19 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       return;
     }
     
-    submitReportMutation.mutate(data);
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("projectId", data.projectId);
+    
+    // Append files
+    selectedFiles.forEach((file, index) => {
+      formData.append(`files`, file);
+    });
+    
+    console.log("Submitting form data...");
+    submitReportMutation.mutate(formData);
   };
 
   const getFileIcon = (file: File) => {
@@ -494,11 +524,26 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                 ) : isReadyForSubmission() ? (
                   <Button
                     type="button"
-                    disabled={submitReportMutation.isPending}
+                    disabled={submitReportMutation.isPending || !form.formState.isValid}
                     className="flex-1 bg-green-600 hover:bg-green-700"
-                    onClick={() => {
-                      const formData = form.getValues();
-                      handleSubmit(formData);
+                    onClick={async () => {
+                      console.log("Submit button clicked");
+                      console.log("Form values:", form.getValues());
+                      console.log("Form errors:", form.formState.errors);
+                      
+                      const isValid = await form.trigger();
+                      console.log("Form validation result:", isValid);
+                      
+                      if (isValid) {
+                        const formData = form.getValues();
+                        handleSubmit(formData);
+                      } else {
+                        toast({
+                          title: "Form Validation Error",
+                          description: "Please check all required fields",
+                          variant: "destructive",
+                        });
+                      }
                     }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
