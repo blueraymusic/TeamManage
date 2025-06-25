@@ -337,11 +337,10 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
   });
 
   const pendingReports = reports.filter(r => r.status === "pending");
-  const allReports = reports; // Include all reports for bulk operations
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedReports(allReports.map(r => r.id));
+      setSelectedReports(pendingReports.map(r => r.id));
     } else {
       setSelectedReports([]);
     }
@@ -392,7 +391,7 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
                 onCheckedChange={handleSelectAll}
               />
               <span className="text-sm font-medium">
-                Select All Reports ({selectedReports.length} of {allReports.length} selected)
+                Select All Pending ({selectedReports.length} of {pendingReports.length} selected)
               </span>
             </div>
             
@@ -411,8 +410,7 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
                 variant="default"
                 size="sm"
                 onClick={handleBulkApprove}
-                disabled={selectedReports.length === 0 || bulkApproveMutation.isPending || 
-                         selectedReports.every(id => reports.find(r => r.id === id)?.status === "approved")}
+                disabled={selectedReports.length === 0 || bulkApproveMutation.isPending}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Approve Selected
@@ -422,8 +420,7 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
                 variant="destructive"
                 size="sm"
                 onClick={handleBulkReject}
-                disabled={selectedReports.length === 0 || bulkRejectMutation.isPending ||
-                         selectedReports.every(id => reports.find(r => r.id === id)?.status === "rejected")}
+                disabled={selectedReports.length === 0 || bulkRejectMutation.isPending}
               >
                 <XCircle className="w-4 h-4 mr-2" />
                 Reject Selected
@@ -433,7 +430,7 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
 
           {/* Report List */}
           <div className="space-y-2">
-            {allReports.map((report) => (
+            {pendingReports.map((report) => (
               <Card key={report.id} className="p-4">
                 <div className="flex items-center space-x-4">
                   <Checkbox
@@ -444,20 +441,7 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium">{report.title}</h4>
-                      <Badge 
-                        variant={
-                          report.status === "approved" ? "default" :
-                          report.status === "rejected" ? "destructive" :
-                          "secondary"
-                        }
-                        className={
-                          report.status === "approved" ? "bg-green-100 text-green-600" :
-                          report.status === "rejected" ? "bg-red-100 text-red-600" :
-                          "bg-orange-100 text-orange-600"
-                        }
-                      >
-                        {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                      </Badge>
+                      <Badge variant="secondary">Pending</Badge>
                     </div>
                     <p className="text-sm text-gray-600 mt-1">{report.content?.substring(0, 100)}...</p>
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
@@ -470,9 +454,9 @@ export function BulkReportOperations({ reports, onRefresh }: BulkReportOperation
             ))}
           </div>
           
-          {allReports.length === 0 && (
+          {pendingReports.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              No reports available for bulk operations
+              No pending reports available for bulk operations
             </div>
           )}
         </div>
