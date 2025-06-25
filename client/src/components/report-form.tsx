@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Upload, X, FileText, Image, Paperclip, Plus } from "lucide-react";
+import { Upload, X, FileText, Image, Paperclip, Plus, Brain, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import AIReportReviewer from "./ai-report-reviewer";
 
 const reportSchema = z.object({
   title: z.string().min(3, "Report title must be at least 3 characters"),
@@ -29,6 +30,9 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [showAIReview, setShowAIReview] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const { data: projects, isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
@@ -76,6 +80,8 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       });
       form.reset();
       setSelectedFiles([]);
+      setAiAnalysis(null);
+      setShowAIReview(false);
       setIsOpen(false);
       onSuccess?.();
     },
