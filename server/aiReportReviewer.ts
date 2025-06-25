@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import fs from "fs";
+import path from "path";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY environment variable is required");
@@ -22,6 +24,30 @@ export interface ReportAnalysis {
 }
 
 export class AIReportReviewer {
+  private async parseFileContent(filePath: string, fileType: string): Promise<string> {
+    try {
+      const fullPath = path.join(process.cwd(), 'uploads', filePath);
+      
+      if (!fs.existsSync(fullPath)) {
+        return `File not found: ${filePath}`;
+      }
+
+      if (fileType.includes('pdf')) {
+        return `PDF File attached: ${filePath} (PDF parsing temporarily disabled)`;
+      } else if (fileType.includes('text') || fileType.includes('txt')) {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        return `Text File Content:\n${content.slice(0, 5000)}`;
+      } else if (fileType.includes('image')) {
+        return `Image file attached: ${filePath} (visual content not analyzed)`;
+      } else {
+        return `File attached: ${filePath} (content type: ${fileType})`;
+      }
+    } catch (error) {
+      console.error('Error parsing file:', error);
+      return `Error reading file: ${filePath}`;
+    }
+  }
+
   async analyzeReport(reportData: {
     title: string;
     content: string;
@@ -33,14 +59,32 @@ export class AIReportReviewer {
     hasAttachments?: boolean;
     attachmentCount?: number;
     attachmentTypes?: string[];
+    attachmentPaths?: string[];
+    attachmentContents?: string;
     progress?: number;
     challengesFaced?: string;
     nextSteps?: string;
     budgetNotes?: string;
   }): Promise<ReportAnalysis> {
     try {
-      console.log('Building AI analysis prompt...');
-      const prompt = this.buildAnalysisPrompt(reportData);
+      console.log('AI Analysis request:', reportData);
+
+      // Parse file contents if attachments exist and not already provided
+      let attachmentContents = reportData.attachmentContents || '';
+      if (!attachmentContents && reportData.hasAttachments && reportData.attachmentPaths && reportData.attachmentTypes) {
+        console.log('Parsing attached files...');
+        const contentPromises = reportData.attachmentPaths.map((filePath, index) => 
+          this.parseFileContent(filePath, reportData.attachmentTypes![index])
+        );
+        const contents = await Promise.all(contentPromises);
+        attachmentContents = contents.join('\n\n---\n\n');
+        console.log('Parsed attachment contents length:', attachmentContents.length);
+      }
+
+      const analysisPrompt = this.buildAnalysisPrompt({
+        ...reportData,
+        attachmentContents
+      });
       
       console.log('Calling OpenAI API with model gpt-4o...');
       const response = await openai.chat.completions.create({
@@ -97,7 +141,13 @@ Analyze this NGO progress report and provide detailed feedback in JSON format:
 **Report Details:**
 - Title: ${reportData.title}
 - Content: ${reportData.content}
-${attachmentInfo}
+
+${reportData.attachmentContents ? `**Attachment Contents:**
+${reportData.attachmentContents}` : ''}
+
+**Attachments:** ${reportData.hasAttachments ? 
+      `${reportData.attachmentCount} files attached (${reportData.attachmentTypes?.join(', ')})` : 
+      'No attachments'}
 - Progress: ${reportData.progress || 'Not specified'}%
 - Challenges: ${reportData.challengesFaced || 'Not provided'}
 - Next Steps: ${reportData.nextSteps || 'Not provided'}

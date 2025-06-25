@@ -130,6 +130,27 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
       // Find the selected project to get its description
       const selectedProject = (projects as any)?.find((p: any) => p.id.toString() === formData.projectId);
       
+      // Parse file contents if files are selected
+      let attachmentContents = '';
+      if (selectedFiles.length > 0) {
+        const fileContents = await Promise.all(
+          selectedFiles.map(async (file) => {
+            try {
+              if (file.type.includes('text') || file.type.includes('txt')) {
+                return `Text File (${file.name}):\n${await file.text()}`;
+              } else if (file.type.includes('pdf')) {
+                return `PDF File (${file.name}): Content will be analyzed server-side`;
+              } else {
+                return `File (${file.name}): ${file.type}`;
+              }
+            } catch (error) {
+              return `File (${file.name}): Error reading content`;
+            }
+          })
+        );
+        attachmentContents = fileContents.join('\n\n---\n\n');
+      }
+      
       const response = await apiRequest("POST", "/api/reports/analyze", {
         title: formData.title,
         content: formData.content,
@@ -139,6 +160,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
         hasAttachments: selectedFiles.length > 0,
         attachmentCount: selectedFiles.length,
         attachmentTypes: selectedFiles.map(f => f.type),
+        attachmentContents,
       });
 
       const analysis = await response.json();
@@ -179,7 +201,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   };
 
   const isReadyForSubmission = () => {
-    return aiAnalysis && aiAnalysis.overallScore >= 70;
+    return aiAnalysis && aiAnalysis.overallScore >= 50;
   };
 
   const handleSubmit = (data: z.infer<typeof reportSchema>) => {
@@ -196,7 +218,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     if (!isReadyForSubmission()) {
       toast({
         title: "Report Needs Improvement",
-        description: `Your report scored ${aiAnalysis.overallScore}/100. Please improve it to reach at least 70% before submitting.`,
+        description: `Your report scored ${aiAnalysis.overallScore}/100. Please improve it to reach at least 50% before submitting.`,
         variant: "destructive",
       });
       return;
