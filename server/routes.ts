@@ -1003,6 +1003,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasAttachments, 
         attachmentCount, 
         attachmentTypes,
+        attachmentContents,
+        reportId,
         challengesFaced, 
         nextSteps, 
         budgetNotes 
@@ -1022,6 +1024,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Handle file parsing for existing reports
       let finalAttachmentContents = attachmentContents || '';
       let attachmentPaths: string[] = [];
+      
+      console.log('Analysis request - attachmentContents provided:', !!attachmentContents);
+      console.log('Analysis request - reportId:', reportId);
+      console.log('Analysis request - hasAttachments:', hasAttachments);
       
       if (!finalAttachmentContents && reportId && hasAttachments) {
         // Get the existing report with files
