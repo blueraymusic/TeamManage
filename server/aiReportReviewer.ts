@@ -27,9 +27,15 @@ export interface ReportAnalysis {
 export class AIReportReviewer {
   private async parseFileContent(filePath: string, fileType: string): Promise<string> {
     try {
-      const fullPath = path.join(process.cwd(), 'uploads', filePath);
+      // Handle both full paths and relative paths
+      let fullPath = filePath;
+      if (!filePath.startsWith('/')) {
+        fullPath = path.join(process.cwd(), 'uploads', filePath);
+      }
       
+      console.log('Attempting to parse file:', fullPath);
       if (!fs.existsSync(fullPath)) {
+        console.error('File not found:', fullPath);
         return `File not found: ${filePath}`;
       }
 

@@ -1019,6 +1019,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('Project found:', project);
       }
 
+      // Handle file parsing for existing reports
+      let finalAttachmentContents = attachmentContents || '';
+      let attachmentPaths: string[] = [];
+      
+      if (!finalAttachmentContents && reportId && hasAttachments) {
+        // Get the existing report with files
+        const existingReport = await storage.getReportById(reportId);
+        if (existingReport && existingReport.files && Array.isArray(existingReport.files)) {
+          console.log('Found existing report files:', existingReport.files);
+          attachmentPaths = existingReport.files.map((file: any) => file.filename);
+          console.log('Attachment paths for parsing:', attachmentPaths);
+        }
+      }
+
       const reportData = {
         title,
         content,
@@ -1030,6 +1044,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasAttachments,
         attachmentCount: attachmentCount || 0,
         attachmentTypes: attachmentTypes || [],
+        attachmentPaths: attachmentPaths.length > 0 ? attachmentPaths : undefined,
+        attachmentContents: finalAttachmentContents,
         challengesFaced,
         nextSteps,
         budgetNotes

@@ -52,9 +52,11 @@ export default function AIReportReviewer({ reportData, onAnalysisComplete }: AIR
 
     setIsAnalyzing(true);
     try {
-      const result = await apiRequest("/api/reports/analyze", {
-        method: "POST",
-        body: JSON.stringify(reportData),
+      console.log("Analyzing report with data:", reportData);
+      const result = await apiRequest("POST", "/api/reports/analyze", {
+        ...reportData,
+        reportId: reportData.projectId, // Use projectId as reportId for existing reports
+        hasAttachments: true, // Force file parsing for existing reports
       });
 
       setAnalysis(result);
