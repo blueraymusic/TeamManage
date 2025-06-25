@@ -165,6 +165,9 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
         attachmentContents = fileContents.join('\n\n---\n\n');
       }
       
+      console.log("Sending analysis request with attachment contents:", attachmentContents.length > 0);
+      console.log("Selected files for analysis:", selectedFiles.map(f => ({ name: f.name, type: f.type, size: f.size })));
+      
       const response = await apiRequest("POST", "/api/reports/analyze", {
         title: formData.title,
         content: formData.content,
@@ -249,11 +252,16 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     formData.append("projectId", data.projectId);
     
     // Append files
-    selectedFiles.forEach((file, index) => {
-      formData.append(`files`, file);
+    selectedFiles.forEach((file) => {
+      formData.append("files", file);
     });
     
-    console.log("Submitting form data...");
+    console.log("Submitting form data with files:", selectedFiles.length);
+    console.log("FormData entries:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    
     submitReportMutation.mutate(formData);
   };
 
@@ -524,26 +532,16 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                 ) : isReadyForSubmission() ? (
                   <Button
                     type="button"
-                    disabled={submitReportMutation.isPending || !form.formState.isValid}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    disabled={submitReportMutation.isPending}
+                    className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50"
                     onClick={async () => {
                       console.log("Submit button clicked");
                       console.log("Form values:", form.getValues());
-                      console.log("Form errors:", form.formState.errors);
+                      console.log("AI Analysis:", aiAnalysis);
+                      console.log("Ready for submission:", isReadyForSubmission());
                       
-                      const isValid = await form.trigger();
-                      console.log("Form validation result:", isValid);
-                      
-                      if (isValid) {
-                        const formData = form.getValues();
-                        handleSubmit(formData);
-                      } else {
-                        toast({
-                          title: "Form Validation Error",
-                          description: "Please check all required fields",
-                          variant: "destructive",
-                        });
-                      }
+                      const formData = form.getValues();
+                      await handleSubmit(formData);
                     }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
