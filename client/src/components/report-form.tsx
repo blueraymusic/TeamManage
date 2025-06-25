@@ -221,10 +221,28 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     return aiAnalysis && aiAnalysis.overallScore >= 40;
   };
 
-  const handleSubmit = async (data: z.infer<typeof reportSchema>) => {
+  const handleSubmit = async (formValues?: z.infer<typeof reportSchema>) => {
+    // Get current form values if not provided
+    const data = formValues || form.getValues();
+    
     console.log("handleSubmit called with data:", data);
+    console.log("Form watch values:", {
+      title: form.watch("title"),
+      content: form.watch("content"), 
+      projectId: form.watch("projectId")
+    });
     console.log("Selected files:", selectedFiles);
     console.log("AI Analysis:", aiAnalysis);
+    
+    // Validate form data
+    if (!data.title || !data.content || !data.projectId) {
+      toast({
+        title: "Missing Required Fields",
+        description: "Please fill in title, content, and select a project.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Only submit if AI analysis approves OR user explicitly chooses to submit anyway
     if (!aiAnalysis) {
@@ -249,7 +267,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("projectId", data.projectId.toString());
+    formData.append("projectId", data.projectId);
     
     // Append files
     selectedFiles.forEach((file) => {
@@ -293,19 +311,28 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
           </DialogHeader>
           
           <div className="space-y-6 p-6">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-              <div>
-                <Label htmlFor="title">Report Title *</Label>
-                <Input
-                  id="title"
-                  {...form.register("title")}
-                  className="mt-1"
-                  placeholder="Enter report title"
-                />
-                {form.formState.errors.title && (
-                  <p className="text-sm text-red-600">{String(form.formState.errors.title.message)}</p>
+            <Form {...form}>
+              <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Report Title *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter report title"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setAiAnalysis(null);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
+              />
 
               <div>
                 <Label htmlFor="content">Report Content *</Label>
@@ -536,12 +563,12 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                     className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50"
                     onClick={async () => {
                       console.log("Submit button clicked");
-                      console.log("Form values:", form.getValues());
+                      const currentValues = form.getValues();
+                      console.log("Current form values:", currentValues);
                       console.log("AI Analysis:", aiAnalysis);
                       console.log("Ready for submission:", isReadyForSubmission());
                       
-                      const formData = form.getValues();
-                      await handleSubmit(formData);
+                      await handleSubmit(currentValues);
                     }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
@@ -564,7 +591,8 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                   </div>
                 )}
               </div>
-            </form>
+              </form>
+            </Form>
           </div>
         </DialogContent>
       </Dialog>
