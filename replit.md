@@ -139,6 +139,9 @@ Changelog:
 - June 25, 2025. Adjusted conversations to show 7 full conversations with 8th partially visible for better scrolling indication
 - June 25, 2025. Enhanced key action buttons (Add Report, New Project) with improved visibility, sizing, and color-coding for better user experience
 - June 25, 2025. Added scrollable reports display showing maximum 3 reports at a time for better space management in both admin and officer dashboards
+- June 25, 2025. Implemented overdue project notifications with automatic filtering for completed projects and red badge counters on Projects tab
+- June 25, 2025. Fixed deadline calculation accuracy and automatic status updates based on progress completion levels
+- June 25, 2025. Deployed AI Assistant for Officer-Side Report Review with OpenAI integration for intelligent report analysis and improvement suggestions
 ```
 
 ## User Preferences
