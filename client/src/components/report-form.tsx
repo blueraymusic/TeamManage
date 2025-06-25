@@ -179,7 +179,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
   };
 
   const isReadyForSubmission = () => {
-    return aiAnalysis && (aiAnalysis.readinessLevel === 'excellent' || aiAnalysis.readinessLevel === 'good');
+    return aiAnalysis && aiAnalysis.overallScore >= 70;
   };
 
   const handleSubmit = (data: z.infer<typeof reportSchema>) => {
@@ -196,7 +196,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     if (!isReadyForSubmission()) {
       toast({
         title: "Report Needs Improvement",
-        description: "Please improve your report based on AI feedback before submitting.",
+        description: `Your report scored ${aiAnalysis.overallScore}/100. Please improve it to reach at least 70% before submitting.`,
         variant: "destructive",
       });
       return;
@@ -471,11 +471,10 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                   </Button>
                 ) : isReadyForSubmission() ? (
                   <Button
-                    type="submit"
+                    type="button"
                     disabled={submitReportMutation.isPending}
                     className="flex-1 bg-green-600 hover:bg-green-700"
-                    onClick={(e) => {
-                      e.preventDefault();
+                    onClick={() => {
                       const formData = form.getValues();
                       handleSubmit(formData);
                     }}
