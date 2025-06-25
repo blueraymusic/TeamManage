@@ -906,6 +906,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Report Review endpoint
+  app.post('/api/reports/analyze', requireAuth, async (req: any, res) => {
+    try {
+      const { title, content, projectId, challengesFaced, nextSteps, budgetNotes } = req.body;
+      
+      if (!title || !content) {
+        return res.status(400).json({ message: "Title and content are required" });
+      }
+
+      // Get project details for context
+      let projectName = "Unknown Project";
+      if (projectId) {
+        const project = await storage.getProjectById(projectId);
+        projectName = project?.name || "Unknown Project";
+      }
+
+      const analysis = await aiReportReviewer.analyzeReport({
+        title,
+        content,
+        projectName,
+        challengesFaced,
+        nextSteps,
+        budgetNotes
+      });
+
+      res.json(analysis);
+    } catch (error) {
+      console.error("AI Report Analysis Error:", error);
+      res.status(500).json({ message: "Failed to analyze report", error: error.message });
+    }
+  });
+
   // Contact/Meeting booking endpoint
   app.post('/api/contact/meeting', async (req, res) => {
     try {
