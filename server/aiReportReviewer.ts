@@ -135,7 +135,7 @@ export class AIReportReviewer {
           },
           {
             role: "user",
-            content: prompt
+            content: analysisPrompt
           }
         ],
         response_format: { type: "json_object" },
