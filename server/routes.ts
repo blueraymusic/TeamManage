@@ -521,7 +521,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         projectId: projectId,
         submittedBy: req.session.userId,
         organizationId: req.session.organizationId,
-        fileUrl: files.map((f: any) => f.filename).join(',') || undefined,
+        files: files.length > 0 ? files : null,
       };
 
       console.log("Validated report data:", reportData);

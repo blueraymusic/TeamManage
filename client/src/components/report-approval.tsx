@@ -209,7 +209,7 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
           </div>
 
           {/* Attachments */}
-          {report.files && report.files.length > 0 && (
+          {report.files && Array.isArray(report.files) && report.files.length > 0 && (
             <div>
               <h4 className="font-medium text-gray-900 mb-3">
                 Attachments ({report.files.length})
