@@ -711,24 +711,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "File not found" });
       }
       
-      // Get all messages from organization for file access verification
+      // Check if this is a report file first
+      const reports = await storage.getReportsByOrganization(req.session.organizationId);
+      const reportWithFile = reports.find(report => {
+        if (report.files && Array.isArray(report.files)) {
+          return report.files.some((file: any) => file.filename === filename);
+        }
+        return false;
+      });
+      
+      if (reportWithFile) {
+        console.log("File found in report:", reportWithFile.id);
+        const fileInfo = reportWithFile.files.find((file: any) => file.filename === filename);
+        const originalName = fileInfo?.originalName || filename;
+        
+        // Set proper headers for file download
+        res.setHeader('Content-Disposition', `attachment; filename="${originalName}"`);
+        res.setHeader('Content-Type', 'application/octet-stream');
+        
+        // Serve the file
+        return res.sendFile(filePath, (err) => {
+          if (err) {
+            console.error("File download error:", err);
+            if (!res.headersSent) {
+              res.status(500).json({ message: "Download failed" });
+            }
+          }
+        });
+      }
+      
+      // Check if this is a message file
       const messages = await storage.getAllMessagesForOrganization(req.session.organizationId);
       console.log("Found messages for organization:", messages.length);
       
-      const messageWithFile = messages.find(msg => msg.fileUrl === `/api/files/${filename}`);
-      console.log("Looking for message with file URL:", `/api/files/${filename}`);
+      const messageWithFile = messages.find(msg => {
+        if (!msg.fileUrl) return false;
+        // Handle both "/api/files/filename" and just "filename" formats
+        const msgFilename = msg.fileUrl.replace('/api/files/', '');
+        return msgFilename === filename;
+      });
+      
+      console.log("Looking for message with filename:", filename);
       console.log("Message with file found:", messageWithFile ? 'Yes' : 'No');
       if (messageWithFile) {
         console.log("File message details:", {
           id: messageWithFile.id,
           senderId: messageWithFile.senderId,
           recipientId: messageWithFile.recipientId,
-          content: messageWithFile.content
+          fileUrl: messageWithFile.fileUrl
         });
       }
       
       if (!messageWithFile) {
-        console.log("File access denied - message not found");
+        console.log("File access denied - not found in messages or reports");
         return res.status(403).json({ message: "File access denied" });
       }
       
