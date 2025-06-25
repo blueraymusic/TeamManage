@@ -249,7 +249,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("projectId", data.projectId);
+    formData.append("projectId", data.projectId.toString());
     
     // Append files
     selectedFiles.forEach((file) => {
