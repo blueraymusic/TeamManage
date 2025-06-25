@@ -500,14 +500,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         size: file.size,
       })) || [];
 
-      const reportData = insertReportSchema.parse({
-        ...req.body,
-        projectId: parseInt(req.body.projectId),
-        files,
-        submittedBy: req.session.userId,
+      console.log("Report submission data:", {
+        title: req.body.title,
+        content: req.body.content,
+        projectId: req.body.projectId,
+        projectIdType: typeof req.body.projectId,
+        userId: req.session.userId,
+        organizationId: req.session.organizationId
       });
 
-      const report = await storage.createReport(reportData);
+      const projectId = parseInt(req.body.projectId);
+      if (isNaN(projectId)) {
+        console.error("Invalid projectId:", req.body.projectId);
+        return res.status(400).json({ message: "Invalid project ID" });
+      }
+
+      const reportData = {
+        title: req.body.title,
+        content: req.body.content,
+        projectId: projectId,
+        submittedBy: req.session.userId,
+        organizationId: req.session.organizationId,
+        fileUrl: files.map((f: any) => f.filename).join(',') || undefined,
+      };
+
+      console.log("Validated report data:", reportData);
+      const validatedData = insertReportSchema.parse(reportData);
+
+      const report = await storage.createReport(validatedData);
       res.json(report);
     } catch (error) {
       console.error("Create report error:", error);
