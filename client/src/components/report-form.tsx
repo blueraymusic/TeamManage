@@ -186,6 +186,29 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     return aiAnalysis && (aiAnalysis.readinessLevel === 'excellent' || aiAnalysis.readinessLevel === 'good');
   };
 
+  const handleSubmit = (data: z.infer<typeof reportSchema>) => {
+    // Only submit if AI analysis approves OR user explicitly chooses to submit anyway
+    if (!aiAnalysis) {
+      toast({
+        title: "Analysis Required",
+        description: "Please analyze your report before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!isReadyForSubmission()) {
+      toast({
+        title: "Report Needs Improvement",
+        description: "Please improve your report based on AI feedback before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    submitReportMutation.mutate(data);
+  };
+
   const getFileIcon = (file: File) => {
     if (file.type.startsWith("image/")) {
       return <Image className="w-4 h-4" />;
@@ -195,9 +218,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     return <Paperclip className="w-4 h-4" />;
   };
 
-  const handleSubmit = (data: z.infer<typeof reportSchema>) => {
-    submitReportMutation.mutate(data);
-  };
+  // Removed duplicate handleSubmit function
 
   return (
     <>
@@ -216,7 +237,7 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
           </DialogHeader>
           
           <div className="space-y-6 p-6">
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
               <div>
                 <Label htmlFor="title">Report Title *</Label>
                 <Input
@@ -410,6 +431,11 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
                     type="submit"
                     disabled={submitReportMutation.isPending}
                     className="flex-1 bg-green-600 hover:bg-green-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const formData = form.getValues();
+                      handleSubmit(formData);
+                    }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
                     {submitReportMutation.isPending ? "Submitting..." : "Submit Report"}
