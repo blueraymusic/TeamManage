@@ -8,6 +8,7 @@ import ReportForm from "@/components/report-form";
 import ProgressChart from "@/components/progress-chart";
 import AdelLogo from "@/components/adel-logo";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { t } from "@/lib/i18n";
 import {
   ListTodo,
@@ -52,6 +53,7 @@ export default function OfficerDashboard() {
   console.log("Submitted reports count:", submittedReports.length);
   console.log("Submitted reports:", submittedReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
   console.log("Current user from useAuth:", user);
+  console.log("User ID for filtering:", user?.id);
   console.log("=== END DEBUG ===");
 
   // Recall report mutation
