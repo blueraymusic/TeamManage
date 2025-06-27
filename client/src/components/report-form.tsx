@@ -415,11 +415,11 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                 )}
               </div>
 
-              <div>
-                <div className="space-y-4">
+              <div className="transition-all duration-300">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <Label>File Attachments (Optional)</Label>
-                    <p className="text-sm text-gray-600 mb-3">
+                    <Label className="text-responsive-base">File Attachments (Optional)</Label>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors duration-200">
                       Attach photos, documents, or other files to support your report. Maximum 10MB per file.
                     </p>
                     <input
@@ -431,8 +431,8 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                       id="file-upload"
                     />
                     <Label htmlFor="file-upload" className="cursor-pointer">
-                      <Button type="button" variant="outline" asChild>
-                        <span>Choose Files</span>
+                      <Button type="button" variant="outline" asChild className="transition-all duration-200 hover:scale-105">
+                        <span className="text-responsive-sm">Choose Files</span>
                       </Button>
                     </Label>
                   </div>
