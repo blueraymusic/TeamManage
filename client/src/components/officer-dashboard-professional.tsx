@@ -43,6 +43,9 @@ import AdelLogo from "./adel-logo";
 import DeadlineBadge from "./deadline-badge";
 import DashboardWidgets from "./dashboard-widgets";
 import OverdueNotifications from "./overdue-notifications";
+import AnalyticsDashboard from "./analytics-dashboard";
+import SmartNotifications from "./smart-notifications";
+import ProjectTimeline from "./project-timeline";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -217,7 +220,7 @@ export default function OfficerDashboard() {
         <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs defaultValue="overview" className="w-full">
             <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
+              <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
@@ -239,6 +242,9 @@ export default function OfficerDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Analytics
                 </TabsTrigger>
                 <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Messages
@@ -432,6 +438,18 @@ export default function OfficerDashboard() {
                     </p>
                   </div>
                 )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="p-6 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <AnalyticsDashboard userRole="officer" />
+                </div>
+                <div className="space-y-6">
+                  <SmartNotifications userRole="officer" />
+                  <ProjectTimeline />
+                </div>
               </div>
             </TabsContent>
 

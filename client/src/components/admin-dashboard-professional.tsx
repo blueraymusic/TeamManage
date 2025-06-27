@@ -68,6 +68,9 @@ import MeetingBookingsManager from "./meeting-bookings-manager";
 import AdelLogo from "./adel-logo";
 import DeadlineBadge from "./deadline-badge";
 import OverdueNotifications from "./overdue-notifications";
+import AnalyticsDashboard from "./analytics-dashboard";
+import SmartNotifications from "./smart-notifications";
+import ProjectTimeline from "./project-timeline";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -316,7 +319,7 @@ export default function AdminDashboard() {
         <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs defaultValue="overview" className="w-full">
             <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
+              <TabsList className="grid w-full grid-cols-6 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
@@ -346,6 +349,9 @@ export default function AdminDashboard() {
                       {unreadMessages.count}
                     </Badge>
                   )}
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Analytics
                 </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
@@ -466,6 +472,18 @@ export default function AdminDashboard() {
 
             <TabsContent value="messages" className="p-6">
               <AdminChatInterface />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="p-6 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <AnalyticsDashboard userRole="admin" />
+                </div>
+                <div className="space-y-6">
+                  <SmartNotifications userRole="admin" />
+                  <ProjectTimeline />
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">
