@@ -1,0 +1,122 @@
+
+ADEL Logo
+Officer Dashboard
+Submit reports and track projects
+
+Logout
+1
+
+Active Projects
+
+1
+
+Completed
+
+14
+
+Total Reports
+
+0
+
+Pending
+
+Overview
+Projects
+Reports
+Messages
+Report Management
+Add Report
+Search reports by title or content...
+Test Submitted Report
+This is a test report in submitted status
+
+Project: Project 1
+Submitted: 27/06/2025
+submitted
+Reagan - Project 1
+The presidency of Ronald Reagan (1981–1989) marked a dramatic shift in U.S. environmental policy, characterized by aggressive deregulation, budget cuts, and a pro-industry agenda that critics argue sacrificed ecosystems for economic gain. Under Reagan, key environmental protections were weakened, leading to accelerated habitat destruction, toxic waste crises, and long-term ecological damage. This report examines the controversial policies and scandals that defined Reagan’s environmental legacy, including their consequences and lasting effects.
+
+Project: Project 1
+Submitted: 27/06/2025
+approved
+Project 1
+Adding the ability for the officer to “call back” or retract their report in ADEL means giving them control to undo or edit a submitted report before it is reviewed by the admin. Here's how it would work step by step:
+
+Project: Project 1
+Submitted: 27/06/2025
+approved
+The Reagan Administration’s Environmental Scandals and Their Lasting Impact
+The presidency of Ronald Reagan (1981–1989) marked a dramatic shift in U.S. environmental policy, characterized by aggressive deregulation, budget cuts, and a pro-industry agenda that critics argue sacrificed ecosystems for economic gain. Under Reagan, key environmental protections were weakened, leading to accelerated habitat destruction, toxic waste crises, and long-term ecological damage. This report examines the controversial policies and scandals that defined Reagan’s environmental legacy, including their consequences and lasting effects.
+
+Project: Project 1
+Submitted: 27/06/2025
+approved
+Employee
+This report outlines the measurable progress made in Project 1 during June 2025. It focuses on team performance, key outcomes, encountered challenges, and proposed improvements. The goal of the project—to increase community access to essential services—was advanced through successful outreach, operational improvements, and transparent financial tracking.
+
+Project: Project 1
+Submitted: 25/06/2025
+approved
+Employee
+This report outlines the measurable progress made in Project 1 during June 2025. It focuses on team performance, key outcomes, encountered challenges, and proposed improvements. The goal of the project—to increase community access to essential services—was advanced through successful outreach, operational improvements, and transparent financial tracking.
+
+Project: dffddf
+Submitted: 25/06/2025
+approved
+Review Notes: jjh
+
+Employee
+This report outlines the measurable progress made in Project 1 during June 2025. It focuses on team performance, key outcomes, encountered challenges, and proposed improvements. The goal of the project—to increase community access to essential services—was advanced through successful outreach, operational improvements, and transparent financial tracking.
+
+Project: Project 1
+Submitted: 25/06/2025
+rejected
+Review Notes: hjhjhj
+
+Goat
+Goat is the biggest animal on earth.
+
+Project: Project 1
+Submitted: 25/06/2025
+rejected
+Review Notes: jhhjjh
+
+Goat
+Goat is the biggest animal on earth.
+
+Project: Project 1
+Submitted: 25/06/2025
+approved
+Goat
+Goat is the biggest animal on earth.
+
+Project: Project 1
+Submitted: 25/06/2025
+rejected
+Review Notes: bnnb
+
+rekre
+hhjhjjkjkjkj
+
+Project: dffddf
+Submitted: 25/06/2025
+rejected
+rekre
+erkjkreererrere
+
+Project: Project 1
+Submitted: 23/06/2025
+rejected
+sdıhjd
+jhsdhbjhsdbd s
+
+Project: Project 1
+Submitted: 23/06/2025
+approved
+report test
+sddssdhjshjdjhsd
+
+Project: Project 1
+Submitted: 23/06/2025
+rejected
+0
