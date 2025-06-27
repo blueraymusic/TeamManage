@@ -87,11 +87,11 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
 
     // Budget utilization
     const budgetData = projects.map((p: any) => ({
-      name: p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name,
-      budget: p.budget || 0,
-      spent: p.budgetSpent || 0,
-      remaining: (p.budget || 0) - (p.budgetSpent || 0),
-      utilization: p.budget ? Math.round(((p.budgetSpent || 0) / p.budget) * 100) : 0
+      name: p.name && p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name || 'Unnamed Project',
+      budget: Number(p.budget) || 0,
+      spent: Number(p.budgetSpent) || 0,
+      remaining: Math.max(0, (Number(p.budget) || 0) - (Number(p.budgetSpent) || 0)),
+      utilization: p.budget && Number(p.budget) > 0 ? Math.round(((Number(p.budgetSpent) || 0) / Number(p.budget)) * 100) : 0
     }));
 
     // Progress distribution
@@ -374,7 +374,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                     <div>
                       <p className="text-sm font-medium text-blue-700">Total Budget</p>
                       <p className="text-2xl font-bold text-blue-900">
-                        ${analytics.budgetData.reduce((sum, item) => sum + item.budget, 0).toLocaleString()}
+                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.budget), 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -388,7 +388,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                     <div>
                       <p className="text-sm font-medium text-emerald-700">Total Spent</p>
                       <p className="text-2xl font-bold text-emerald-900">
-                        ${analytics.budgetData.reduce((sum, item) => sum + item.spent, 0).toLocaleString()}
+                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.spent), 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -402,7 +402,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                     <div>
                       <p className="text-sm font-medium text-amber-700">Remaining</p>
                       <p className="text-2xl font-bold text-amber-900">
-                        ${analytics.budgetData.reduce((sum, item) => sum + item.remaining, 0).toLocaleString()}
+                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.remaining), 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
