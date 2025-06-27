@@ -629,8 +629,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update an existing report (for editing drafts)
-  app.put("/api/reports/:id", requireAuth, async (req: any, res) => {
+  // Update an existing report (for editing drafts) - with file upload support
+  app.put("/api/reports/:id", requireAuth, upload.array('files', 10), async (req: any, res) => {
     const reportId = parseInt(req.params.id);
     const { userId, userRole, organizationId } = req.session;
     
@@ -648,11 +648,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Can only edit draft reports" });
       }
       
+      // Handle file uploads
+      const files = req.files?.map((file: any) => ({
+        originalName: file.originalname,
+        filename: file.filename,
+        path: file.path,
+        size: file.size,
+      })) || [];
+      
+      console.log("Updating report:", {
+        reportId,
+        title: req.body.title,
+        content: req.body.content,
+        projectId: req.body.projectId,
+        files: files.length
+      });
+      
       const { title, content, projectId } = req.body;
+      
+      // Merge existing files with new files if any
+      let updatedFiles = existingReport.files || [];
+      if (files.length > 0) {
+        updatedFiles = [...(existingReport.files || []), ...files];
+      }
+      
       const updated = await storage.updateReport(reportId, {
         title,
         content,
         projectId: parseInt(projectId),
+        files: updatedFiles.length > 0 ? updatedFiles : null,
       });
       
       res.json(updated);

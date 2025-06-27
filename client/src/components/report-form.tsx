@@ -47,20 +47,20 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
   const form = useForm({
     resolver: zodResolver(reportSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      projectId: projectId ? projectId.toString() : "",
+      title: existingReport?.title || "",
+      content: existingReport?.content || "",
+      projectId: existingReport?.projectId?.toString() || (projectId ? projectId.toString() : ""),
     },
   });
 
   // Reset form when projectId prop changes or when existing report loads
   React.useEffect(() => {
     if (existingReport) {
-      form.setValue("title", existingReport.title || "");
-      form.setValue("content", existingReport.content || "");
-      if (existingReport.projectId) {
-        form.setValue("projectId", existingReport.projectId.toString());
-      }
+      form.reset({
+        title: existingReport.title || "",
+        content: existingReport.content || "",
+        projectId: existingReport.projectId?.toString() || "",
+      });
     } else if (projectId) {
       form.setValue("projectId", projectId.toString());
     }
@@ -101,14 +101,17 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/reports", reportId] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
       toast({
         title: "Success",
         description: reportId ? "Report updated successfully!" : "Report submitted successfully! It's now pending review.",
       });
-      form.reset();
-      setSelectedFiles([]);
-      setAiAnalysis(null);
+      if (!reportId) {
+        form.reset();
+        setSelectedFiles([]);
+        setAiAnalysis(null);
+      }
       setIsOpen(false);
       onSuccess?.();
     },
@@ -609,11 +612,26 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                       console.log("AI Analysis:", aiAnalysis);
                       console.log("Ready for submission:", isReadyForSubmission());
                       
-                      await handleSubmit(currentValues);
+                      // Create FormData for submission
+                      const formData = new FormData();
+                      formData.append("title", currentValues.title);
+                      formData.append("content", currentValues.content);
+                      formData.append("projectId", currentValues.projectId);
+                      
+                      // Add files if any
+                      selectedFiles.forEach((file) => {
+                        formData.append("files", file);
+                      });
+                      
+                      try {
+                        await submitReportMutation.mutateAsync(formData);
+                      } catch (error) {
+                        console.error("Submit error:", error);
+                      }
                     }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
-                    {submitReportMutation.isPending ? "Submitting..." : "Submit Report"}
+                    {submitReportMutation.isPending ? "Submitting..." : (reportId ? "Update Report" : "Submit Report")}
                   </Button>
                 ) : (
                   <div className="flex-1 space-y-2">

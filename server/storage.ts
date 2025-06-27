@@ -267,6 +267,11 @@ export class DatabaseStorage implements IStorage {
     return updated;
   }
 
+  async updateReport(id: number, updates: Partial<Report>): Promise<Report> {
+    const [updated] = await db.update(reports).set(updates).where(eq(reports.id, id)).returning();
+    return updated;
+  }
+
   async recallReport(id: number, officerId: number): Promise<Report> {
     // First check if the report can be recalled (must be submitted and not reviewed)
     const [existingReport] = await db.select().from(reports).where(eq(reports.id, id));
