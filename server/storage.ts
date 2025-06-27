@@ -47,6 +47,7 @@ export interface IStorage {
   getPendingReports(organizationId: number): Promise<Report[]>;
   getReportById(id: number): Promise<Report | undefined>;
   updateReportStatus(id: number, status: string, reviewedBy: number, reviewNotes?: string): Promise<Report>;
+  recallReport(id: number, officerId: number): Promise<Report>;
 
   // Message operations
   sendMessage(message: InsertMessage): Promise<Message>;
@@ -237,7 +238,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(reports)
       .innerJoin(projects, eq(reports.projectId, projects.id))
-      .where(and(eq(projects.organizationId, organizationId), eq(reports.status, "pending")))
+      .where(and(eq(projects.organizationId, organizationId), eq(reports.status, "submitted")))
       .orderBy(desc(reports.submittedAt));
   }
 
@@ -257,6 +258,31 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(reports.id, id))
       .returning();
+    return updated;
+  }
+
+  async recallReport(id: number, officerId: number): Promise<Report> {
+    // First check if the report can be recalled (must be submitted and not reviewed)
+    const [existingReport] = await db.select().from(reports).where(eq(reports.id, id));
+    
+    if (!existingReport) {
+      throw new Error("Report not found");
+    }
+    
+    if (existingReport.submittedBy !== officerId) {
+      throw new Error("You can only recall your own reports");
+    }
+    
+    if (existingReport.status !== "submitted") {
+      throw new Error("Can only recall submitted reports that haven't been reviewed");
+    }
+    
+    // Update status back to draft and clear submission timestamp
+    const [updated] = await db.update(reports).set({
+      status: "draft",
+      submittedAt: null // Clear submission timestamp
+    }).where(eq(reports.id, id)).returning();
+    
     return updated;
   }
 

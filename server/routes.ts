@@ -521,6 +521,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         projectId: projectId,
         submittedBy: req.session.userId,
         files: files.length > 0 ? files : null,
+        status: "submitted", // Set status to submitted when creating
+        submittedAt: new Date() // Set submission timestamp
       };
 
       console.log("Validated report data:", reportData);
@@ -609,6 +611,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Bulk reject reports error:", error);
       res.status(500).json({ message: "Failed to reject reports" });
+    }
+  });
+
+  // Recall report (officer only - for their own reports)
+  app.post("/api/reports/:id/recall", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const report = await storage.recallReport(parseInt(id), req.session.userId);
+      res.json(report);
+    } catch (error) {
+      res.status(400).json({ message: error instanceof Error ? error.message : "Failed to recall report" });
     }
   });
 

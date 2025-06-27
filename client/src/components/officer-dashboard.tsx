@@ -39,9 +39,39 @@ export default function OfficerDashboard() {
 
   // Get user's submitted reports
   const userReports = reports?.filter((report: any) => report.submittedBy) || [];
-  const pendingReports = userReports.filter((report: any) => report.status === "pending");
+  const draftReports = userReports.filter((report: any) => report.status === "draft");
+  const submittedReports = userReports.filter((report: any) => report.status === "submitted");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
+
+  // Recall report mutation
+  const recallReportMutation = useMutation({
+    mutationFn: async (reportId: number) => {
+      const response = await fetch(`/api/reports/${reportId}/recall`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to recall report');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
+      toast({
+        title: "Report recalled successfully",
+        description: "Your report has been moved back to draft status and can now be edited.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to recall report",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   if (statsLoading) {
     return (
@@ -103,7 +133,7 @@ export default function OfficerDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {pendingReports.length || 0}
+                  {submittedReports.length || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.pendingReview')}</p>
               </div>

@@ -48,7 +48,7 @@ export const reports = pgTable("reports", {
   title: text("title").notNull(),
   content: text("content").notNull(),
   files: jsonb("files"), // Array of file metadata objects
-  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'rejected'
+  status: text("status").notNull().default("draft"), // 'draft', 'submitted', 'approved', 'rejected'
   projectId: integer("project_id").references(() => projects.id).notNull(),
   submittedBy: integer("submitted_by").references(() => users.id).notNull(),
   reviewedBy: integer("reviewed_by").references(() => users.id),
