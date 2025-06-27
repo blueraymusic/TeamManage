@@ -89,15 +89,17 @@ export default function ProjectTimeline() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
+    <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200">
+        <CardTitle className="flex items-center gap-3 text-gray-800 font-semibold">
+          <div className="p-2 bg-indigo-600 rounded-lg">
+            <Calendar className="h-5 w-5 text-white" />
+          </div>
           Project Timeline
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="p-6">
+        <div className="space-y-6">
           {sortedProjects.map((project: any, index: number) => {
             const deadlineStatus = getDeadlineStatus(project);
             const budgetUtilization = getBudgetUtilization(project);

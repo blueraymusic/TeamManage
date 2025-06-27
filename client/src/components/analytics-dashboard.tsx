@@ -56,10 +56,10 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
 
     // Project status distribution
     const projectStatusData = [
-      { name: 'Active', value: projects.filter((p: any) => p.status === 'active').length, color: '#22c55e' },
-      { name: 'Completed', value: projects.filter((p: any) => p.status === 'completed').length, color: '#3b82f6' },
-      { name: 'On Hold', value: projects.filter((p: any) => p.status === 'on-hold').length, color: '#f59e0b' },
-      { name: 'Cancelled', value: projects.filter((p: any) => p.status === 'cancelled').length, color: '#ef4444' },
+      { name: 'Active', value: projects.filter((p: any) => p.status === 'active').length, color: '#10b981', darkColor: '#059669' },
+      { name: 'Completed', value: projects.filter((p: any) => p.status === 'completed').length, color: '#3b82f6', darkColor: '#2563eb' },
+      { name: 'On Hold', value: projects.filter((p: any) => p.status === 'on-hold').length, color: '#f59e0b', darkColor: '#d97706' },
+      { name: 'Cancelled', value: projects.filter((p: any) => p.status === 'cancelled').length, color: '#ef4444', darkColor: '#dc2626' },
     ];
 
     // Report approval trends (last 30 days)
@@ -94,11 +94,11 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
 
     // Progress distribution
     const progressRanges = [
-      { range: '0-25%', count: 0, color: '#ef4444' },
-      { range: '26-50%', count: 0, color: '#f59e0b' },
-      { range: '51-75%', count: 0, color: '#eab308' },
-      { range: '76-99%', count: 0, color: '#22c55e' },
-      { range: '100%', count: 0, color: '#3b82f6' },
+      { range: '0-25%', count: 0, color: '#ef4444', label: 'Starting', bgColor: '#fef2f2' },
+      { range: '26-50%', count: 0, color: '#f59e0b', label: 'In Progress', bgColor: '#fffbeb' },
+      { range: '51-75%', count: 0, color: '#eab308', label: 'Good Progress', bgColor: '#fefce8' },
+      { range: '76-99%', count: 0, color: '#22c55e', label: 'Nearly Done', bgColor: '#f0fdf4' },
+      { range: '100%', count: 0, color: '#3b82f6', label: 'Completed', bgColor: '#eff6ff' },
     ];
 
     projects.forEach((p: any) => {
@@ -147,65 +147,78 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
   return (
     <div className="space-y-6">
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-blue-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Target className="h-4 w-4" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold text-blue-700 flex items-center gap-2">
+              <div className="p-2 bg-blue-600 rounded-lg">
+                <Target className="h-4 w-4 text-white" />
+              </div>
               Total Projects
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalProjects}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats?.activeProjects || 0} active
+            <div className="text-3xl font-bold text-blue-900">{analytics.totalProjects}</div>
+            <p className="text-sm text-blue-600 mt-2 font-medium">
+              {stats?.activeProjects || 0} currently active
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-green-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Avg Progress
+        <Card className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold text-emerald-700 flex items-center gap-2">
+              <div className="p-2 bg-emerald-600 rounded-lg">
+                <Activity className="h-4 w-4 text-white" />
+              </div>
+              Average Progress
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.avgProgress}%</div>
-            <Progress value={analytics.avgProgress} className="mt-2 h-2" />
+            <div className="text-3xl font-bold text-emerald-900">{analytics.avgProgress}%</div>
+            <div className="mt-3">
+              <Progress 
+                value={analytics.avgProgress} 
+                className="h-3 bg-emerald-200" 
+              />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-purple-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
+        <Card className="bg-gradient-to-br from-purple-50 to-violet-100 border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold text-purple-700 flex items-center gap-2">
+              <div className="p-2 bg-purple-600 rounded-lg">
+                <BarChart3 className="h-4 w-4 text-white" />
+              </div>
               Total Reports
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalReports}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <div className="text-3xl font-bold text-purple-900">{analytics.totalReports}</div>
+            <p className="text-sm text-purple-600 mt-2 font-medium">
               {analytics.approvalRate}% approval rate
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-orange-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4" />
+        <Card className="bg-gradient-to-br from-amber-50 to-orange-100 border border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold text-amber-700 flex items-center gap-2">
+              <div className="p-2 bg-amber-600 rounded-lg">
+                <CheckCircle2 className="h-4 w-4 text-white" />
+              </div>
               Completion Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold text-amber-900">
               {analytics.totalProjects > 0 
                 ? Math.round((stats?.completedProjects || 0) / analytics.totalProjects * 100)
                 : 0}%
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats?.completedProjects || 0} completed
+            <p className="text-sm text-amber-600 mt-2 font-medium">
+              {stats?.completedProjects || 0} projects completed
             </p>
           </CardContent>
         </Card>
@@ -214,31 +227,45 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Project Status Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5" />
+        <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200">
+            <CardTitle className="flex items-center gap-3 text-gray-800 font-semibold">
+              <div className="p-2 bg-indigo-600 rounded-lg">
+                <Target className="h-5 w-5 text-white" />
+              </div>
               Project Status Distribution
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-64">
+          <CardContent className="p-6">
+            <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={analytics.projectStatusData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={80}
+                    outerRadius={85}
+                    innerRadius={40}
                     fill="#8884d8"
                     dataKey="value"
-                    label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
+                    label={({ name, value, percent }) => value > 0 ? `${name}: ${value} (${(percent * 100).toFixed(0)}%)` : ''}
+                    labelLine={false}
+                    fontSize={12}
+                    fontWeight="600"
                   >
                     {analytics.projectStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontWeight: '500'
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -246,22 +273,52 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
         </Card>
 
         {/* Progress Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
+        <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200">
+            <CardTitle className="flex items-center gap-3 text-gray-800 font-semibold">
+              <div className="p-2 bg-emerald-600 rounded-lg">
+                <Activity className="h-5 w-5 text-white" />
+              </div>
               Progress Distribution
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-64">
+          <CardContent className="p-6">
+            <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={analytics.progressRanges}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="range" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#3b82f6" />
+                <BarChart data={analytics.progressRanges} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="range" 
+                    tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                    axisLine={{ stroke: '#d1d5db' }}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                    axisLine={{ stroke: '#d1d5db' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontWeight: '500'
+                    }}
+                    labelStyle={{ color: '#d1d5db' }}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="url(#progressGradient)"
+                    radius={[4, 4, 0, 0]}
+                    stroke="#059669"
+                    strokeWidth={1}
+                  />
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="#059669" stopOpacity={0.6}/>
+                    </linearGradient>
+                  </defs>
                 </BarChart>
               </ResponsiveContainer>
             </div>

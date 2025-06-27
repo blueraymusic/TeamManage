@@ -210,17 +210,21 @@ export default function SmartNotifications({ userRole }: SmartNotificationsProps
 
   if (notifications.length === 0) {
     return (
-      <Card>
+      <Card className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Bell className="h-4 w-4" />
+          <CardTitle className="flex items-center gap-3 text-emerald-700 font-semibold">
+            <div className="p-2 bg-emerald-600 rounded-lg">
+              <Bell className="h-4 w-4 text-white" />
+            </div>
             Notifications
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <CheckCircle2 className="h-4 w-4" />
-            <span className="text-sm">All caught up! No new notifications.</span>
+          <div className="flex items-center gap-3 text-emerald-600">
+            <div className="p-2 bg-emerald-100 rounded-full">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+            </div>
+            <span className="text-sm font-medium">All caught up! No new notifications.</span>
           </div>
         </CardContent>
       </Card>
@@ -233,18 +237,20 @@ export default function SmartNotifications({ userRole }: SmartNotificationsProps
       {getPriorityNotifications().map((notification) => {
         const Icon = notification.icon;
         return (
-          <Alert key={notification.id} className="border-red-200 bg-red-50">
-            <Icon className="h-4 w-4 text-red-600" />
+          <Alert key={notification.id} className="border-l-4 border-l-red-500 bg-gradient-to-r from-red-50 to-rose-100 border border-red-200 shadow-lg">
+            <div className="p-2 bg-red-100 rounded-full">
+              <Icon className="h-5 w-5 text-red-600" />
+            </div>
             <AlertDescription>
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="font-medium text-red-800">{notification.title}</div>
-                  <div className="text-sm text-red-700 mt-1">{notification.description}</div>
+                  <div className="font-semibold text-red-800 text-base">{notification.title}</div>
+                  <div className="text-sm text-red-700 mt-2 font-medium">{notification.description}</div>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="ml-4 border-red-300 text-red-700 hover:bg-red-100"
+                  className="ml-4 border-red-400 text-red-700 hover:bg-red-200 hover:border-red-500 font-medium"
                   onClick={() => dismissNotification(notification.id)}
                 >
                   Dismiss
