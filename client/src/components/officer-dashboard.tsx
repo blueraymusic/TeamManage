@@ -37,16 +37,17 @@ export default function OfficerDashboard() {
     queryKey: ["/api/reports"],
   });
 
-  // Get user's submitted reports
-  const userReports = Array.isArray(reports) ? reports.filter((report: any) => report.submittedBy) : [];
+  // Get user's submitted reports - filter by current user ID
+  const userReports = Array.isArray(reports) ? reports.filter((report: any) => report.submittedBy === user?.id) : [];
   const draftReports = userReports.filter((report: any) => report.status === "draft");
   const submittedReports = userReports.filter((report: any) => report.status === "submitted");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
 
   // Debug log to check report statuses
-  console.log("All reports:", reports);
-  console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
+  console.log("All reports from API:", reports);
+  console.log("Current user ID:", user?.id);
+  console.log("User reports after filtering:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
   console.log("Submitted reports count:", submittedReports.length);
 
   // Recall report mutation
