@@ -45,6 +45,7 @@ export default function OfficerDashboard() {
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
 
   // Debug log to check report statuses
+  console.log("All reports:", reports);
   console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
   console.log("Submitted reports count:", submittedReports.length);
 
@@ -437,13 +438,27 @@ export default function OfficerDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => recallReportMutation.mutate(report.id)}
+                                  onClick={() => {
+                                    console.log("Recalling report:", report.id);
+                                    recallReportMutation.mutate(report.id);
+                                  }}
                                   disabled={recallReportMutation.isPending}
-                                  className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
+                                  className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium border-2"
                                 >
-                                  Call Back
+                                  📞 Call Back
                                 </Button>
                               )}
+                              {/* Debug: Always show for testing */}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  console.log("TEST: Report status:", report.status, "Report ID:", report.id);
+                                }}
+                                className="text-xs h-7 px-2 bg-red-50 border-red-200 text-red-700"
+                              >
+                                TEST ({report.status})
+                              </Button>
                             </div>
                           </div>
                         </div>
