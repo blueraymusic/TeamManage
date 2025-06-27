@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { Upload, X, FileText, Image, Paperclip, Plus, Brain, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -39,32 +38,35 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
   });
 
   // Fetch existing report data when editing
-  const { data: existingReport } = useQuery({
+  const { data: existingReport, isLoading: reportLoading } = useQuery({
     queryKey: ["/api/reports", reportId],
     enabled: !!reportId,
   });
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof reportSchema>>({
     resolver: zodResolver(reportSchema),
     defaultValues: {
-      title: existingReport?.title || "",
-      content: existingReport?.content || "",
-      projectId: existingReport?.projectId?.toString() || (projectId ? projectId.toString() : ""),
+      title: "",
+      content: "",
+      projectId: projectId ? projectId.toString() : "",
     },
   });
 
-  // Reset form when projectId prop changes or when existing report loads
-  React.useEffect(() => {
-    if (existingReport) {
+  // Load existing report data into form when available
+  useEffect(() => {
+    if (existingReport && !reportLoading) {
+      const report = existingReport as any;
+      console.log("Loading existing report data:", report);
+      
       form.reset({
-        title: existingReport.title || "",
-        content: existingReport.content || "",
-        projectId: existingReport.projectId?.toString() || "",
+        title: report.title || "",
+        content: report.content || "",
+        projectId: report.projectId ? report.projectId.toString() : "",
       });
-    } else if (projectId) {
+    } else if (projectId && !reportId) {
       form.setValue("projectId", projectId.toString());
     }
-  }, [projectId, existingReport, form]);
+  }, [existingReport, reportLoading, projectId, reportId, form]);
 
   const submitReportMutation = useMutation({
     mutationFn: async (data: FormData | z.infer<typeof reportSchema>) => {
@@ -222,9 +224,9 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
         title: "Analysis Complete",
         description: readinessMessage,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Analysis error:", error);
-      const errorMessage = error.message || "Unable to analyze report. Please try again.";
+      const errorMessage = error?.message || "Unable to analyze report. Please try again.";
       toast({
         title: "Analysis Failed",
         description: errorMessage,
@@ -320,9 +322,10 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
     
     console.log("Submitting form data with files:", selectedFiles.length);
     console.log("FormData entries:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
+    const entries = Array.from(formData.entries());
+    entries.forEach(([key, value]) => {
+      console.log(`${key}:`, value);
+    });
     
     submitReportMutation.mutate(formData);
   };
@@ -336,27 +339,33 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
     return <Paperclip className="w-4 h-4" />;
   };
 
-  // Removed duplicate handleSubmit function
+  if (reportId && reportLoading) {
+    return <div>Loading report data...</div>;
+  }
 
   return (
     <>
-      <Button 
-        onClick={() => setIsOpen(true)}
-        className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white font-medium"
-      >
-        <Plus className="w-4 h-4 mr-2" />
-        Add Report
-      </Button>
+      {!reportId && (
+        <Button 
+          onClick={() => setIsOpen(true)}
+          className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white font-medium"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Report
+        </Button>
+      )}
       
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={reportId ? true : isOpen} onOpenChange={reportId ? () => {} : setIsOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Submit New Report</DialogTitle>
+            <DialogTitle>
+              {reportId ? "Edit Report" : "Submit New Report"}
+            </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-6 p-6">
             <Form {...form}>
-              <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+              <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="title"
@@ -602,33 +611,9 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                   </Button>
                 ) : isReadyForSubmission() ? (
                   <Button
-                    type="button"
+                    type="submit"
                     disabled={submitReportMutation.isPending}
                     className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50"
-                    onClick={async () => {
-                      console.log("Submit button clicked");
-                      const currentValues = form.getValues();
-                      console.log("Current form values:", currentValues);
-                      console.log("AI Analysis:", aiAnalysis);
-                      console.log("Ready for submission:", isReadyForSubmission());
-                      
-                      // Create FormData for submission
-                      const formData = new FormData();
-                      formData.append("title", currentValues.title);
-                      formData.append("content", currentValues.content);
-                      formData.append("projectId", currentValues.projectId);
-                      
-                      // Add files if any
-                      selectedFiles.forEach((file) => {
-                        formData.append("files", file);
-                      });
-                      
-                      try {
-                        await submitReportMutation.mutateAsync(formData);
-                      } catch (error) {
-                        console.error("Submit error:", error);
-                      }
-                    }}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
                     {submitReportMutation.isPending ? "Submitting..." : (reportId ? "Update Report" : "Submit Report")}

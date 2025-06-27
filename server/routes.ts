@@ -649,12 +649,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Handle file uploads
-      const files = req.files?.map((file: any) => ({
+      const files = Array.isArray(req.files) ? req.files.map((file: any) => ({
         originalName: file.originalname,
         filename: file.filename,
         path: file.path,
         size: file.size,
-      })) || [];
+      })) : [];
       
       console.log("Updating report:", {
         reportId,
@@ -667,16 +667,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { title, content, projectId } = req.body;
       
       // Merge existing files with new files if any
-      let updatedFiles = existingReport.files || [];
+      let updatedFiles = Array.isArray(existingReport.files) ? existingReport.files : [];
       if (files.length > 0) {
-        updatedFiles = [...(existingReport.files || []), ...files];
+        updatedFiles = [...updatedFiles, ...files];
       }
       
       const updated = await storage.updateReport(reportId, {
         title,
         content,
         projectId: parseInt(projectId),
-        files: updatedFiles.length > 0 ? updatedFiles : null,
+        files: updatedFiles.length > 0 ? updatedFiles : undefined,
       });
       
       res.json(updated);
