@@ -238,7 +238,12 @@ export class DatabaseStorage implements IStorage {
       })
       .from(reports)
       .innerJoin(projects, eq(reports.projectId, projects.id))
-      .where(and(eq(projects.organizationId, organizationId), eq(reports.status, "submitted")))
+      .where(
+        and(
+          eq(projects.organizationId, organizationId),
+          eq(reports.status, "submitted")
+        )
+      )
       .orderBy(desc(reports.submittedAt));
   }
 

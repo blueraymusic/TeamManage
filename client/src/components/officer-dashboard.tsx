@@ -45,9 +45,12 @@ export default function OfficerDashboard() {
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
 
   // Debug log to check report statuses
+  console.log("=== OFFICER DASHBOARD DEBUG ===");
   console.log("All reports from API:", reports);
   console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
   console.log("Submitted reports count:", submittedReports.length);
+  console.log("Current user:", user);
+  console.log("=== END DEBUG ===");
 
   // Recall report mutation
   const recallReportMutation = useMutation({
@@ -290,7 +293,7 @@ export default function OfficerDashboard() {
                     </div>
                   ))}
                 </div>
-              ) : (!projects || projects.length === 0) ? (
+              ) : (!projects || (Array.isArray(projects) && projects.length === 0)) ? (
                 <div className="text-center py-8 text-gray-500">
                   <ListTodo className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <p>No projects assigned yet</p>
@@ -298,7 +301,7 @@ export default function OfficerDashboard() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-4">
-                  {Array.isArray(projects) ? projects.map((project: any) => (
+                  {(Array.isArray(projects) ? projects : []).map((project: any) => (
                     <Card key={project.id} className="border-l-4 border-blue-500">
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-gray-900 mb-2">{project.name}</h3>
@@ -448,18 +451,6 @@ export default function OfficerDashboard() {
                                   📞 Call Back
                                 </Button>
                               )}
-                              {/* Always show debug button for now */}
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  console.log("DEBUG: Report status:", report.status, "ID:", report.id);
-                                }}
-                                className="text-xs h-7 px-2 bg-red-50 border-red-200 text-red-700"
-                              >
-                                DEBUG: {report.status}
-                              </Button>
-
                             </div>
                           </div>
                         </div>

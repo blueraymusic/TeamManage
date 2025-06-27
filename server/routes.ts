@@ -546,6 +546,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const allReports = await storage.getReportsByOrganization(req.session.organizationId);
         reports = allReports.filter((report: any) => report.submittedBy === req.session.userId);
         console.log(`Officer ${req.session.userId} reports:`, reports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
+        console.log(`Officer ${req.session.userId} has ${reports.length} reports total`);
       }
       
       res.json(reports);
