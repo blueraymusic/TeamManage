@@ -203,17 +203,27 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
       console.log("Sending analysis request with attachment contents:", attachmentContents.length > 0);
       console.log("Selected files for analysis:", selectedFiles.map(f => ({ name: f.name, type: f.type, size: f.size })));
       
-      const response = await apiRequest("POST", "/api/reports/analyze", {
+      const response = await fetch("/api/reports/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
         title: formData.title,
         content: formData.content,
         projectId: parseInt(formData.projectId),
         projectDescription: selectedProject?.description || "",
-        projectGoals: selectedProject?.goals || "",
-        hasAttachments: selectedFiles.length > 0,
-        attachmentCount: selectedFiles.length,
-        attachmentTypes: selectedFiles.map(f => f.type),
-        attachmentContents,
+          projectGoals: selectedProject?.goals || "",
+          hasAttachments: selectedFiles.length > 0,
+          attachmentCount: selectedFiles.length,
+          attachmentTypes: selectedFiles.map(f => f.type),
+        }),
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze report");
+      }
 
       const analysis = await response.json();
 
@@ -365,7 +375,7 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
           
           <div className="space-y-6 p-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="title"

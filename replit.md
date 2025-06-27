@@ -151,6 +151,7 @@ Changelog:
 - June 27, 2025. Implemented report recall functionality allowing officers to withdraw submitted reports before admin review with "Call Back" button
 - June 27, 2025. Enhanced officer dashboard with fully functional call back system - pending count displays correctly, officers can recall submitted reports to draft status, and edit recalled reports with improved button styling
 - June 27, 2025. Implemented comprehensive responsive design with smooth transition animations across all dashboard components, forms, and UI elements. Added mobile-first breakpoints, enhanced hover effects, custom animations, and improved accessibility for mobile devices.
+- June 27, 2025. Fixed submit report functionality in edit mode with proper data persistence. Enhanced ReportForm component with TypeScript type safety, proper form data loading for existing reports, and fixed validation issues. Edit functionality now correctly loads existing report data and updates reports without creating duplicates.
 ```
 
 ## User Preferences
