@@ -254,8 +254,8 @@ function ReportDetailsDialog({ report, onStatusUpdate }: ReportDetailsProps) {
             </div>
           )}
 
-          {/* Review Section (only for pending reports) */}
-          {report.status === "pending" && (
+          {/* Review Section (only for submitted reports) */}
+          {report.status === "submitted" && (
             <div className="border-t pt-6">
               <h4 className="font-medium text-gray-900 mb-3">Review & Decision</h4>
               <div className="space-y-4">
