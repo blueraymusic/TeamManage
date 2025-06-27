@@ -282,10 +282,9 @@ export class DatabaseStorage implements IStorage {
       throw new Error("Can only recall submitted reports that haven't been reviewed");
     }
     
-    // Update status back to draft and clear submission timestamp
+    // Update status back to draft (keep submission timestamp for audit trail)
     const [updated] = await db.update(reports).set({
-      status: "draft",
-      submittedAt: null // Clear submission timestamp
+      status: "draft"
     }).where(eq(reports.id, id)).returning();
     
     return updated;
