@@ -41,6 +41,7 @@ import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
 import DeadlineBadge from "./deadline-badge";
+import DashboardWidgets from "./dashboard-widgets";
 import OverdueNotifications from "./overdue-notifications";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
