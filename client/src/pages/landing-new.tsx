@@ -472,9 +472,9 @@ export default function LandingNew() {
                   Multi-stage approval workflows with comprehensive report management and tracking.
                 </p>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <li className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2" />PDF export for donors</li>
+                  <li className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2" />Interactive PDF preview</li>
+                  <li className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2" />Professional donor reports</li>
                   <li className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2" />Approval workflows</li>
-                  <li className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2" />Report recall system</li>
                 </ul>
               </CardContent>
             </Card>
@@ -877,11 +877,12 @@ export default function LandingNew() {
                   </div>
                 </div>
                 
-                {/* Mock Chart Area */}
-                <div className="bg-white dark:bg-gray-900 rounded-lg p-4 h-32 flex items-center justify-center">
+                {/* PDF Preview Demo Area */}
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-4 h-32 flex items-center justify-center border-2 border-dashed border-blue-200 dark:border-blue-800">
                   <div className="text-center">
-                    <PieChart className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">Interactive Charts & Analytics</p>
+                    <FileText className="h-12 w-12 text-blue-500 mx-auto mb-2" />
+                    <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">Professional PDF Reports</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-xs">Preview before export to donors</p>
                   </div>
                 </div>
               </div>

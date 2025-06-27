@@ -54,7 +54,8 @@ import {
   Star,
   ArrowUpRight,
   Activity,
-  Mail
+  Mail,
+  Download
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { useLogout } from "@/hooks/use-auth";
@@ -71,6 +72,7 @@ import OverdueNotifications from "./overdue-notifications";
 import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 import ProjectTimeline from "./project-timeline";
+import PDFReportPreview from "./pdf-report-preview";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -84,6 +86,7 @@ export default function AdminDashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isPDFPreviewOpen, setIsPDFPreviewOpen] = useState(false);
   
   const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
@@ -462,7 +465,18 @@ export default function AdminDashboard() {
             <TabsContent value="reports" className="p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-slate-800">Report Management</h2>
-                <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+                <div className="flex items-center space-x-3">
+                  <Button
+                    onClick={() => setIsPDFPreviewOpen(true)}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 hover:from-blue-600 hover:to-purple-700"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>PDF Preview</span>
+                  </Button>
+                  <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+                </div>
               </div>
               {/* Reports List - Shows more reports for admin */}
               <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>
@@ -681,6 +695,12 @@ ${orgData.name || 'Organization'} Team`;
           )}
         </DialogContent>
       </Dialog>
+
+      {/* PDF Report Preview Modal */}
+      <PDFReportPreview 
+        isOpen={isPDFPreviewOpen} 
+        onClose={() => setIsPDFPreviewOpen(false)} 
+      />
     </div>
   );
 }
