@@ -56,6 +56,8 @@ export default function OfficerDashboard() {
   console.log("User ID for filtering:", user?.id);
   console.log("CRITICAL DEBUG - submittedReports array:", submittedReports);
   console.log("CRITICAL DEBUG - submittedReports.length:", submittedReports?.length);
+  console.log("CRITICAL DEBUG - Check first submitted report:", submittedReports[0]);
+  console.log("CRITICAL DEBUG - Reports with 'submitted' status:", userReports.filter(r => r.status === "submitted"));
   console.log("Filtered user reports:", userReports.length);
   console.log("Filtered submitted reports:", submittedReports.length);
   console.log("=== END DEBUG ===");
