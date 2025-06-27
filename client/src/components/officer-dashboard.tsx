@@ -412,37 +412,39 @@ export default function OfficerDashboard() {
                               Submitted {new Date(report.submittedAt).toLocaleDateString()}
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <Badge 
-                              variant={
-                                report.status === "approved" ? "default" :
-                                report.status === "rejected" ? "destructive" :
-                                report.status === "submitted" ? "secondary" : "outline"
-                              }
-                              className={
-                                report.status === "approved" ? "bg-green-100 text-green-600" :
-                                report.status === "rejected" ? "bg-red-100 text-red-600" :
-                                report.status === "submitted" ? "bg-orange-100 text-orange-600" :
-                                "bg-gray-100 text-gray-600"
-                              }
-                            >
-                              {report.status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
-                              {report.status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
-                              {report.status === "submitted" && <AlertCircle className="w-3 h-3 mr-1" />}
-                              {report.status === "draft" && <AlertCircle className="w-3 h-3 mr-1" />}
-                              {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                            </Badge>
-                            {report.status === "submitted" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => recallReportMutation.mutate(report.id)}
-                                disabled={recallReportMutation.isPending}
-                                className="text-xs h-8 px-3 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={
+                                  report.status === "approved" ? "default" :
+                                  report.status === "rejected" ? "destructive" :
+                                  report.status === "submitted" ? "secondary" : "outline"
+                                }
+                                className={
+                                  report.status === "approved" ? "bg-green-100 text-green-600" :
+                                  report.status === "rejected" ? "bg-red-100 text-red-600" :
+                                  report.status === "submitted" ? "bg-orange-100 text-orange-600" :
+                                  "bg-gray-100 text-gray-600"
+                                }
                               >
-                                📞 Call Back
-                              </Button>
-                            )}
+                                {report.status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
+                                {report.status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
+                                {report.status === "submitted" && <AlertCircle className="w-3 h-3 mr-1" />}
+                                {report.status === "draft" && <AlertCircle className="w-3 h-3 mr-1" />}
+                                {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                              </Badge>
+                              {report.status === "submitted" && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => recallReportMutation.mutate(report.id)}
+                                  disabled={recallReportMutation.isPending}
+                                  className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
+                                >
+                                  Call Back
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
                         
