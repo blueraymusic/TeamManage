@@ -158,6 +158,7 @@ Changelog:
 - June 27, 2025. Implemented comprehensive Budget Utilization Analysis with detailed financial tracking. Added budget summary cards showing total budget, spent amounts, and remaining funds with gradient backgrounds. Created enhanced budget visualization charts with gradient fills, professional tooltips, and currency formatting. Implemented project-level budget breakdown with utilization progress bars and detailed spending metrics for better financial oversight.
 - June 27, 2025. Adjusted Budget Utilization Analysis component size to be more compact with reduced padding, smaller icons, compressed chart height, and optimized text sizes for better space efficiency while maintaining visual appeal and readability.
 - June 27, 2025. Removed budget summary cards from Budget Utilization Analysis component and kept only the clean bar chart visualization to eliminate number display formatting issues and improve visual clarity.
+- June 27, 2025. Fixed tooltip text color across all analytics dashboard charts (Budget Utilization, Project Status Distribution, Progress Distribution) to display white text for better visibility and readability against dark tooltip backgrounds.
 ```
 
 ## User Preferences
