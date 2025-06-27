@@ -37,8 +37,8 @@ export default function OfficerDashboard() {
     queryKey: ["/api/reports"],
   });
 
-  // Get user's submitted reports - filter by current user ID
-  const userReports = Array.isArray(reports) ? reports.filter((report: any) => report.submittedBy === user?.id) : [];
+  // Get user's submitted reports - no filtering needed since API already filters for officers
+  const userReports = Array.isArray(reports) ? reports : [];
   const draftReports = userReports.filter((report: any) => report.status === "draft");
   const submittedReports = userReports.filter((report: any) => report.status === "submitted");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
@@ -46,8 +46,7 @@ export default function OfficerDashboard() {
 
   // Debug log to check report statuses
   console.log("All reports from API:", reports);
-  console.log("Current user ID:", user?.id);
-  console.log("User reports after filtering:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
+  console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
   console.log("Submitted reports count:", submittedReports.length);
 
   // Recall report mutation
@@ -449,17 +448,18 @@ export default function OfficerDashboard() {
                                   📞 Call Back
                                 </Button>
                               )}
-                              {/* Debug: Always show for testing */}
+                              {/* Always show debug button for now */}
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => {
-                                  console.log("TEST: Report status:", report.status, "Report ID:", report.id);
+                                  console.log("DEBUG: Report status:", report.status, "ID:", report.id);
                                 }}
                                 className="text-xs h-7 px-2 bg-red-50 border-red-200 text-red-700"
                               >
-                                TEST ({report.status})
+                                DEBUG: {report.status}
                               </Button>
+
                             </div>
                           </div>
                         </div>

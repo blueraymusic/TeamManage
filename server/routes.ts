@@ -538,7 +538,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/reports", requireAuth, async (req: any, res) => {
     try {
-      const reports = await storage.getReportsByOrganization(req.session.organizationId);
+      let reports;
+      if (req.session.userRole === 'admin') {
+        reports = await storage.getReportsByOrganization(req.session.organizationId);
+      } else {
+        // Officers should only see their own reports
+        const allReports = await storage.getReportsByOrganization(req.session.organizationId);
+        reports = allReports.filter((report: any) => report.submittedBy === req.session.userId);
+        console.log(`Officer ${req.session.userId} reports:`, reports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
+      }
+      
       res.json(reports);
     } catch (error) {
       console.error("Get reports error:", error);
