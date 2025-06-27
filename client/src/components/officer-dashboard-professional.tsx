@@ -43,10 +43,41 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function OfficerDashboard() {
   const logout = useLogout();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
   const [reportSearchTerm, setReportSearchTerm] = useState("");
+  
+  // Recall report mutation
+  const recallReportMutation = useMutation({
+    mutationFn: async (reportId: number) => {
+      const response = await fetch(`/api/reports/${reportId}/recall`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to recall report');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      toast({
+        title: "Report recalled successfully",
+        description: "Your report has been moved back to draft status and can now be edited.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to recall report",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const { data: projects, isLoading: projectsLoading } = useQuery({
     queryKey: ["/api/projects"],
@@ -319,7 +350,7 @@ export default function OfficerDashboard() {
                               <span>Submitted: {new Date(report.createdAt).toLocaleDateString()}</span>
                             </div>
                           </div>
-                          <div className="ml-4">
+                          <div className="ml-4 flex items-center gap-2">
                             <Badge variant={
                               report.status === 'approved' ? 'default' : 
                               report.status === 'rejected' ? 'destructive' : 
@@ -327,6 +358,17 @@ export default function OfficerDashboard() {
                             }>
                               {report.status}
                             </Badge>
+                            {report.status === 'submitted' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => recallReportMutation.mutate(report.id)}
+                                disabled={recallReportMutation.isPending}
+                                className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
+                              >
+                                📞 Call Back
+                              </Button>
+                            )}
                           </div>
                         </div>
                         {report.reviewNotes && (
