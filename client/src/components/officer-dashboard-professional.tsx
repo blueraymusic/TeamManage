@@ -27,7 +27,9 @@ import {
   CheckCircle2,
   TrendingUp,
   Target,
-  Search
+  Search,
+  RotateCcw,
+  Edit3
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { Input } from "@/components/ui/input";
