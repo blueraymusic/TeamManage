@@ -54,6 +54,9 @@ export default function OfficerDashboard() {
   console.log("Submitted reports:", submittedReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
   console.log("Current user from useAuth:", user);
   console.log("User ID for filtering:", user?.id);
+  console.log("Using fallback user ID:", currentUserId);
+  console.log("Filtered user reports:", userReports.length);
+  console.log("Filtered submitted reports:", submittedReports.length);
   console.log("=== END DEBUG ===");
 
   // Recall report mutation
