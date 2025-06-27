@@ -35,7 +35,8 @@ import { t } from "@/lib/i18n";
 import { Input } from "@/components/ui/input";
 import { useLogout } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
-import ReportForm from "./report-form-new";
+import ReportForm from "./report-form-fixed";
+import ReportFormEdit from "./report-form-edit";
 import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
 import AdelLogo from "./adel-logo";
@@ -390,12 +391,18 @@ export default function OfficerDashboard() {
                                   <DialogHeader>
                                     <DialogTitle>Edit Draft Report</DialogTitle>
                                   </DialogHeader>
-                                  <ReportForm 
+                                  <ReportFormEdit 
                                     reportId={report.id}
                                     onSuccess={() => {
+                                      console.log("Edit form success callback triggered");
                                       queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
                                       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
-                                    }} 
+                                      window.location.reload();
+                                    }}
+                                    onCancel={() => {
+                                      console.log("Edit form cancel callback triggered");
+                                      window.location.reload();
+                                    }}
                                   />
                                 </DialogContent>
                               </Dialog>

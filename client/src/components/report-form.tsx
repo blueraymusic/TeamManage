@@ -266,9 +266,9 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
     return aiAnalysis && aiAnalysis.overallScore >= 40;
   };
 
-  const handleSubmit = async (formValues?: z.infer<typeof reportSchema>) => {
-    // Get current form values if not provided
-    const data = formValues || form.getValues();
+  const handleSubmit = async (formValues: z.infer<typeof reportSchema>) => {
+    // Use the validated form values directly
+    const data = formValues;
     
     console.log("handleSubmit called with data:", data);
     console.log("Form watch values:", {
@@ -365,7 +365,7 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
         </Button>
       )}
       
-      <Dialog open={reportId ? true : isOpen} onOpenChange={reportId ? () => {} : setIsOpen}>
+      <Dialog open={reportId ? false : isOpen} onOpenChange={reportId ? () => {} : setIsOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
@@ -571,7 +571,7 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                         <div>
                           <h4 className="font-medium text-gray-900 mb-2">Strengths Identified</h4>
                           <ul className="text-sm text-green-700 space-y-1">
-                            {aiAnalysis.strengthsIdentified.map((strength, index) => (
+                            {aiAnalysis.strengthsIdentified.map((strength: string, index: number) => (
                               <li key={index} className="flex items-start">
                                 <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                                 {strength}
@@ -585,7 +585,7 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                         <div>
                           <h4 className="font-medium text-gray-900 mb-2">Priority Improvements</h4>
                           <ul className="text-sm text-orange-700 space-y-1">
-                            {aiAnalysis.priorityImprovements.map((improvement, index) => (
+                            {aiAnalysis.priorityImprovements.map((improvement: string, index: number) => (
                               <li key={index} className="flex items-start">
                                 <span className="w-4 h-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0">⚡</span>
                                 {improvement}
