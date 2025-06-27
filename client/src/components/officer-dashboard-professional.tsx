@@ -366,9 +366,10 @@ export default function OfficerDashboard() {
                                 variant="outline"
                                 onClick={() => recallReportMutation.mutate(report.id)}
                                 disabled={recallReportMutation.isPending}
-                                className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
+                                className="h-8 px-3 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 text-amber-700 hover:from-amber-100 hover:to-yellow-100 hover:border-amber-300 shadow-sm transition-all duration-200 font-medium text-xs rounded-md"
                               >
-                                📞 Call Back
+                                <span className="mr-1.5">📞</span>
+                                Call Back
                               </Button>
                             )}
                             {report.status === 'draft' && (
@@ -377,9 +378,10 @@ export default function OfficerDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-xs h-7 px-2 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 font-medium"
+                                    className="h-8 px-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 text-blue-700 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 shadow-sm transition-all duration-200 font-medium text-xs rounded-md"
                                   >
-                                    📝 Edit Draft
+                                    <span className="mr-1.5">📝</span>
+                                    Edit Draft
                                   </Button>
                                 </DialogTrigger>
                                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
