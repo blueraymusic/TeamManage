@@ -38,11 +38,15 @@ export default function OfficerDashboard() {
   });
 
   // Get user's submitted reports
-  const userReports = reports?.filter((report: any) => report.submittedBy) || [];
+  const userReports = Array.isArray(reports) ? reports.filter((report: any) => report.submittedBy) : [];
   const draftReports = userReports.filter((report: any) => report.status === "draft");
   const submittedReports = userReports.filter((report: any) => report.status === "submitted");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
+
+  // Debug log to check report statuses
+  console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
+  console.log("Submitted reports count:", submittedReports.length);
 
   // Recall report mutation
   const recallReportMutation = useMutation({
@@ -105,7 +109,7 @@ export default function OfficerDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {projects?.length || 0}
+                  {Array.isArray(projects) ? projects.length : 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.myProjects')}</p>
               </div>
@@ -133,7 +137,7 @@ export default function OfficerDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {submittedReports.length || 0}
+                  {submittedReports?.length || 0}
                 </p>
                 <p className="text-sm text-gray-600">{t('dashboard.pendingReview')}</p>
               </div>
@@ -235,9 +239,9 @@ export default function OfficerDashboard() {
                                 variant="outline"
                                 onClick={() => recallReportMutation.mutate(report.id)}
                                 disabled={recallReportMutation.isPending}
-                                className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
+                                className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 font-medium"
                               >
-                                Call Back
+                                📞 Call Back
                               </Button>
                             )}
                           </div>
@@ -285,7 +289,7 @@ export default function OfficerDashboard() {
                     </div>
                   ))}
                 </div>
-              ) : projects?.length === 0 ? (
+              ) : (!projects || projects.length === 0) ? (
                 <div className="text-center py-8 text-gray-500">
                   <ListTodo className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <p>No projects assigned yet</p>
@@ -293,7 +297,7 @@ export default function OfficerDashboard() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-4">
-                  {projects?.map((project: any) => (
+                  {Array.isArray(projects) ? projects.map((project: any) => (
                     <Card key={project.id} className="border-l-4 border-blue-500">
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-gray-900 mb-2">{project.name}</h3>
@@ -368,7 +372,7 @@ export default function OfficerDashboard() {
                   <div className="flex items-center justify-center mb-2">
                     <AlertCircle className="w-8 h-8 text-orange-500" />
                   </div>
-                  <p className="text-2xl font-bold text-orange-600">{pendingReports.length}</p>
+                  <p className="text-2xl font-bold text-orange-600">{submittedReports.length}</p>
                   <p className="text-sm text-gray-600">Pending Review</p>
                 </CardContent>
               </Card>
