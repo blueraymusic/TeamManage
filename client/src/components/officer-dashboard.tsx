@@ -39,10 +39,10 @@ export default function OfficerDashboard() {
     queryKey: ["/api/reports"],
   });
 
-  // Get user's submitted reports - no filtering needed since API already filters for officers
+  // Get user's submitted reports - API already filters for current officer
   const userReports = Array.isArray(reports) ? reports : [];
-  const draftReports = userReports.filter((report: any) => report.status === "draft");
   const submittedReports = userReports.filter((report: any) => report.status === "submitted");
+  const draftReports = userReports.filter((report: any) => report.status === "draft");
   const approvedReports = userReports.filter((report: any) => report.status === "approved");
   const rejectedReports = userReports.filter((report: any) => report.status === "rejected");
 
