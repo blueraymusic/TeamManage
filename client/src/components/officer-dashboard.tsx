@@ -374,7 +374,7 @@ export default function OfficerDashboard() {
                     <AlertCircle className="w-8 h-8 text-orange-500" />
                   </div>
                   <p className="text-2xl font-bold text-orange-600">{submittedReports.length}</p>
-                  <p className="text-sm text-gray-600">Pending Review</p>
+                  <p className="text-sm text-gray-600">Awaiting Review</p>
                 </CardContent>
               </Card>
               
