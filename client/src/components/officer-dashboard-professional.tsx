@@ -371,13 +371,29 @@ export default function OfficerDashboard() {
                               </Button>
                             )}
                             {report.status === 'draft' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs h-7 px-2 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 font-medium"
-                              >
-                                📝 Edit Draft
-                              </Button>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-xs h-7 px-2 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 font-medium"
+                                  >
+                                    📝 Edit Draft
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Edit Draft Report</DialogTitle>
+                                  </DialogHeader>
+                                  <ReportForm 
+                                    reportId={report.id}
+                                    onSuccess={() => {
+                                      queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
+                                      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+                                    }} 
+                                  />
+                                </DialogContent>
+                              </Dialog>
                             )}
                           </div>
                         </div>
