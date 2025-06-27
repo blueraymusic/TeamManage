@@ -49,7 +49,8 @@ export default function OfficerDashboard() {
   console.log("All reports from API:", reports);
   console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
   console.log("Submitted reports count:", submittedReports.length);
-  console.log("Current user:", currentUser);
+  console.log("Submitted reports:", submittedReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
+  console.log("Current user:", user);
   console.log("=== END DEBUG ===");
 
   // Recall report mutation
@@ -437,6 +438,8 @@ export default function OfficerDashboard() {
                                 {report.status === "draft" && <AlertCircle className="w-3 h-3 mr-1" />}
                                 {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
                               </Badge>
+                              {/* DEBUG: Show button for all submitted reports */}
+                              {console.log("Report status check:", report.id, report.status, report.status === "submitted")}
                               {report.status === "submitted" && (
                                 <Button
                                   size="sm"
@@ -451,6 +454,10 @@ export default function OfficerDashboard() {
                                   📞 Call Back
                                 </Button>
                               )}
+                              {/* DEBUG: Show status regardless */}
+                              <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                Status: {report.status}
+                              </span>
                             </div>
                           </div>
                         </div>
