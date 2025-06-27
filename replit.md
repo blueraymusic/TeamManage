@@ -155,4 +155,5 @@ Changelog:
 ## User Preferences
 ```
 Preferred communication style: Simple, everyday language.
+Preferred styling: Professional appearance without emojis, use proper icons instead.
 ```

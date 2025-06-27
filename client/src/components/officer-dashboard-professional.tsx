@@ -368,7 +368,7 @@ export default function OfficerDashboard() {
                                 disabled={recallReportMutation.isPending}
                                 className="h-8 px-3 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 text-amber-700 hover:from-amber-100 hover:to-yellow-100 hover:border-amber-300 shadow-sm transition-all duration-200 font-medium text-xs rounded-md"
                               >
-                                <span className="mr-1.5">📞</span>
+                                <RotateCcw className="w-3 h-3 mr-1.5" />
                                 Call Back
                               </Button>
                             )}
@@ -380,7 +380,7 @@ export default function OfficerDashboard() {
                                     variant="outline"
                                     className="h-8 px-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 text-blue-700 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 shadow-sm transition-all duration-200 font-medium text-xs rounded-md"
                                   >
-                                    <span className="mr-1.5">📝</span>
+                                    <Edit3 className="w-3 h-3 mr-1.5" />
                                     Edit Draft
                                   </Button>
                                 </DialogTrigger>
