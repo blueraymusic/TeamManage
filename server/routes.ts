@@ -677,6 +677,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content,
         projectId: parseInt(projectId),
         files: updatedFiles.length > 0 ? updatedFiles : undefined,
+        status: "submitted",
+        submittedAt: new Date(),
       });
       
       res.json(updated);

@@ -99,7 +99,7 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
       toast({
         title: "Success",
-        description: "Report updated successfully!",
+        description: "Report submitted for admin approval!",
       });
       onSuccess?.();
     },
