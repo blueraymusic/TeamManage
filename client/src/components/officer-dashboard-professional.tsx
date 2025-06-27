@@ -370,6 +370,15 @@ export default function OfficerDashboard() {
                                 📞 Call Back
                               </Button>
                             )}
+                            {report.status === 'draft' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs h-7 px-2 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 font-medium"
+                              >
+                                📝 Edit Draft
+                              </Button>
+                            )}
                           </div>
                         </div>
                         {report.reviewNotes && (
