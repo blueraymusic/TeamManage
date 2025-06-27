@@ -385,11 +385,12 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                         backgroundColor: '#1f2937',
                         border: 'none',
                         borderRadius: '8px',
-                        color: '#fff',
+                        color: '#ffffff',
                         fontWeight: '500',
                         fontSize: '12px'
                       }}
-                      labelStyle={{ color: '#d1d5db' }}
+                      labelStyle={{ color: '#ffffff' }}
+                      itemStyle={{ color: '#ffffff' }}
                     />
                     <Bar 
                       dataKey="budget" 
