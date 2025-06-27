@@ -71,20 +71,29 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
 
   const submitReportMutation = useMutation({
     mutationFn: async (formData: FormData) => {
+      console.log("Sending PUT request to:", `/api/reports/${reportId}`);
+      
       const response = await fetch(`/api/reports/${reportId}`, {
         method: "PUT",
         body: formData,
         credentials: "include",
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
+
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || "Failed to update report");
+        const errorText = await response.text();
+        console.error("Server error response:", errorText);
+        throw new Error(errorText || "Failed to update report");
       }
 
-      return response.json();
+      const result = await response.json();
+      console.log("Update successful, result:", result);
+      return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Mutation onSuccess called with:", data);
       queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
       queryClient.invalidateQueries({ queryKey: ["/api/reports", reportId] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
@@ -95,8 +104,9 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
       onSuccess?.();
     },
     onError: (error: any) => {
+      console.error("Mutation onError called with:", error);
       toast({
-        title: "Error",
+        title: "Error", 
         description: error.message || "Failed to update report",
         variant: "destructive",
       });
@@ -186,8 +196,10 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
 
   const handleFormSubmit = async (values: z.infer<typeof reportSchema>) => {
     console.log("Form submit with values:", values);
+    console.log("Selected files:", selectedFiles);
+    console.log("Report ID:", reportId);
     
-    if (!values.title || !values.content || !values.projectId) {
+    if (!values.title?.trim() || !values.content?.trim() || !values.projectId) {
       toast({
         title: "Missing Required Fields",
         description: "Please fill in title, content, and select a project.",
@@ -197,18 +209,26 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
     }
 
     const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("content", values.content);
+    formData.append("title", values.title.trim());
+    formData.append("content", values.content.trim());
     formData.append("projectId", values.projectId);
     
+    // Add files if any are selected
     selectedFiles.forEach((file) => {
       formData.append("files", file);
     });
+    
+    console.log("Submitting form data for report:", reportId);
     
     try {
       await submitReportMutation.mutateAsync(formData);
     } catch (error) {
       console.error("Submit error:", error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error updating the report. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
