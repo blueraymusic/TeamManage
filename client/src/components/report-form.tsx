@@ -22,10 +22,11 @@ const reportSchema = z.object({
 
 interface ReportFormProps {
   projectId?: number;
+  reportId?: number;
   onSuccess?: () => void;
 }
 
-export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
+export default function ReportForm({ projectId, reportId, onSuccess }: ReportFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -37,21 +38,31 @@ export default function ReportForm({ projectId, onSuccess }: ReportFormProps) {
     queryKey: ["/api/projects"],
   });
 
+  // Fetch existing report data when editing
+  const { data: existingReport } = useQuery({
+    queryKey: ["/api/reports", reportId],
+    enabled: !!reportId,
+  });
+
   const form = useForm({
     resolver: zodResolver(reportSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      projectId: projectId ? projectId.toString() : "",
+      title: existingReport?.title || "",
+      content: existingReport?.content || "",
+      projectId: existingReport?.projectId?.toString() || (projectId ? projectId.toString() : ""),
     },
   });
 
-  // Reset form when projectId prop changes
+  // Reset form when projectId prop changes or when existing report loads
   React.useEffect(() => {
-    if (projectId) {
+    if (existingReport) {
+      form.setValue("title", existingReport.title);
+      form.setValue("content", existingReport.content);
+      form.setValue("projectId", existingReport.projectId.toString());
+    } else if (projectId) {
       form.setValue("projectId", projectId.toString());
     }
-  }, [projectId, form]);
+  }, [projectId, existingReport, form]);
 
   const submitReportMutation = useMutation({
     mutationFn: async (data: FormData | z.infer<typeof reportSchema>) => {

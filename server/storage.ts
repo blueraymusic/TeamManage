@@ -39,6 +39,7 @@ export interface IStorage {
   getProjectsByOrganization(organizationId: number): Promise<Project[]>;
   getProjectById(id: number): Promise<Project | undefined>;
   updateProject(id: number, updates: Partial<Project>): Promise<Project>;
+  updateReport(id: number, updates: Partial<Report>): Promise<Report>;
 
   // Report operations
   createReport(report: InsertReport): Promise<Report>;
