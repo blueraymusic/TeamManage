@@ -629,6 +629,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update an existing report (for editing drafts)
+  app.put("/api/reports/:id", requireAuth, async (req: any, res) => {
+    const reportId = parseInt(req.params.id);
+    const { userId, userRole, organizationId } = req.session;
+    
+    try {
+      const existingReport = await storage.getReportById(reportId);
+      if (!existingReport) {
+        return res.status(404).json({ error: "Report not found" });
+      }
+      
+      if (existingReport.submittedBy !== userId) {
+        return res.status(403).json({ error: "Can only edit your own reports" });
+      }
+      
+      if (existingReport.status !== 'draft') {
+        return res.status(400).json({ error: "Can only edit draft reports" });
+      }
+      
+      const { title, content, projectId } = req.body;
+      const updated = await storage.updateReport(reportId, {
+        title,
+        content,
+        projectId: parseInt(projectId),
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating report:", error);
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   // Recall report (officer only - for their own reports)
   app.post("/api/reports/:id/recall", requireAuth, async (req: any, res) => {
     try {

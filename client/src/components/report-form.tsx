@@ -47,18 +47,20 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
   const form = useForm({
     resolver: zodResolver(reportSchema),
     defaultValues: {
-      title: existingReport?.title || "",
-      content: existingReport?.content || "",
-      projectId: existingReport?.projectId?.toString() || (projectId ? projectId.toString() : ""),
+      title: "",
+      content: "",
+      projectId: projectId ? projectId.toString() : "",
     },
   });
 
   // Reset form when projectId prop changes or when existing report loads
   React.useEffect(() => {
     if (existingReport) {
-      form.setValue("title", existingReport.title);
-      form.setValue("content", existingReport.content);
-      form.setValue("projectId", existingReport.projectId.toString());
+      form.setValue("title", existingReport.title || "");
+      form.setValue("content", existingReport.content || "");
+      if (existingReport.projectId) {
+        form.setValue("projectId", existingReport.projectId.toString());
+      }
     } else if (projectId) {
       form.setValue("projectId", projectId.toString());
     }
@@ -81,8 +83,11 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
         });
       }
 
-      const response = await fetch("/api/reports", {
-        method: "POST",
+      const url = reportId ? `/api/reports/${reportId}` : "/api/reports";
+      const method = reportId ? "PUT" : "POST";
+      
+      const response = await fetch(url, {
+        method: method,
         body: formData,
         credentials: "include",
       });
@@ -99,7 +104,7 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
       toast({
         title: "Success",
-        description: "Report submitted successfully! It's now pending review.",
+        description: reportId ? "Report updated successfully!" : "Report submitted successfully! It's now pending review.",
       });
       form.reset();
       setSelectedFiles([]);
