@@ -27,7 +27,9 @@ import {
   Target,
   BarChart3,
   Calendar,
-  Activity
+  Activity,
+  DollarSign,
+  Banknote
 } from "lucide-react";
 
 interface AnalyticsDashboardProps {
@@ -351,25 +353,154 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
         </Card>
 
         {/* Budget Utilization */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Budget Utilization
+        <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 col-span-full">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200">
+            <CardTitle className="flex items-center gap-3 text-gray-800 font-semibold">
+              <div className="p-2 bg-green-600 rounded-lg">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
+              Budget Utilization Analysis
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={analytics.budgetData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip formatter={(value, name) => [`$${value.toLocaleString()}`, name]} />
-                  <Bar dataKey="budget" fill="#e5e7eb" name="Total Budget" />
-                  <Bar dataKey="spent" fill="#3b82f6" name="Spent" />
-                </BarChart>
-              </ResponsiveContainer>
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              {/* Budget Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-600 rounded-lg">
+                      <Target className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-700">Total Budget</p>
+                      <p className="text-2xl font-bold text-blue-900">
+                        ${analytics.budgetData.reduce((sum, item) => sum + item.budget, 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-4 rounded-lg border border-emerald-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-600 rounded-lg">
+                      <TrendingUp className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-emerald-700">Total Spent</p>
+                      <p className="text-2xl font-bold text-emerald-900">
+                        ${analytics.budgetData.reduce((sum, item) => sum + item.spent, 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-4 rounded-lg border border-amber-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-600 rounded-lg">
+                      <Banknote className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-amber-700">Remaining</p>
+                      <p className="text-2xl font-bold text-amber-900">
+                        ${analytics.budgetData.reduce((sum, item) => sum + item.remaining, 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Budget Chart */}
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={analytics.budgetData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis 
+                      dataKey="name" 
+                      tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                      axisLine={{ stroke: '#d1d5db' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                      axisLine={{ stroke: '#d1d5db' }}
+                      tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                    />
+                    <Tooltip 
+                      formatter={(value, name) => [`$${Number(value).toLocaleString()}`, name]}
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
+                        border: 'none',
+                        borderRadius: '8px',
+                        color: '#fff',
+                        fontWeight: '500'
+                      }}
+                      labelStyle={{ color: '#d1d5db' }}
+                    />
+                    <Bar 
+                      dataKey="budget" 
+                      fill="url(#budgetGradient)" 
+                      name="Total Budget"
+                      radius={[4, 4, 0, 0]}
+                      stroke="#3b82f6"
+                      strokeWidth={1}
+                    />
+                    <Bar 
+                      dataKey="spent" 
+                      fill="url(#spentGradient)" 
+                      name="Amount Spent"
+                      radius={[4, 4, 0, 0]}
+                      stroke="#10b981"
+                      strokeWidth={1}
+                    />
+                    <Bar 
+                      dataKey="remaining" 
+                      fill="url(#remainingGradient)" 
+                      name="Remaining Budget"
+                      radius={[4, 4, 0, 0]}
+                      stroke="#f59e0b"
+                      strokeWidth={1}
+                    />
+                    <defs>
+                      <linearGradient id="budgetGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                        <stop offset="100%" stopColor="#1e40af" stopOpacity={0.6}/>
+                      </linearGradient>
+                      <linearGradient id="spentGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.8}/>
+                        <stop offset="100%" stopColor="#059669" stopOpacity={0.6}/>
+                      </linearGradient>
+                      <linearGradient id="remainingGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.8}/>
+                        <stop offset="100%" stopColor="#d97706" stopOpacity={0.6}/>
+                      </linearGradient>
+                    </defs>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Budget Utilization Breakdown */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-800 mb-3">Project Budget Breakdown</h4>
+                {analytics.budgetData.map((project, index) => (
+                  <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-200">
+                    <div className="flex justify-between items-center mb-2">
+                      <h5 className="font-medium text-gray-800">{project.name}</h5>
+                      <span className="text-sm font-medium text-gray-600">
+                        {project.utilization}% utilized
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                      <div 
+                        className="bg-gradient-to-r from-emerald-500 to-green-600 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.min(project.utilization, 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>Spent: ${project.spent.toLocaleString()}</span>
+                      <span>Budget: ${project.budget.toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
