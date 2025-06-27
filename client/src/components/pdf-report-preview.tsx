@@ -20,12 +20,29 @@ import {
 interface PDFReportPreviewProps {
   isOpen: boolean;
   onClose: () => void;
+  organizationData?: any;
+  projectsData?: any[];
+  reportsData?: any[];
+  statsData?: any;
 }
 
-export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewProps) {
+export default function PDFReportPreview({ 
+  isOpen, 
+  onClose, 
+  organizationData, 
+  projectsData, 
+  reportsData, 
+  statsData 
+}: PDFReportPreviewProps) {
   const [selectedReport, setSelectedReport] = useState("progress");
 
   if (!isOpen) return null;
+
+  // Use real data with fallbacks
+  const orgData = organizationData as any;
+  const projects = projectsData as any[] || [];
+  const reports = reportsData as any[] || [];
+  const stats = statsData as any;
 
   const reportTypes = {
     progress: {
@@ -157,13 +174,13 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                       <Building className="h-8 w-8" />
                     </div>
                     <div>
-                      <h1 className="text-2xl font-bold">EcoVision Foundation</h1>
-                      <p className="text-blue-100">Environmental Conservation Initiative</p>
+                      <h1 className="text-2xl font-bold">{orgData?.name || 'Organization'}</h1>
+                      <p className="text-blue-100">Project Management Report</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-blue-100 text-sm">Generated on</p>
-                    <p className="font-semibold">December 15, 2024</p>
+                    <p className="font-semibold">{new Date().toLocaleDateString()}</p>
                   </div>
                 </div>
               </div>
@@ -198,9 +215,9 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                   </h3>
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                     <p className="text-gray-700 dark:text-gray-300">
-                      This month, our reforestation project achieved significant milestones with 
-                      1,250 trees planted across three conservation areas. Community engagement 
-                      increased by 40% with local schools participating in environmental education programs.
+                      This report provides a comprehensive overview of our organization's current project status and achievements. 
+                      We have {stats?.activeProjects || 0} active projects with {reports.length} reports submitted for review. 
+                      Our team continues to make significant progress across all initiatives with a focus on transparency and measurable outcomes.
                     </p>
                   </div>
                 </div>
@@ -212,10 +229,10 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
-                            Trees Planted
+                            Active Projects
                           </p>
                           <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
-                            1,250
+                            {stats?.activeProjects || 0}
                           </p>
                         </div>
                         <Target className="h-8 w-8 text-blue-500" />
@@ -231,7 +248,11 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                             Budget Utilized
                           </p>
                           <p className="text-2xl font-bold text-green-800 dark:text-green-200">
-                            $42,800
+                            ${(() => {
+                              const totalBudget = projects.reduce((sum: number, p: any) => 
+                                sum + parseFloat(p.budgetUsed || 0), 0);
+                              return totalBudget.toLocaleString();
+                            })()}
                           </p>
                         </div>
                         <DollarSign className="h-8 w-8 text-green-500" />
@@ -244,10 +265,10 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
-                            Impact Score
+                            Reports Submitted
                           </p>
                           <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
-                            92/100
+                            {reports.length}
                           </p>
                         </div>
                         <TrendingUp className="h-8 w-8 text-purple-500" />
@@ -279,7 +300,7 @@ export default function PDFReportPreview({ isOpen, onClose }: PDFReportPreviewPr
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-gray-600 dark:text-gray-300">
                       <p>Generated by ADEL Project Management Platform</p>
-                      <p>© 2024 EcoVision Foundation. All rights reserved.</p>
+                      <p>© 2024 {orgData?.name || 'Organization'}. All rights reserved.</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="h-4 w-4 text-gray-400" />

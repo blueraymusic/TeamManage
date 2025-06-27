@@ -470,7 +470,7 @@ export default function AdminDashboard() {
                     onClick={() => setIsPDFPreviewOpen(true)}
                     variant="outline"
                     size="sm"
-                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 hover:from-blue-600 hover:to-purple-700"
+                    className="flex items-center space-x-2"
                   >
                     <Download className="h-4 w-4" />
                     <span>PDF Preview</span>
@@ -699,7 +699,11 @@ ${orgData.name || 'Organization'} Team`;
       {/* PDF Report Preview Modal */}
       <PDFReportPreview 
         isOpen={isPDFPreviewOpen} 
-        onClose={() => setIsPDFPreviewOpen(false)} 
+        onClose={() => setIsPDFPreviewOpen(false)}
+        organizationData={organization}
+        projectsData={projects as any[]}
+        reportsData={reports as any[]}
+        statsData={stats}
       />
     </div>
   );
