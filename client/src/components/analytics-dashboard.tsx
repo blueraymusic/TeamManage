@@ -364,51 +364,6 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-6">
-              {/* Budget Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg border border-blue-200">
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-blue-600 rounded-lg">
-                        <Target className="h-4 w-4 text-white" />
-                      </div>
-                      <p className="text-sm font-medium text-blue-700">Total Budget</p>
-                    </div>
-                    <p className="text-sm font-bold text-blue-900 leading-tight">
-                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.budget), 0).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-4 rounded-lg border border-emerald-200">
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-emerald-600 rounded-lg">
-                        <TrendingUp className="h-4 w-4 text-white" />
-                      </div>
-                      <p className="text-sm font-medium text-emerald-700">Total Spent</p>
-                    </div>
-                    <p className="text-sm font-bold text-emerald-900 leading-tight">
-                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.spent), 0).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-4 rounded-lg border border-amber-200">
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-amber-600 rounded-lg">
-                        <Banknote className="h-4 w-4 text-white" />
-                      </div>
-                      <p className="text-sm font-medium text-amber-700">Remaining</p>
-                    </div>
-                    <p className="text-sm font-bold text-amber-900 leading-tight">
-                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.remaining), 0).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               {/* Budget Chart */}
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
