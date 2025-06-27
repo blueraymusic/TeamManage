@@ -55,11 +55,17 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
       const report = existingReport as any;
       console.log("Loading existing report data:", report);
       
+      // Reset form with existing data
       form.reset({
         title: report.title || "",
         content: report.content || "",
         projectId: report.projectId ? report.projectId.toString() : "",
       });
+      
+      // Force form values to update
+      form.setValue("title", report.title || "");
+      form.setValue("content", report.content || "");
+      form.setValue("projectId", report.projectId ? report.projectId.toString() : "");
     }
   }, [existingReport, reportLoading, form]);
 
@@ -216,7 +222,20 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
   };
 
   if (reportLoading) {
-    return <div>Loading report data...</div>;
+    return (
+      <div className="p-6 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-2 text-gray-600">Loading report data...</p>
+      </div>
+    );
+  }
+
+  if (!existingReport) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-red-600">Report not found or you don't have permission to edit it.</p>
+      </div>
+    );
   }
 
   return (
@@ -233,6 +252,7 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
                   <Input
                     placeholder="Enter report title"
                     {...field}
+                    value={field.value || ""}
                     onChange={(e) => {
                       field.onChange(e);
                       setAiAnalysis(null);
@@ -255,6 +275,7 @@ export default function ReportFormEdit({ reportId, onSuccess, onCancel }: Report
                     placeholder="Describe your progress, achievements, challenges, and next steps..."
                     className="min-h-[120px]"
                     {...field}
+                    value={field.value || ""}
                     onChange={(e) => {
                       field.onChange(e);
                       setAiAnalysis(null);
