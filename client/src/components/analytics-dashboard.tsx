@@ -353,7 +353,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
         </Card>
 
         {/* Budget Utilization */}
-        <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 col-span-full">
+        <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
           <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200">
             <CardTitle className="flex items-center gap-3 text-gray-800 font-semibold">
               <div className="p-2 bg-green-600 rounded-lg">
@@ -365,43 +365,43 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
           <CardContent className="p-6">
             <div className="space-y-6">
               {/* Budget Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg border border-blue-200">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-600 rounded-lg">
-                      <Target className="h-4 w-4 text-white" />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-3 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-blue-600 rounded-lg">
+                      <Target className="h-3 w-3 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-blue-700">Total Budget</p>
-                      <p className="text-2xl font-bold text-blue-900">
+                      <p className="text-xs font-medium text-blue-700">Total Budget</p>
+                      <p className="text-lg font-bold text-blue-900">
                         ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.budget), 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-4 rounded-lg border border-emerald-200">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-600 rounded-lg">
-                      <TrendingUp className="h-4 w-4 text-white" />
+                <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-3 rounded-lg border border-emerald-200">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-emerald-600 rounded-lg">
+                      <TrendingUp className="h-3 w-3 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-emerald-700">Total Spent</p>
-                      <p className="text-2xl font-bold text-emerald-900">
+                      <p className="text-xs font-medium text-emerald-700">Total Spent</p>
+                      <p className="text-lg font-bold text-emerald-900">
                         ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.spent), 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-4 rounded-lg border border-amber-200">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-600 rounded-lg">
-                      <Banknote className="h-4 w-4 text-white" />
+                <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-3 rounded-lg border border-amber-200">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-amber-600 rounded-lg">
+                      <Banknote className="h-3 w-3 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-amber-700">Remaining</p>
-                      <p className="text-2xl font-bold text-amber-900">
+                      <p className="text-xs font-medium text-amber-700">Remaining</p>
+                      <p className="text-lg font-bold text-amber-900">
                         ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.remaining), 0).toLocaleString()}
                       </p>
                     </div>
@@ -410,17 +410,17 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
               </div>
 
               {/* Budget Chart */}
-              <div className="h-80">
+              <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics.budgetData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <BarChart data={analytics.budgetData} margin={{ top: 15, right: 20, left: 15, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                     <XAxis 
                       dataKey="name" 
-                      tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                      tick={{ fontSize: 11, fill: '#6b7280', fontWeight: '500' }}
                       axisLine={{ stroke: '#d1d5db' }}
                     />
                     <YAxis 
-                      tick={{ fontSize: 12, fill: '#6b7280', fontWeight: '500' }}
+                      tick={{ fontSize: 11, fill: '#6b7280', fontWeight: '500' }}
                       axisLine={{ stroke: '#d1d5db' }}
                       tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                     />
@@ -431,7 +431,8 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                         border: 'none',
                         borderRadius: '8px',
                         color: '#fff',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        fontSize: '12px'
                       }}
                       labelStyle={{ color: '#d1d5db' }}
                     />
@@ -439,7 +440,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                       dataKey="budget" 
                       fill="url(#budgetGradient)" 
                       name="Total Budget"
-                      radius={[4, 4, 0, 0]}
+                      radius={[3, 3, 0, 0]}
                       stroke="#3b82f6"
                       strokeWidth={1}
                     />
@@ -447,7 +448,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                       dataKey="spent" 
                       fill="url(#spentGradient)" 
                       name="Amount Spent"
-                      radius={[4, 4, 0, 0]}
+                      radius={[3, 3, 0, 0]}
                       stroke="#10b981"
                       strokeWidth={1}
                     />
@@ -455,7 +456,7 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
                       dataKey="remaining" 
                       fill="url(#remainingGradient)" 
                       name="Remaining Budget"
-                      radius={[4, 4, 0, 0]}
+                      radius={[3, 3, 0, 0]}
                       stroke="#f59e0b"
                       strokeWidth={1}
                     />
@@ -478,23 +479,23 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
               </div>
 
               {/* Budget Utilization Breakdown */}
-              <div className="space-y-3">
-                <h4 className="font-semibold text-gray-800 mb-3">Project Budget Breakdown</h4>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-gray-800 text-sm mb-2">Project Budget Breakdown</h4>
                 {analytics.budgetData.map((project, index) => (
-                  <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-200">
-                    <div className="flex justify-between items-center mb-2">
-                      <h5 className="font-medium text-gray-800">{project.name}</h5>
-                      <span className="text-sm font-medium text-gray-600">
+                  <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-200">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <h5 className="font-medium text-gray-800 text-sm">{project.name}</h5>
+                      <span className="text-xs font-medium text-gray-600">
                         {project.utilization}% utilized
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
                       <div 
-                        className="bg-gradient-to-r from-emerald-500 to-green-600 h-3 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-emerald-500 to-green-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${Math.min(project.utilization, 100)}%` }}
                       ></div>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600">
+                    <div className="flex justify-between text-xs text-gray-600">
                       <span>Spent: ${project.spent.toLocaleString()}</span>
                       <span>Budget: ${project.budget.toLocaleString()}</span>
                     </div>
