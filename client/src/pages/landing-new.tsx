@@ -617,11 +617,11 @@ export default function LandingNew() {
                 </div>
                 
                 <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                  AI Report Analysis
+                  AI Feedback on Reports
                 </h3>
                 
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Advanced AI reviews reports and provides intelligent feedback with improvement suggestions.
+                  ADEL automatically reviews officer reports and gives clear, actionable suggestions before admin approval.
                 </p>
                 
                 <div className="space-y-4">
@@ -629,19 +629,19 @@ export default function LandingNew() {
                     <div className="bg-green-100 dark:bg-green-900/20 rounded-full p-1">
                       <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300">Automated quality scoring</span>
+                    <span className="text-gray-700 dark:text-gray-300">Grammar check</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="bg-green-100 dark:bg-green-900/20 rounded-full p-1">
                       <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300">Intelligent improvement suggestions</span>
+                    <span className="text-gray-700 dark:text-gray-300">Clarity score</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="bg-green-100 dark:bg-green-900/20 rounded-full p-1">
                       <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300">Multi-format file support</span>
+                    <span className="text-gray-700 dark:text-gray-300">Action suggestions</span>
                   </div>
                 </div>
               </CardContent>

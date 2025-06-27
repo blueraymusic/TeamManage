@@ -161,6 +161,7 @@ Changelog:
 - June 27, 2025. Fixed tooltip text color across all analytics dashboard charts (Budget Utilization, Project Status Distribution, Progress Distribution) to display white text for better visibility and readability against dark tooltip backgrounds.
 - June 27, 2025. Redesigned complete landing page with comprehensive feature showcase including AI-powered analytics, smart notifications, advanced reporting, budget tracking, and team collaboration. Updated content to be inclusive for all organization types, not just NGOs. Created modern gradient design with smooth animations, interactive sections highlighting AI report analysis, smart notifications system, and comprehensive project management capabilities.
 - June 27, 2025. Enhanced header navigation with professional styling including icons, hover effects, gradient underlines, and smooth-scrolling functionality. Improved navigation items with color-coded sections and interactive elements for better user experience.
+- June 27, 2025. Simplified AI Report Analysis section to "AI Feedback on Reports" with clearer value proposition focusing on grammar check, clarity score, and action suggestions provided before admin approval.
 ```
 
 ## User Preferences
