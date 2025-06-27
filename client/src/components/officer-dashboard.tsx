@@ -49,7 +49,7 @@ export default function OfficerDashboard() {
   console.log("All reports from API:", reports);
   console.log("User reports:", userReports.map(r => ({ id: r.id, title: r.title, status: r.status, submittedBy: r.submittedBy })));
   console.log("Submitted reports count:", submittedReports.length);
-  console.log("Current user:", user);
+  console.log("Current user:", currentUser);
   console.log("=== END DEBUG ===");
 
   // Recall report mutation
