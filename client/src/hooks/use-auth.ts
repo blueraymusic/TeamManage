@@ -23,7 +23,7 @@ export function useAuth() {
   const { data, isLoading, error } = useQuery<{ user: User } | null>({
     queryKey: ["/api/auth/me"],
     retry: false,
-    staleTime: 0, // Always fetch fresh data
+    staleTime: 5000, // Cache for 5 seconds to prevent excessive requests
     refetchOnWindowFocus: true,
   });
 
