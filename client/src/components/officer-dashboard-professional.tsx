@@ -88,7 +88,7 @@ export default function OfficerDashboard() {
   const activeProjects = (projects as any)?.filter((p: any) => p.progress < 100) || [];
   const completedProjects = (projects as any)?.filter((p: any) => p.progress === 100) || [];
   const submittedReports = (reports as any)?.length || 0;
-  const pendingReports = (reports as any)?.filter((r: any) => r.status === 'pending')?.length || 0;
+  const pendingReports = (reports as any)?.filter((r: any) => r.status === 'submitted')?.length || 0;
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
