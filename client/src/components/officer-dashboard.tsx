@@ -54,7 +54,8 @@ export default function OfficerDashboard() {
   console.log("Submitted reports:", submittedReports.map(r => ({ id: r.id, title: r.title, status: r.status })));
   console.log("Current user from useAuth:", user);
   console.log("User ID for filtering:", user?.id);
-  console.log("Using fallback user ID:", currentUserId);
+  console.log("CRITICAL DEBUG - submittedReports array:", submittedReports);
+  console.log("CRITICAL DEBUG - submittedReports.length:", submittedReports?.length);
   console.log("Filtered user reports:", userReports.length);
   console.log("Filtered submitted reports:", submittedReports.length);
   console.log("=== END DEBUG ===");
