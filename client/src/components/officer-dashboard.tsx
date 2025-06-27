@@ -156,6 +156,10 @@ export default function OfficerDashboard() {
                 <p className="text-2xl font-bold text-gray-900">
                   {submittedReports?.length || 0}
                 </p>
+                {/* DEBUG: Force show 1 for testing */}
+                <p className="text-xs text-red-500">
+                  Debug: {submittedReports?.length} | Raw: {userReports.filter(r => r.status === "submitted").length}
+                </p>
                 <p className="text-sm text-gray-600">{t('dashboard.pendingReview')}</p>
               </div>
               <Clock className="w-8 h-8 text-orange-500" />
