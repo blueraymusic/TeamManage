@@ -761,7 +761,7 @@ export default function LandingNew() {
               size="lg"
               variant="outline"
               onClick={() => setShowContactModal(true)}
-              className="border-2 border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="border-2 border-white bg-white/10 text-white hover:bg-white hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <MessageSquare className="h-5 w-5 mr-2" />
               Contact Sales
