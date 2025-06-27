@@ -31,6 +31,7 @@ import {
 import { t } from "@/lib/i18n";
 import { Input } from "@/components/ui/input";
 import { useLogout } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import ReportForm from "./report-form";
 import ProgressChart from "./progress-chart";
 import ChatInterface from "./chat-interface";
