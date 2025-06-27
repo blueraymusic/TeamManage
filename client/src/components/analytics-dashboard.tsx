@@ -367,44 +367,44 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
               {/* Budget Summary Cards */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-3 rounded-lg border border-blue-200">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-blue-600 rounded-lg">
-                      <Target className="h-3 w-3 text-white" />
-                    </div>
-                    <div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1.5 bg-blue-600 rounded-lg">
+                        <Target className="h-3 w-3 text-white" />
+                      </div>
                       <p className="text-xs font-medium text-blue-700">Total Budget</p>
-                      <p className="text-lg font-bold text-blue-900">
-                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.budget), 0).toLocaleString()}
-                      </p>
                     </div>
+                    <p className="text-base font-bold text-blue-900 break-all">
+                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.budget), 0).toLocaleString()}
+                    </p>
                   </div>
                 </div>
                 
                 <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-3 rounded-lg border border-emerald-200">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-emerald-600 rounded-lg">
-                      <TrendingUp className="h-3 w-3 text-white" />
-                    </div>
-                    <div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1.5 bg-emerald-600 rounded-lg">
+                        <TrendingUp className="h-3 w-3 text-white" />
+                      </div>
                       <p className="text-xs font-medium text-emerald-700">Total Spent</p>
-                      <p className="text-lg font-bold text-emerald-900">
-                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.spent), 0).toLocaleString()}
-                      </p>
                     </div>
+                    <p className="text-base font-bold text-emerald-900 break-all">
+                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.spent), 0).toLocaleString()}
+                    </p>
                   </div>
                 </div>
                 
                 <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-3 rounded-lg border border-amber-200">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-amber-600 rounded-lg">
-                      <Banknote className="h-3 w-3 text-white" />
-                    </div>
-                    <div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1.5 bg-amber-600 rounded-lg">
+                        <Banknote className="h-3 w-3 text-white" />
+                      </div>
                       <p className="text-xs font-medium text-amber-700">Remaining</p>
-                      <p className="text-lg font-bold text-amber-900">
-                        ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.remaining), 0).toLocaleString()}
-                      </p>
                     </div>
+                    <p className="text-base font-bold text-amber-900 break-all">
+                      ${analytics.budgetData.reduce((sum: number, item: any) => sum + Number(item.remaining), 0).toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </div>
