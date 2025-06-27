@@ -148,6 +148,7 @@ Changelog:
 - June 25, 2025. Updated AdminChatInterface to properly handle both text messages and file uploads with separate endpoints
 - June 25, 2025. Added deadline and original deadline fields to Edit Project form with proper date formatting
 - June 25, 2025. Fixed project status logic to automatically revert completed projects to active when progress drops below 100%
+- June 27, 2025. Implemented report recall functionality allowing officers to withdraw submitted reports before admin review with "Call Back" button
 ```
 
 ## User Preferences

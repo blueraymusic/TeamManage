@@ -209,29 +209,52 @@ export default function OfficerDashboard() {
                       <div key={report.id} className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <div className="font-medium text-gray-900">{report.title}</div>
-                          <Badge 
-                            variant={
-                              report.status === "approved" ? "default" :
-                              report.status === "rejected" ? "destructive" :
-                              "secondary"
-                            }
-                            className={
-                              report.status === "approved" ? "bg-green-100 text-green-600" :
-                              report.status === "rejected" ? "bg-red-100 text-red-600" :
-                              "bg-orange-100 text-orange-600"
-                            }
-                          >
-                            {report.status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
-                            {report.status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
-                            {report.status === "pending" && <AlertCircle className="w-3 h-3 mr-1" />}
-                            {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Badge 
+                              variant={
+                                report.status === "approved" ? "default" :
+                                report.status === "rejected" ? "destructive" :
+                                report.status === "submitted" ? "secondary" : "outline"
+                              }
+                              className={
+                                report.status === "approved" ? "bg-green-100 text-green-600" :
+                                report.status === "rejected" ? "bg-red-100 text-red-600" :
+                                report.status === "submitted" ? "bg-orange-100 text-orange-600" :
+                                "bg-gray-100 text-gray-600"
+                              }
+                            >
+                              {report.status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
+                              {report.status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
+                              {report.status === "submitted" && <AlertCircle className="w-3 h-3 mr-1" />}
+                              {report.status === "draft" && <AlertCircle className="w-3 h-3 mr-1" />}
+                              {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                            </Badge>
+                            {report.status === "submitted" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => recallReportMutation.mutate(report.id)}
+                                disabled={recallReportMutation.isPending}
+                                className="text-xs h-7 px-2 bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
+                              >
+                                Call Back
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <div className="text-sm text-gray-600">Project #{report.projectId}</div>
-                        <div className="text-xs text-gray-400 mt-1 flex items-center">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          Submitted {new Date(report.submittedAt).toLocaleDateString()}
-                        </div>
+                        {report.submittedAt && (
+                          <div className="text-xs text-gray-400 mt-1 flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            Submitted {new Date(report.submittedAt).toLocaleDateString()}
+                          </div>
+                        )}
+                        {report.status === "draft" && (
+                          <div className="text-xs text-yellow-600 mt-1 flex items-center">
+                            <AlertCircle className="w-3 h-3 mr-1" />
+                            Draft - Not yet submitted
+                          </div>
+                        )}
                         {report.reviewNotes && (
                           <div className="mt-2 p-2 bg-white rounded border-l-4 border-blue-200">
                             <p className="text-xs text-gray-600 font-medium">Review Notes:</p>
