@@ -266,30 +266,46 @@ export default function LandingNew() {
             </div>
             
             {/* Navigation Menu - Hidden on mobile */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-2">
               <button 
                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 font-medium relative group"
               >
-                Features
+                <span className="flex items-center space-x-2">
+                  <Target className="h-4 w-4" />
+                  <span>Features</span>
+                </span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-200"></div>
               </button>
               <button 
                 onClick={() => document.getElementById('analytics')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 font-medium relative group"
               >
-                Analytics
+                <span className="flex items-center space-x-2">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Analytics</span>
+                </span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-200"></div>
               </button>
               <button 
                 onClick={() => document.getElementById('ai-features')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 font-medium relative group"
               >
-                AI Features
+                <span className="flex items-center space-x-2">
+                  <Brain className="h-4 w-4" />
+                  <span>AI Features</span>
+                </span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-full transition-all duration-200"></div>
               </button>
               <button 
                 onClick={() => setShowContactModal(true)}
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 font-medium relative group"
               >
-                Pricing
+                <span className="flex items-center space-x-2">
+                  <DollarSign className="h-4 w-4" />
+                  <span>Pricing</span>
+                </span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-500 to-blue-500 group-hover:w-full transition-all duration-200"></div>
               </button>
             </nav>
             
@@ -306,7 +322,7 @@ export default function LandingNew() {
                 onClick={() => setShowAuthModal("register")}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
               >
-                {t("getStarted")}
+                {t("Get Started")}
               </Button>
             </div>
           </div>
