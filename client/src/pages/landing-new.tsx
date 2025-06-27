@@ -255,23 +255,56 @@ export default function LandingNew() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
               <AdelLogo size="md" />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ADEL
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  ADEL
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+                  Project Management
+                </span>
+              </div>
             </div>
+            
+            {/* Navigation Menu - Hidden on mobile */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <button 
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                Features
+              </button>
+              <button 
+                onClick={() => document.getElementById('analytics')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                Analytics
+              </button>
+              <button 
+                onClick={() => document.getElementById('ai-features')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                AI Features
+              </button>
+              <button 
+                onClick={() => setShowContactModal(true)}
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                Pricing
+              </button>
+            </nav>
             
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               <Button
                 variant="ghost"
                 onClick={() => setShowAuthModal("login")}
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
               >
                 {t("login")}
               </Button>
               <Button
                 onClick={() => setShowAuthModal("register")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
               >
                 {t("getStarted")}
               </Button>
@@ -352,6 +385,7 @@ export default function LandingNew() {
 
       {/* Core Features Section */}
       <section
+        id="features"
         ref={featuresRef}
         className={`py-20 bg-white/50 dark:bg-gray-800/50 transition-all duration-1000 delay-200 ${
           featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -433,6 +467,7 @@ export default function LandingNew() {
 
       {/* Analytics & AI Section */}
       <section
+        id="analytics"
         ref={analyticsRef}
         className={`py-20 transition-all duration-1000 delay-300 ${
           analyticsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -536,6 +571,7 @@ export default function LandingNew() {
 
       {/* AI Features Section */}
       <section
+        id="ai-features"
         ref={aiRef}
         className={`py-20 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 transition-all duration-1000 delay-400 ${
           aiInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
