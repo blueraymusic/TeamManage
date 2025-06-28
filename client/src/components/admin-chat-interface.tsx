@@ -43,10 +43,22 @@ export default function AdminChatInterface() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [hiddenBadges, setHiddenBadges] = useState<Set<number>>(() => {
+    const stored = localStorage.getItem('admin-chat-hidden-badges');
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Function to hide badge permanently for an officer
+  const hideBadgeForOfficer = (officerId: number) => {
+    const newHiddenBadges = new Set(hiddenBadges);
+    newHiddenBadges.add(officerId);
+    setHiddenBadges(newHiddenBadges);
+    localStorage.setItem('admin-chat-hidden-badges', JSON.stringify(Array.from(newHiddenBadges)));
+  };
 
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages"],
@@ -347,7 +359,10 @@ export default function AdminChatInterface() {
                     return (
                       <button
                         key={officer.id}
-                        onClick={() => setSelectedMemberId(officer.id)}
+                        onClick={() => {
+                          setSelectedMemberId(officer.id);
+                          hideBadgeForOfficer(officer.id);
+                        }}
                         className={`w-full p-3 text-left hover:bg-blue-50 transition-all duration-200 rounded-lg ${
                           isSelected ? "bg-blue-100 border-l-4 border-l-blue-500" : ""
                         }`}
@@ -363,8 +378,15 @@ export default function AdminChatInterface() {
                               <span className="font-medium text-sm text-gray-900 truncate">
                                 {getMemberName(officer)}
                               </span>
-                              {unreadCount > 0 && selectedMemberId !== officer.id && (
-                                <Badge variant="destructive" className="text-xs min-w-[20px] h-5">
+                              {unreadCount > 0 && selectedMemberId !== officer.id && !hiddenBadges.has(officer.id) && (
+                                <Badge 
+                                  variant="destructive" 
+                                  className="text-xs min-w-[20px] h-5 cursor-pointer hover:bg-red-600" 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    hideBadgeForOfficer(officer.id);
+                                  }}
+                                >
                                   {unreadCount}
                                 </Badge>
                               )}
