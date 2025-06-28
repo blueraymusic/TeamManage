@@ -12,6 +12,8 @@ import {
   DollarSign,
   TrendingUp,
   CheckCircle2,
+  TrendingDown,
+  BarChart3,
   Clock,
   X,
   Maximize2
@@ -215,84 +217,355 @@ export default function PDFReportPreview({
                   </h3>
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                     <p className="text-gray-700 dark:text-gray-300">
-                      This report provides a comprehensive overview of our organization's current project status and achievements. 
-                      We have {stats?.activeProjects || 0} active projects with {reports.length} reports submitted for review. 
-                      Our team continues to make significant progress across all initiatives with a focus on transparency and measurable outcomes.
+                      {selectedReport === 'progress' && (
+                        `This month's progress report highlights significant achievements across our active projects. 
+                        ${orgData?.name || 'Our organization'} currently manages ${stats?.activeProjects || 0} active projects 
+                        with ${reports.length} detailed reports submitted for stakeholder review. Project milestones are being 
+                        met consistently with strong team engagement and measurable impact.`
+                      )}
+                      {selectedReport === 'financial' && (
+                        `Financial analysis for Q4 2024 demonstrates strong budget management and resource allocation. 
+                        ${orgData?.name || 'Our organization'} has maintained fiscal responsibility across ${stats?.activeProjects || 0} 
+                        active projects with total budget utilization of $${(() => {
+                          const totalBudget = projects.reduce((sum: number, p: any) => 
+                            sum + parseFloat(p.budgetUsed || 0), 0);
+                          return totalBudget.toLocaleString();
+                        })()} and transparent financial reporting processes in place.`
+                      )}
+                      {selectedReport === 'analytics' && (
+                        `Comprehensive analytics dashboard showing organizational performance metrics and project outcomes. 
+                        ${orgData?.name || 'Our organization'} has completed ${stats?.completedProjects || 0} projects this year 
+                        with ${reports.length} analytical reports providing data-driven insights for strategic decision making 
+                        and continuous improvement initiatives.`
+                      )}
                     </p>
                   </div>
                 </div>
 
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <Card className="border-0 bg-blue-50 dark:bg-blue-900/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
-                            Active Projects
-                          </p>
-                          <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
-                            {stats?.activeProjects || 0}
-                          </p>
-                        </div>
-                        <Target className="h-8 w-8 text-blue-500" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {selectedReport === 'progress' && (
+                    <>
+                      <Card className="border-0 bg-blue-50 dark:bg-blue-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                                Active Projects
+                              </p>
+                              <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
+                                {stats?.activeProjects || 0}
+                              </p>
+                            </div>
+                            <Target className="h-8 w-8 text-blue-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <Card className="border-0 bg-green-50 dark:bg-green-900/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-green-600 dark:text-green-400 text-sm font-medium">
-                            Budget Utilized
-                          </p>
-                          <p className="text-2xl font-bold text-green-800 dark:text-green-200">
-                            ${(() => {
-                              const totalBudget = projects.reduce((sum: number, p: any) => 
-                                sum + parseFloat(p.budgetUsed || 0), 0);
-                              return totalBudget.toLocaleString();
-                            })()}
-                          </p>
-                        </div>
-                        <DollarSign className="h-8 w-8 text-green-500" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                      <Card className="border-0 bg-green-50 dark:bg-green-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                                Milestones Achieved
+                              </p>
+                              <p className="text-2xl font-bold text-green-800 dark:text-green-200">
+                                {(() => {
+                                  const totalProgress = projects.reduce((sum: number, p: any) => 
+                                    sum + (parseFloat(p.progress || 0)), 0);
+                                  return Math.round(totalProgress / Math.max(projects.length, 1));
+                                })()}%
+                              </p>
+                            </div>
+                            <CheckCircle2 className="h-8 w-8 text-green-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <Card className="border-0 bg-purple-50 dark:bg-purple-900/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
-                            Reports Submitted
-                          </p>
-                          <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
-                            {reports.length}
-                          </p>
-                        </div>
-                        <TrendingUp className="h-8 w-8 text-purple-500" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                      <Card className="border-0 bg-purple-50 dark:bg-purple-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
+                                Reports Submitted
+                              </p>
+                              <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+                                {reports.length}
+                              </p>
+                            </div>
+                            <FileText className="h-8 w-8 text-purple-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
+
+                  {selectedReport === 'financial' && (
+                    <>
+                      <Card className="border-0 bg-green-50 dark:bg-green-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                                Total Budget
+                              </p>
+                              <p className="text-2xl font-bold text-green-800 dark:text-green-200">
+                                ${(() => {
+                                  const totalBudget = projects.reduce((sum: number, p: any) => 
+                                    sum + parseFloat(p.budget || 0), 0);
+                                  return totalBudget.toLocaleString();
+                                })()}
+                              </p>
+                            </div>
+                            <DollarSign className="h-8 w-8 text-green-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-0 bg-blue-50 dark:bg-blue-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                                Amount Spent
+                              </p>
+                              <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
+                                ${(() => {
+                                  const totalSpent = projects.reduce((sum: number, p: any) => 
+                                    sum + parseFloat(p.budgetUsed || 0), 0);
+                                  return totalSpent.toLocaleString();
+                                })()}
+                              </p>
+                            </div>
+                            <TrendingDown className="h-8 w-8 text-blue-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-0 bg-orange-50 dark:bg-orange-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-orange-600 dark:text-orange-400 text-sm font-medium">
+                                Budget Efficiency
+                              </p>
+                              <p className="text-2xl font-bold text-orange-800 dark:text-orange-200">
+                                {(() => {
+                                  const totalBudget = projects.reduce((sum: number, p: any) => 
+                                    sum + parseFloat(p.budget || 0), 0);
+                                  const totalSpent = projects.reduce((sum: number, p: any) => 
+                                    sum + parseFloat(p.budgetUsed || 0), 0);
+                                  const efficiency = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+                                  return efficiency;
+                                })()}%
+                              </p>
+                            </div>
+                            <BarChart3 className="h-8 w-8 text-orange-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
+
+                  {selectedReport === 'analytics' && (
+                    <>
+                      <Card className="border-0 bg-purple-50 dark:bg-purple-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
+                                Projects Completed
+                              </p>
+                              <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+                                {stats?.completedProjects || 0}
+                              </p>
+                            </div>
+                            <CheckCircle2 className="h-8 w-8 text-purple-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-0 bg-blue-50 dark:bg-blue-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                                Success Rate
+                              </p>
+                              <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
+                                {(() => {
+                                  const total = (stats?.activeProjects || 0) + (stats?.completedProjects || 0);
+                                  const completed = stats?.completedProjects || 0;
+                                  return total > 0 ? Math.round((completed / total) * 100) : 0;
+                                })()}%
+                              </p>
+                            </div>
+                            <TrendingUp className="h-8 w-8 text-blue-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-0 bg-indigo-50 dark:bg-indigo-900/20">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+                                Data Points
+                              </p>
+                              <p className="text-2xl font-bold text-indigo-800 dark:text-indigo-200">
+                                {reports.length * 15}
+                              </p>
+                            </div>
+                            <BarChart3 className="h-8 w-8 text-indigo-500" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
                 </div>
 
-                {/* Chart Placeholder */}
+                {/* Template-Specific Content */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                    Progress Overview
-                  </h3>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 h-64 flex items-center justify-center">
-                    <div className="text-center">
-                      <TrendingUp className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500 dark:text-gray-400">
-                        Interactive charts and visualizations appear here
-                      </p>
-                      <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                        Powered by ADEL Analytics Engine
-                      </p>
-                    </div>
-                  </div>
+                  {selectedReport === 'progress' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                        Project Progress Details
+                      </h3>
+                      <div className="space-y-4">
+                        {projects.map((project: any, index: number) => (
+                          <Card key={index} className="border-0 bg-gray-50 dark:bg-gray-700">
+                            <CardContent className="p-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-medium text-gray-900 dark:text-white">
+                                  {project.name}
+                                </h4>
+                                <Badge variant="secondary">
+                                  {project.progress || 0}% Complete
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                {project.description || 'Project in active development'}
+                              </p>
+                              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                <div 
+                                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${project.progress || 0}%` }}
+                                ></div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {selectedReport === 'financial' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                        Budget Breakdown by Project
+                      </h3>
+                      <div className="space-y-4">
+                        {projects.map((project: any, index: number) => (
+                          <Card key={index} className="border-0 bg-gray-50 dark:bg-gray-700">
+                            <CardContent className="p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="font-medium text-gray-900 dark:text-white">
+                                  {project.name}
+                                </h4>
+                                <div className="text-right">
+                                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                                    Budget: ${parseFloat(project.budget || 0).toLocaleString()}
+                                  </p>
+                                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    Spent: ${parseFloat(project.budgetUsed || 0).toLocaleString()}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p className="text-gray-600 dark:text-gray-300">Utilization Rate</p>
+                                  <p className="font-medium text-green-600 dark:text-green-400">
+                                    {project.budget ? Math.round((parseFloat(project.budgetUsed || 0) / parseFloat(project.budget)) * 100) : 0}%
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600 dark:text-gray-300">Remaining</p>
+                                  <p className="font-medium text-gray-900 dark:text-white">
+                                    ${(parseFloat(project.budget || 0) - parseFloat(project.budgetUsed || 0)).toLocaleString()}
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {selectedReport === 'analytics' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                        Performance Analytics Summary
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card className="border-0 bg-gray-50 dark:bg-gray-700">
+                          <CardContent className="p-4">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+                              Project Status Distribution
+                            </h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Active</span>
+                                <span className="font-medium text-blue-600">{stats?.activeProjects || 0}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Completed</span>
+                                <span className="font-medium text-green-600">{stats?.completedProjects || 0}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Reports Generated</span>
+                                <span className="font-medium text-purple-600">{reports.length}</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="border-0 bg-gray-50 dark:bg-gray-700">
+                          <CardContent className="p-4">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+                              Key Performance Indicators
+                            </h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Success Rate</span>
+                                <span className="font-medium text-green-600">
+                                  {(() => {
+                                    const total = (stats?.activeProjects || 0) + (stats?.completedProjects || 0);
+                                    const completed = stats?.completedProjects || 0;
+                                    return total > 0 ? Math.round((completed / total) * 100) : 0;
+                                  })()}%
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Avg. Progress</span>
+                                <span className="font-medium text-blue-600">
+                                  {(() => {
+                                    const totalProgress = projects.reduce((sum: number, p: any) => 
+                                      sum + (parseFloat(p.progress || 0)), 0);
+                                    return Math.round(totalProgress / Math.max(projects.length, 1));
+                                  })()}%
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Data Points</span>
+                                <span className="font-medium text-purple-600">{reports.length * 15}</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Footer */}
