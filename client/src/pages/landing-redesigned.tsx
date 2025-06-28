@@ -282,52 +282,67 @@ export default function LandingRedesigned() {
             featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-6 px-1">
-              {t('features.title')}
+              💼 All-in-One Platform for Project Success
             </h2>
             <p className="text-sm sm:text-xl text-gray-600 max-w-3xl mx-auto px-2">
-              {t('features.subtitle')}
+              From first milestone to final report, ADEL gives your team everything you need.
             </p>
           </div>
 
           <div className={`grid grid-cols-1 gap-4 sm:gap-8 mb-8 sm:mb-16 transition-all duration-1000 delay-300 ${
             featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            {/* Ultra-Compact Project Management */}
+            {/* Smart Project Tracking */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <CardContent className="p-3 sm:p-8">
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <Target className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Smart Project Tracking</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
-                  {t('features.budgetManagementDesc')}
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">🔄 Smart Project Tracking</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
+                  Track goals, timelines, and progress with intelligent automation.
                 </p>
+                <ul className="text-gray-600 text-xs sm:text-sm space-y-1 sm:space-y-2 text-left">
+                  <li>• Real-time status updates</li>
+                  <li>• Deadline monitoring</li>
+                  <li>• Budget & milestone tracking</li>
+                </ul>
               </CardContent>
             </Card>
 
-            {/* Ultra-Compact Team Collaboration */}
+            {/* Seamless Team Collaboration */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <CardContent className="p-3 sm:p-8">
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <Users className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Collaborate Securely & Efficiently</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
-                  {t('features.teamManagementDesc')}
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">🤝 Seamless Team Collaboration</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
+                  Built-in messaging and secure file sharing.
                 </p>
+                <ul className="text-gray-600 text-xs sm:text-sm space-y-1 sm:space-y-2 text-left">
+                  <li>• Role-based access</li>
+                  <li>• File attachments</li>
+                  <li>• Private & group channels</li>
+                </ul>
               </CardContent>
             </Card>
 
-            {/* Ultra-Compact Progress Tracking */}
+            {/* Advanced Reporting & Approvals */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <CardContent className="p-3 sm:p-8">
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <BarChart3 className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Approval-Ready Reporting</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
-                  {t('features.progressTrackingDesc')}
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">📄 Advanced Reporting & Approvals</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
+                  Turn project updates into professional reports instantly.
                 </p>
+                <ul className="text-gray-600 text-xs sm:text-sm space-y-1 sm:space-y-2 text-left">
+                  <li>• Donor-ready PDF previews</li>
+                  <li>• Multi-stage approval workflows</li>
+                  <li>• Version tracking</li>
+                </ul>
               </CardContent>
             </Card>
           </div>
