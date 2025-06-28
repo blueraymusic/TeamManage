@@ -58,7 +58,7 @@ import {
   Download
 } from "lucide-react";
 import { t } from "@/lib/i18n";
-import { useLogout } from "@/hooks/use-auth";
+import { useLogout, useAuth } from "@/hooks/use-auth";
 import OrganizationInfo from "./organization-info";
 import ProjectForm from "./project-form";
 import ReportApproval from "./report-approval";
@@ -79,6 +79,7 @@ import FloatingMessageNotification from "./floating-message-notification";
 export default function AdminDashboard() {
   const { toast } = useToast();
   const logout = useLogout();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
   const [editName, setEditName] = useState("");
@@ -726,6 +727,7 @@ ${orgData.name || 'Organization'} Team`;
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
         activeTab={activeTab}
+        userRole={user?.role}
         onNavigateToMessages={() => {
           // Switch to team tab using state management
           setActiveTab("team");

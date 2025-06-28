@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { Input } from "@/components/ui/input";
-import { useLogout } from "@/hooks/use-auth";
+import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import ReportForm from "./report-form-fixed";
 import ReportFormEdit from "./report-form-edit";
@@ -53,6 +53,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function OfficerDashboard() {
   const logout = useLogout();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [viewingProject, setViewingProject] = useState<any>(null);
@@ -521,6 +522,7 @@ export default function OfficerDashboard() {
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
         activeTab={activeTab}
+        userRole={user?.role}
         onNavigateToMessages={() => {
           // Switch to messages tab using state management
           setActiveTab("messages");

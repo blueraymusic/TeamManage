@@ -9,12 +9,14 @@ interface FloatingMessageNotificationProps {
   onDismiss?: () => void;
   onNavigateToMessages?: () => void;
   activeTab?: string; // Track which tab is currently active
+  userRole?: string; // Track user role to determine correct tab
 }
 
 export default function FloatingMessageNotification({ 
   onDismiss, 
   onNavigateToMessages,
-  activeTab 
+  activeTab,
+  userRole 
 }: FloatingMessageNotificationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -41,15 +43,20 @@ export default function FloatingMessageNotification({
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
-    if (activeTab === "messages" || activeTab === "team") {
-      if (currentCount > 0) {
-        // Mark all messages as read when viewing messages
+    const isViewingMessages = (userRole === "officer" && activeTab === "messages") || 
+                             (userRole === "admin" && activeTab === "team");
+    
+    if (isViewingMessages && currentCount > 0) {
+      // Add delay to ensure user actually sees the messages interface
+      const timer = setTimeout(() => {
         markAllAsReadMutation.mutate();
         setIsVisible(false);
         setIsDismissed(false);
-      }
+      }, 2000); // 2 second delay to ensure user sees messages
+      
+      return () => clearTimeout(timer);
     }
-  }, [activeTab, currentCount]);
+  }, [activeTab, currentCount, userRole]);
 
   useEffect(() => {
     // Clear any existing timeout
