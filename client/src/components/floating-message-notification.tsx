@@ -51,14 +51,8 @@ export default function FloatingMessageNotification({
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
-    // Only proceed if we have a valid userRole
-    if (!currentUserRole) {
-      console.log("FloatingNotification - No currentUserRole yet, skipping check");
-      return;
-    }
-    
-    const isViewingMessages = (currentUserRole === "officer" && activeTab === "messages") || 
-                             (currentUserRole === "admin" && activeTab === "messages");
+    // If user is viewing messages tab, hide the notification
+    const isViewingMessages = activeTab === "messages";
     
     console.log("FloatingNotification - Role:", currentUserRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
     
@@ -73,7 +67,7 @@ export default function FloatingMessageNotification({
       
       return () => clearTimeout(timer);
     }
-  }, [activeTab, currentCount, currentUserRole]);
+  }, [activeTab, currentCount]);
 
   useEffect(() => {
     // Clear any existing timeout
