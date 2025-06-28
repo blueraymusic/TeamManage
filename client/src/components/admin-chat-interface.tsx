@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X, Search } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -34,6 +35,7 @@ export default function AdminChatInterface() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedUrgency, setSelectedUrgency] = useState<string>("normal");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showMembersList, setShowMembersList] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
@@ -231,214 +233,224 @@ export default function AdminChatInterface() {
   }
 
   return (
-    <div className="flex h-[600px] gap-4">
-      {/* Conversations List */}
-      <Card className="w-80 flex flex-col">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
-            Conversations
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 p-0 overflow-y-auto">
-          {officers.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              No officers in organization
-            </div>
-          ) : (
-            <>
-              {/* Search Box */}
-              <div className="p-3 border-b">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search conversations..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-9"
-                  />
-                </div>
+    <div className="h-[calc(100vh-200px)] bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg overflow-hidden">
+      <div className="flex h-full">
+        {/* Sidebar - Team Members */}
+        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <MessageCircle className="h-5 w-5" />
+                <h2 className="font-semibold">Team Chat</h2>
               </div>
-              
-              {/* Conversations List - Shows 7 items at a time with 8th partially visible */}
-              <div className="overflow-y-auto" style={{ maxHeight: '480px' }}>
-                <div className="space-y-1">
-                  {officers
-                    .filter(officer => {
-                      if (!searchTerm) return true;
-                      const memberName = getMemberName(officer).toLowerCase();
-                      const email = officer.email.toLowerCase();
-                      const search = searchTerm.toLowerCase();
-                      return memberName.includes(search) || email.includes(search);
-                    })
-                    .map(officer => {
-                const unreadCount = getUnreadCount(officer.id);
-                const lastMessage = getLastMessage(officer.id);
-                const isSelected = selectedMemberId === officer.id;
-                
-                return (
-                  <button
-                    key={officer.id}
-                    onClick={() => setSelectedMemberId(officer.id)}
-                    className={`w-full p-3 text-left hover:bg-gray-100 border-b transition-all duration-200 ${
-                      isSelected 
-                        ? "bg-blue-50 border-l-4 border-l-blue-500 shadow-sm" 
-                        : "hover:shadow-sm"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium ${
-                          isSelected ? "bg-blue-500" : "bg-gray-400"
-                        }`}>
-                          {getMemberName(officer).charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="font-medium text-xs text-gray-900">
-                            {getMemberName(officer)}
-                          </span>
-                          <div className="text-xs text-gray-500">Officer</div>
-                        </div>
-                      </div>
-                      {unreadCount > 0 && (
-                        <Badge variant="destructive" className="text-xs min-w-[20px] h-5">
-                          {unreadCount}
-                        </Badge>
-                      )}
-                    </div>
-                    {lastMessage && (
-                      <div className="text-xs text-gray-600 truncate pl-10 mt-1">
-                        {lastMessage.senderId === user?.id ? "You: " : ""}{lastMessage.content}
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-                  
-                  {/* No results message */}
-                  {officers.filter(officer => {
+              <Badge variant="secondary" className="bg-blue-500 text-white">
+                {officers.length} members
+              </Badge>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="p-3 border-b bg-gray-50">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search team members..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-9 bg-white border-gray-300"
+              />
+            </div>
+          </div>
+
+          {/* Members List */}
+          <div className="flex-1 overflow-y-auto">
+            {officers.length === 0 ? (
+              <div className="p-6 text-center">
+                <User className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 text-sm">No team members yet</p>
+              </div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {officers
+                  .filter(officer => {
                     if (!searchTerm) return true;
                     const memberName = getMemberName(officer).toLowerCase();
                     const email = officer.email.toLowerCase();
                     const search = searchTerm.toLowerCase();
                     return memberName.includes(search) || email.includes(search);
-                  }).length === 0 && searchTerm && (
-                    <div className="p-4 text-center text-gray-500">
-                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-                      <p className="text-sm">No conversations found matching "{searchTerm}"</p>
-                      <p className="text-xs">Try searching with a different name or email</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Chat Area */}
-      <Card className="flex-1 flex flex-col">
-        {selectedMemberId ? (
-          <>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedMemberId(null)}
-                  className="p-1 h-8 w-8"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <MessageCircle className="h-5 w-5" />
-                Chat with {getMemberName(officers.find(o => o.id === selectedMemberId)!)}
-              </CardTitle>
-            </CardHeader>
-            
-            <CardContent className="flex-1 flex flex-col p-0">
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[400px]">
-                {selectedMessages.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
-                    No messages yet. Start the conversation!
-                  </div>
-                ) : (
-                  selectedMessages.map(message => {
-                    const isCurrentUser = message.senderId === user?.id;
-                    const isDocument = message.content.includes('📎');
-                    const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
-                    const UrgencyIcon = urgencyConfig.icon;
+                  })
+                  .map(officer => {
+                    const unreadCount = getUnreadCount(officer.id);
+                    const isSelected = selectedMemberId === officer.id;
                     
                     return (
-                      <AdminMessageComponent 
-                        key={message.id}
-                        message={message}
-                        isCurrentUser={isCurrentUser}
-                        isDocument={isDocument}
-                        urgencyConfig={urgencyConfig}
-                        UrgencyIcon={UrgencyIcon}
-                        user={user}
-                      />
+                      <button
+                        key={officer.id}
+                        onClick={() => setSelectedMemberId(officer.id)}
+                        className={`w-full p-3 text-left hover:bg-blue-50 transition-all duration-200 rounded-lg ${
+                          isSelected ? "bg-blue-100 border-l-4 border-l-blue-500" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${
+                            isSelected ? "bg-blue-500" : "bg-gray-400"
+                          }`}>
+                            {getMemberName(officer).charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-sm text-gray-900 truncate">
+                                {getMemberName(officer)}
+                              </span>
+                              {unreadCount > 0 && (
+                                <Badge variant="destructive" className="text-xs min-w-[20px] h-5">
+                                  {unreadCount}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-xs text-gray-500">Officer</div>
+                          </div>
+                        </div>
+                      </button>
                     );
-                  })
-                )}
+                  })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Chat Area */}
+        <div className="flex-1 bg-white flex flex-col">
+          {selectedMemberId ? (
+            <>
+              {/* Chat Header */}
+              <div className="p-4 border-b bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-medium">
+                    {getMemberName(officers.find(o => o.id === selectedMemberId)!).charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{getMemberName(officers.find(o => o.id === selectedMemberId)!)}</h3>
+                    <p className="text-blue-100 text-sm">Officer</p>
+                  </div>
+                </div>
               </div>
 
-              {/* Message Form */}
-              <div className="border-t p-4">
+              {/* Messages Area */}
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                <div className="space-y-4">
+                  {selectedMessages.length === 0 ? (
+                    <div className="text-center py-12">
+                      <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500 text-lg">No messages yet</p>
+                      <p className="text-gray-400 text-sm">Start a conversation</p>
+                    </div>
+                  ) : (
+                    selectedMessages.map(message => {
+                      const isCurrentUser = message.senderId === user?.id;
+                      const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
+                      const UrgencyIcon = urgencyConfig.icon;
+                      
+                      return (
+                        <div
+                          key={message.id}
+                          className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+                              isCurrentUser
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-white text-gray-800 border'
+                            }`}
+                          >
+                            {message.urgency !== 'normal' && (
+                              <div className={`flex items-center gap-1 mb-2 text-xs ${
+                                isCurrentUser ? 'text-blue-100' : urgencyConfig.color
+                              }`}>
+                                <UrgencyIcon className="w-3 h-3" />
+                                <span>{urgencyConfig.label}</span>
+                              </div>
+                            )}
+                            
+                            <p className="text-sm">{message.content}</p>
+                            
+                            <div className={`text-xs mt-2 ${
+                              isCurrentUser ? 'text-blue-100' : 'text-gray-500'
+                            }`}>
+                              {new Date(message.createdAt).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Message Input */}
+              <div className="p-4 border-t bg-white">
                 <form onSubmit={handleSendMessage} className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">Priority:</label>
+                    <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="urgent">Urgent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="flex gap-2 items-end">
                     <div className="flex-1">
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder={selectedRecipient ? `Message ${getMemberName(selectedRecipient)}...` : "Select a recipient first..."}
-                        className="resize-none"
-                        disabled={!selectedRecipient}
+                        placeholder="Type your message..."
                       />
                     </div>
                     
-                    {/* File Upload Button */}
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
                       className="shrink-0 px-3"
-                      disabled={isUploading || !selectedRecipient}
                     >
                       <Paperclip className="h-4 w-4" />
                     </Button>
                     
-                    <Button type="submit" size="sm" disabled={isUploading || !selectedRecipient || (!newMessage.trim() && !selectedFile)}>
+                    <Button type="submit" size="sm" disabled={!newMessage.trim() && !selectedFile}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
 
-                  {/* Hidden file input */}
                   <input
                     ref={fileInputRef}
                     type="file"
                     onChange={handleFileSelect}
                     className="hidden"
-                    accept="*"
                   />
 
-                  {/* Selected file preview */}
                   {selectedFile && (
-                    <div className="flex items-center justify-between bg-gray-50 p-2 rounded border">
+                    <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-200">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-gray-500" />
+                        <FileText className="h-4 w-4 text-blue-600" />
                         <span className="text-sm text-gray-700">{selectedFile.name}</span>
-                        <span className="text-xs text-gray-500">
-                          ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-                        </span>
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={clearSelectedFile}
+                        onClick={() => setSelectedFile(null)}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -446,114 +458,15 @@ export default function AdminChatInterface() {
                   )}
                 </form>
               </div>
-            </CardContent>
-          </>
-        ) : (
-          <CardContent className="flex-1 flex items-center justify-center text-gray-500">
-            Select a team member to start messaging
-          </CardContent>
-        )}
-      </Card>
-    </div>
-  );
-}
-
-// Individual message component for admin interface  
-function AdminMessageComponent({ 
-  message, 
-  isCurrentUser, 
-  isDocument,
-  urgencyConfig, 
-  UrgencyIcon,
-  user
-}: {
-  message: any;
-  isCurrentUser: boolean;
-  isDocument: boolean;
-  urgencyConfig: any;
-  UrgencyIcon: any;
-  user: any;
-}) {
-  // Mark message as read when it appears in view for the recipient
-  useEffect(() => {
-    if (!message.isRead && message.recipientId === user?.id) {
-      const timer = setTimeout(() => {
-        apiRequest("PATCH", `/api/messages/${message.id}/read`, {})
-          .then(() => {
-            queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-            queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
-          })
-          .catch(console.error);
-      }, 1500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [message.id, message.isRead, message.recipientId, user?.id]);
-
-  return (
-    <div
-      className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4 ${
-        !message.isRead && message.recipientId === user?.id ? "relative" : ""
-      }`}
-    >
-      {/* Unread indicator for received messages */}
-      {!message.isRead && message.recipientId === user?.id && (
-        <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
-      )}
-      
-      <div
-        className={`max-w-[75%] rounded-2xl shadow-lg transition-all hover:shadow-xl ${
-          isCurrentUser
-            ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
-            : `bg-white border-2 ${urgencyConfig.borderColor} text-gray-900 rounded-bl-md ${
-                !message.isRead && message.recipientId === user?.id ? "ring-2 ring-red-200" : ""
-              }`
-        }`}
-      >
-        {/* Urgency Indicator */}
-        {!isCurrentUser && message.urgency !== "normal" && (
-          <div className={`px-4 pt-3 pb-1 flex items-center gap-2 ${urgencyConfig.bgColor} rounded-t-2xl rounded-bl-md`}>
-            <UrgencyIcon className={`h-4 w-4 ${urgencyConfig.color}`} />
-            <span className={`text-xs font-medium ${urgencyConfig.color}`}>
-              {urgencyConfig.label}
-            </span>
-          </div>
-        )}
-        {isDocument ? (
-          <div className={`p-4 ${isCurrentUser ? "bg-blue-400/20" : "bg-gray-50"} rounded-t-2xl ${isCurrentUser ? "rounded-br-md" : "rounded-bl-md"}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${isCurrentUser ? "bg-white/20" : "bg-blue-100"}`}>
-                <FileText className={`h-4 w-4 ${isCurrentUser ? "text-white" : "text-blue-600"}`} />
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center bg-gray-50">
+              <div className="text-center py-12">
+                <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-700 mb-2">Select a Team Member</h3>
+                <p className="text-gray-500">Choose a member to start messaging</p>
               </div>
-              <div>
-                <div className={`font-medium text-sm ${isCurrentUser ? "text-white" : "text-gray-900"}`}>
-                  {message.content.replace("📎 Document: ", "")}
-                </div>
-                <div className={`text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-                  Document attachment
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`ml-auto h-8 w-8 p-0 ${isCurrentUser ? "text-white hover:bg-white/20" : "text-gray-600 hover:bg-gray-100"}`}
-              >
-                <Download className="h-4 w-4" />
-              </Button>
             </div>
-          </div>
-        ) : (
-          <div className="p-4">
-            <div className="break-words leading-relaxed">{message.content}</div>
-          </div>
-        )}
-        <div className={`px-4 pb-3 text-xs ${isCurrentUser ? "text-blue-100" : "text-gray-500"}`}>
-          {new Date(message.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-          {isCurrentUser && (
-            <span className="ml-2 opacity-75">Sent</span>
           )}
         </div>
       </div>
