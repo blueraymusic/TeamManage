@@ -84,23 +84,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
   const [hideMessagesBadge, setHideMessagesBadge] = useState(false);
+  const [lastUnreadCount, setLastUnreadCount] = useState(0);
 
-  // Debug logging for activeTab changes
-  useEffect(() => {
-    console.log("AdminDashboard - ActiveTab changed to:", activeTab, "UserRole:", user?.role);
-  }, [activeTab, user?.role]);
 
-  // Handle Messages tab badge visibility with 2-second delay
-  useEffect(() => {
-    if (activeTab === "messages") {
-      const timer = setTimeout(() => {
-        setHideMessagesBadge(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      setHideMessagesBadge(false);
-    }
-  }, [activeTab]);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
   const [editBudget, setEditBudget] = useState("");
@@ -135,6 +121,32 @@ export default function AdminDashboard() {
   const { data: organization } = useQuery({
     queryKey: ["/api/organization"],
   });
+
+  // Debug logging for activeTab changes
+  useEffect(() => {
+    console.log("AdminDashboard - ActiveTab changed to:", activeTab, "UserRole:", user?.role);
+  }, [activeTab, user?.role]);
+
+  // Handle Messages tab badge visibility with 2-second delay
+  useEffect(() => {
+    if (activeTab === "messages") {
+      const timer = setTimeout(() => {
+        setHideMessagesBadge(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+    // Don't reset hideMessagesBadge when leaving the tab - keep it hidden once viewed
+  }, [activeTab]);
+
+  // Reset badge visibility only when message count increases (new messages)
+  useEffect(() => {
+    const currentCount = unreadMessages?.count || 0;
+    if (currentCount > lastUnreadCount) {
+      // New messages arrived, show badge again
+      setHideMessagesBadge(false);
+    }
+    setLastUnreadCount(currentCount);
+  }, [unreadMessages?.count, lastUnreadCount]);
 
   // Update project mutation
   const updateProjectMutation = useMutation({
