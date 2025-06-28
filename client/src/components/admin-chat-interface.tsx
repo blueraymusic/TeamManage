@@ -100,6 +100,40 @@ export default function AdminChatInterface() {
     scrollToBottom();
   }, [messages, selectedMemberId]);
 
+  // Mark messages as read when conversation is opened
+  useEffect(() => {
+    if (selectedMemberId && user?.id) {
+      const unreadMessages = messages.filter(msg => 
+        msg.senderId === selectedMemberId && 
+        msg.recipientId === user.id && 
+        !msg.isRead
+      );
+
+      // Mark each unread message as read
+      unreadMessages.forEach(async (msg) => {
+        try {
+          await apiRequest(`/api/messages/${msg.id}/read`, "PATCH", {});
+        } catch (error) {
+          console.error("Failed to mark message as read:", error);
+        }
+      });
+
+      if (unreadMessages.length > 0) {
+        // Invalidate queries to refresh unread counts
+        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+        
+        // Remove badge for this conversation
+        setHiddenBadges(prev => {
+          const newSet = new Set(prev);
+          newSet.add(selectedMemberId);
+          localStorage.setItem('admin-chat-hidden-badges', JSON.stringify(Array.from(newSet)));
+          return newSet;
+        });
+      }
+    }
+  }, [selectedMemberId, messages, user?.id]);
+
   // Get officers only
   const officers = organizationMembers.filter(member => member.role === "officer");
   const selectedRecipient = officers.find(o => o.id === selectedMemberId);
