@@ -16,7 +16,8 @@ import {
   BarChart3,
   Clock,
   X,
-  Maximize2
+  Maximize2,
+  ChevronDown
 } from "lucide-react";
 
 interface PDFReportPreviewProps {
@@ -526,36 +527,125 @@ export default function PDFReportPreview({
                     </div>
                   </div>
                   
-                  {/* Download Buttons Section */}
-                  <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <Button
-                      onClick={() => downloadPDF(selectedReport, false)}
-                      className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Bulk Report
-                    </Button>
+                  {/* Download Options Section */}
+                  <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    {/* Organization-Wide Report */}
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                      <div className="flex items-start space-x-4">
+                        <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg p-3 shadow-lg">
+                          <Download className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-2">
+                            Organization-Wide Report
+                          </h3>
+                          <p className="text-sm text-green-700 dark:text-green-300 mb-4 leading-relaxed">
+                            Download a comprehensive report containing all projects, metrics, and analytics for your entire organization. Perfect for board meetings and stakeholder presentations.
+                          </p>
+                          <div className="flex items-center space-x-3 text-xs text-green-600 dark:text-green-400 mb-4">
+                            <div className="flex items-center">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              {stats?.activeProjects || 0} Projects
+                            </div>
+                            <div className="flex items-center">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              {reports.length} Reports
+                            </div>
+                            <div className="flex items-center">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              Complete Analytics
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => downloadPDF(selectedReport, false)}
+                            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2.5 text-sm font-medium"
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            Download Organization Report
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Project-Specific Report */}
                     {projects.length > 0 && (
-                      <div className="relative">
-                        <select
-                          onChange={(e) => {
-                            const projectName = e.target.value;
-                            if (projectName) {
-                              downloadPDF(selectedReport, true, projectName);
-                            }
-                          }}
-                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md shadow-lg cursor-pointer border-0"
-                          defaultValue=""
-                        >
-                          <option value="" disabled>Download Project Report</option>
-                          {projects.map((project: any) => (
-                            <option key={project.id} value={project.name} className="bg-white text-black">
-                              {project.name}
-                            </option>
-                          ))}
-                        </select>
+                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                        <div className="flex items-start space-x-4">
+                          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg p-3 shadow-lg">
+                            <FileText className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                              Project-Specific Report
+                            </h3>
+                            <p className="text-sm text-blue-700 dark:text-blue-300 mb-4 leading-relaxed">
+                              Generate a focused report for a specific project. Includes detailed progress, budget analysis, and project-specific metrics.
+                            </p>
+                            <div className="flex items-center space-x-3 text-xs text-blue-600 dark:text-blue-400 mb-4">
+                              <div className="flex items-center">
+                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                Detailed Progress
+                              </div>
+                              <div className="flex items-center">
+                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                Budget Analysis
+                              </div>
+                              <div className="flex items-center">
+                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                Team Insights
+                              </div>
+                            </div>
+                            <div className="relative">
+                              <select
+                                onChange={(e) => {
+                                  const projectName = e.target.value;
+                                  if (projectName) {
+                                    downloadPDF(selectedReport, true, projectName);
+                                    // Reset selection after download
+                                    e.target.value = "";
+                                  }
+                                }}
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-lg shadow-lg cursor-pointer border-0 font-medium text-sm transition-all duration-300 hover:shadow-xl appearance-none pr-10"
+                                defaultValue=""
+                              >
+                                <option value="" disabled className="bg-gray-800 text-gray-300">
+                                  Select Project to Download
+                                </option>
+                                {projects.map((project: any) => (
+                                  <option key={project.id} value={project.name} className="bg-white text-gray-900 py-2">
+                                    {project.name}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                <ChevronDown className="w-4 h-4 text-white/80" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
+
+                    {/* Download Tips */}
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Download Tips
+                      </h4>
+                      <ul className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+                        <li className="flex items-center">
+                          <CheckCircle2 className="w-3 h-3 mr-2 text-green-500" />
+                          Reports are generated in HTML format for easy viewing and printing
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle2 className="w-3 h-3 mr-2 text-green-500" />
+                          All data is real-time and reflects current project status
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle2 className="w-3 h-3 mr-2 text-green-500" />
+                          Professional formatting suitable for stakeholder presentations
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
