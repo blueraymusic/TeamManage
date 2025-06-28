@@ -331,7 +331,95 @@ export default function LandingRedesigned() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
 
+      {/* Why ADEL Over Other Tools Section */}
+      <section className="py-8 sm:py-16 lg:py-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-6">
+              ✨ Why ADEL over Other Tools?
+            </h2>
+            <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto">
+              Unlike generic project management tools, ADEL is specifically designed for NGOs and small organizations
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {/* AI Suggestions */}
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-blue-500">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-gray-900">🧠</span>
+              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">Built-in AI Suggestions</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Get intelligent feedback for every report - grammar checks, clarity scores, and actionable improvements before admin review
+              </p>
+            </div>
+
+            {/* PDF Reports */}
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-emerald-500">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500 rounded-lg flex items-center justify-center mr-3">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-gray-900">🧾</span>
+              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">Donor-Ready PDF Reports</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Professional reports generated from your real project data - perfect for stakeholders, donors, and compliance
+              </p>
+            </div>
+
+            {/* Approval Workflow */}
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-purple-500">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-gray-900">✅</span>
+              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">NGO-Tailored Workflow</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Approval workflows designed for NGO teams - officers submit, admins review, with recall and edit capabilities
+              </p>
+            </div>
+
+            {/* Simple Focus */}
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-orange-500">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                  <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-gray-900">🔒</span>
+              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No Overcomplicated Features</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Just what small organizations need - no overwhelming enterprise features, just focused tools for your mission
+              </p>
+            </div>
+          </div>
+
+          {/* Comparison Note */}
+          <div className="mt-8 sm:mt-12 text-center">
+            <div className="bg-white/70 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-lg">
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                <span className="font-semibold text-gray-900">Unlike Trello or Monday:</span> ADEL understands NGO workflows with built-in approval processes, 
+                AI-powered report analysis, and professional PDF generation - all designed specifically for mission-driven organizations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-8 sm:py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
           {/* Additional Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center p-6 bg-blue-50 rounded-2xl">
