@@ -81,11 +81,13 @@ export default function AdminDashboard() {
   const logout = useLogout();
   const { user, isLoading } = useAuth();
   
-  // Debug logging for user data
-  console.log("AdminDashboard - User:", user, "IsLoading:", isLoading);
-  console.log("AdminDashboard - ActiveTab:", activeTab, "UserRole:", user?.role);
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
+
+  // Debug logging for activeTab changes
+  useEffect(() => {
+    console.log("AdminDashboard - ActiveTab changed to:", activeTab, "UserRole:", user?.role);
+  }, [activeTab, user?.role]);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
   const [editBudget, setEditBudget] = useState("");
