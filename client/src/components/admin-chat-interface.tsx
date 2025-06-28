@@ -368,8 +368,6 @@ export default function AdminChatInterface() {
                                   {unreadCount}
                                 </Badge>
                               )}
-                              {/* Debug logging */}
-                              {console.log(`🔥 Officer ${officer.id} - Selected: ${selectedMemberId} - Unread: ${unreadCount} - Should show badge: ${unreadCount > 0 && selectedMemberId !== officer.id}`)}
                             </div>
                             <div className="text-xs text-gray-500">Officer</div>
                           </div>

@@ -83,8 +83,12 @@ export default function AdminDashboard() {
   
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
-  const [hideMessagesBadge, setHideMessagesBadge] = useState(false);
-  const [lastUnreadCount, setLastUnreadCount] = useState(0);
+  const [hideMessagesBadge, setHideMessagesBadge] = useState(() => {
+    return localStorage.getItem('admin-messages-badge-hidden') === 'true';
+  });
+  const [lastSeenMessageCount, setLastSeenMessageCount] = useState(() => {
+    return parseInt(localStorage.getItem('admin-last-seen-count') || '0');
+  });
 
 
   const [editName, setEditName] = useState("");
@@ -132,21 +136,22 @@ export default function AdminDashboard() {
     if (activeTab === "messages") {
       const timer = setTimeout(() => {
         setHideMessagesBadge(true);
+        localStorage.setItem('admin-messages-badge-hidden', 'true');
+        localStorage.setItem('admin-last-seen-count', String(unreadMessages?.count || 0));
       }, 2000);
       return () => clearTimeout(timer);
     }
-    // Don't reset hideMessagesBadge when leaving the tab - keep it hidden once viewed
-  }, [activeTab]);
+  }, [activeTab, unreadMessages?.count]);
 
-  // Reset badge visibility only when message count increases (new messages)
+  // Show badge only when new messages arrive (count increased from last seen)
   useEffect(() => {
     const currentCount = unreadMessages?.count || 0;
-    if (currentCount > lastUnreadCount) {
+    if (currentCount > lastSeenMessageCount) {
       // New messages arrived, show badge again
       setHideMessagesBadge(false);
+      localStorage.setItem('admin-messages-badge-hidden', 'false');
     }
-    setLastUnreadCount(currentCount);
-  }, [unreadMessages?.count, lastUnreadCount]);
+  }, [unreadMessages?.count, lastSeenMessageCount]);
 
   // Update project mutation
   const updateProjectMutation = useMutation({
