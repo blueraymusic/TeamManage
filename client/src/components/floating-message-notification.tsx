@@ -51,21 +51,25 @@ export default function FloatingMessageNotification({
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
-    // If user is viewing messages tab, hide the notification
+    // If user is viewing messages tab, hide the notification immediately
     const isViewingMessages = activeTab === "messages";
     
     console.log("FloatingNotification - Role:", currentUserRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
     
-    if (isViewingMessages && currentCount > 0) {
-      // Add delay to ensure user actually sees the messages interface
-      const timer = setTimeout(() => {
-        console.log("FloatingNotification - Marking messages as read and hiding notification");
-        markAllAsReadMutation.mutate();
-        setIsVisible(false);
-        setIsDismissed(false);
-      }, 2000); // 2 second delay to ensure user sees messages
+    if (isViewingMessages) {
+      console.log("FloatingNotification - User is viewing messages, hiding notification immediately");
+      setIsVisible(false);
+      setIsDismissed(true); // Mark as dismissed to prevent it from showing again
       
-      return () => clearTimeout(timer);
+      // Mark messages as read after a short delay
+      if (currentCount > 0) {
+        const timer = setTimeout(() => {
+          console.log("FloatingNotification - Marking messages as read");
+          markAllAsReadMutation.mutate();
+        }, 1000);
+        
+        return () => clearTimeout(timer);
+      }
     }
   }, [activeTab, currentCount]);
 
