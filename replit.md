@@ -167,6 +167,7 @@ Changelog:
 - June 28, 2025. Enhanced PDF Report Preview with distinct template content and real data integration. Created meaningful differences between Progress, Financial, and Analytics report templates using actual organization data. Added Analysis button to overview section for easy access to professional report templates.
 - June 28, 2025. Implemented comprehensive PDF download functionality with dual options: bulk reports for entire organization (named as "hjhjhj: Project Management Report") and project-specific reports (named as "ProjectName: Report Type"). Added dropdown selection for individual project downloads with professional HTML export format and real-time data integration.
 - June 28, 2025. Removed widgets functionality from both admin and officer dashboards to simplify the interface. Restored original tab structure with 5 tabs: Overview, Projects, Reports, Analytics, and Messages for officers; Overview, Projects, Reports, Analytics, and Team for admins. Fixed PDF report preview layout with improved spacing and responsive design.
+- June 28, 2025. Fixed notification badge system for admin users. Messages tab badge now disappears after 2-second delay when viewing Messages tab. Individual officer conversation badges disappear immediately when viewing specific conversations. Corrected variable reference from selectedOfficer to selectedMemberId to prevent runtime errors.
 ```
 
 ## User Preferences
