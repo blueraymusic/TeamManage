@@ -729,8 +729,8 @@ ${orgData.name || 'Organization'} Team`;
         activeTab={activeTab}
         userRole={user?.role}
         onNavigateToMessages={() => {
-          // Switch to team tab using state management
-          setActiveTab("team");
+          // Switch to messages tab using state management
+          setActiveTab("messages");
         }}
       />
     </div>
