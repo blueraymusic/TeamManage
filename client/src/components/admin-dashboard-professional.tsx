@@ -346,14 +346,6 @@ export default function AdminDashboard() {
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
-                  Messages
-                  {unreadMessages && unreadMessages.count > 0 && (
-                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
-                      {unreadMessages.count}
-                    </Badge>
-                  )}
-                </TabsTrigger>
                 <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Analytics
                 </TabsTrigger>
@@ -494,10 +486,6 @@ export default function AdminDashboard() {
               <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>
                 <ReportApproval />
               </div>
-            </TabsContent>
-
-            <TabsContent value="messages" className="p-6">
-              <AdminChatInterface />
             </TabsContent>
 
             <TabsContent value="analytics" className="p-6 space-y-6">
