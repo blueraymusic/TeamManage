@@ -503,56 +503,59 @@ export default function PDFReportPreview({
 
               {/* Report Content */}
               <div className="p-6 space-y-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                      {currentReport.title}
-                    </h2>
-                    <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {currentReport.date}
-                      </div>
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
-                        Sarah Johnson, Project Manager
+                {/* Report Header Section */}
+                <div className="space-y-4 mb-8">
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    <div className="flex-1">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                        {currentReport.title}
+                      </h2>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          {currentReport.date}
+                        </div>
+                        <div className="flex items-center">
+                          <User className="h-4 w-4 mr-2" />
+                          Sarah Johnson, Project Manager
+                        </div>
+                        <Badge className={`${currentReport.color} text-white`}>
+                          {currentReport.type}
+                        </Badge>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex space-x-2">
-                      <Button
-                        onClick={() => downloadPDF(selectedReport, false)}
-                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        Download Bulk Report
-                      </Button>
-                      {projects.length > 0 && (
-                        <div className="relative">
-                          <select
-                            onChange={(e) => {
-                              const projectName = e.target.value;
-                              if (projectName) {
-                                downloadPDF(selectedReport, true, projectName);
-                              }
-                            }}
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md shadow-lg cursor-pointer"
-                            defaultValue=""
-                          >
-                            <option value="" disabled>Download Project Report</option>
-                            {projects.map((project: any) => (
-                              <option key={project.id} value={project.name} className="bg-white text-black">
-                                {project.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-                    </div>
-                    <Badge className={`${currentReport.color} text-white`}>
-                      {currentReport.type}
-                    </Badge>
+                  
+                  {/* Download Buttons Section */}
+                  <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <Button
+                      onClick={() => downloadPDF(selectedReport, false)}
+                      className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Bulk Report
+                    </Button>
+                    {projects.length > 0 && (
+                      <div className="relative">
+                        <select
+                          onChange={(e) => {
+                            const projectName = e.target.value;
+                            if (projectName) {
+                              downloadPDF(selectedReport, true, projectName);
+                            }
+                          }}
+                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md shadow-lg cursor-pointer border-0"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>Download Project Report</option>
+                          {projects.map((project: any) => (
+                            <option key={project.id} value={project.name} className="bg-white text-black">
+                              {project.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 </div>
 
