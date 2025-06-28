@@ -360,7 +360,7 @@ export default function AdminDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Messages
-                  {unreadMessages && unreadMessages.count > 0 && (
+                  {unreadMessages && unreadMessages.count > 0 && activeTab !== "messages" && (
                     <Badge 
                       variant="destructive" 
                       className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center animate-notificationPulse animate-slideInRight bg-red-500 text-white border-2 border-white shadow-lg"
