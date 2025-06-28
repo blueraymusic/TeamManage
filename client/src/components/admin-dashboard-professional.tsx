@@ -362,7 +362,18 @@ export default function AdminDashboard() {
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="p-6">
+            <TabsContent value="overview" className="p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-slate-800">Dashboard Overview</h2>
+                <Button
+                  onClick={() => setIsPDFPreviewOpen(true)}
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Analysis
+                </Button>
+              </div>
+              
               <Card className="bg-white border border-gray-200">
                 <CardHeader>
                   <CardTitle className="text-gray-900">Progress Overview</CardTitle>
