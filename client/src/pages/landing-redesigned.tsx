@@ -298,7 +298,7 @@ export default function LandingRedesigned() {
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <Target className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.budgetManagement')}</h3>
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Smart Project Tracking</h3>
                 <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.budgetManagementDesc')}
                 </p>
@@ -311,7 +311,7 @@ export default function LandingRedesigned() {
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <Users className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.teamManagement')}</h3>
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Collaborate Securely & Efficiently</h3>
                 <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.teamManagementDesc')}
                 </p>
@@ -324,7 +324,7 @@ export default function LandingRedesigned() {
                 <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
                   <BarChart3 className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.progressTracking')}</h3>
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">Approval-Ready Reporting</h3>
                 <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.progressTrackingDesc')}
                 </p>
@@ -413,6 +413,73 @@ export default function LandingRedesigned() {
                 <span className="font-semibold text-gray-900">Unlike Trello or Monday:</span> ADEL understands NGO workflows with built-in approval processes, 
                 AI-powered report analysis, and professional PDF generation - all designed specifically for mission-driven organizations.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Teams Choose ADEL Section */}
+      <section className="py-8 sm:py-16 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-6">
+              Why Teams Choose ADEL
+            </h2>
+            <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto mb-6 sm:mb-8">
+              Unlike general-purpose tools, ADEL speaks your language — deadlines, approvals, budgets, and impact.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            {/* Built-in AI feedback */}
+            <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-500 rounded-xl mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                <span className="text-2xl sm:text-3xl">🧠</span>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Built-in AI feedback on every report</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Instant grammar checks, clarity scores, and improvement suggestions</p>
+            </div>
+
+            {/* Ready-to-send PDF reports */}
+            <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl sm:rounded-2xl shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-emerald-500 rounded-xl mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                <span className="text-2xl sm:text-3xl">📝</span>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Ready-to-send PDF donor reports</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Professional reports generated from your real project data</p>
+            </div>
+
+            {/* Simple for new team members */}
+            <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl sm:rounded-2xl shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-500 rounded-xl mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                <span className="text-2xl sm:text-3xl">🔒</span>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Simple enough for new team members</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Intuitive interface that anyone can learn in minutes</p>
+            </div>
+
+            {/* NGO-specific workflows */}
+            <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl sm:rounded-2xl shadow-lg">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-500 rounded-xl mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                <span className="text-2xl sm:text-3xl">🎯</span>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Designed specifically for NGO workflows</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Approval processes, budget tracking, and impact reporting built-in</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 text-white">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Ready to Transform Your Project Management?</h3>
+              <p className="text-sm sm:text-lg opacity-90 mb-4 sm:mb-6">Join 500+ NGOs who've eliminated spreadsheet chaos and report panic</p>
+              <Button
+                onClick={() => setShowAuthModal("register")}
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl"
+              >
+                Start Free Trial
+              </Button>
             </div>
           </div>
         </div>
