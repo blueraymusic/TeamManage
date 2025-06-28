@@ -43,6 +43,12 @@ export default function FloatingMessageNotification({
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
+    // Only proceed if we have a valid userRole
+    if (!userRole) {
+      console.log("FloatingNotification - No userRole yet, skipping check");
+      return;
+    }
+    
     const isViewingMessages = (userRole === "officer" && activeTab === "messages") || 
                              (userRole === "admin" && activeTab === "team");
     
@@ -123,8 +129,8 @@ export default function FloatingMessageNotification({
     }
   };
 
-  // Don't show if no unread messages or manually dismissed
-  if (!isVisible || currentCount === 0 || (isDismissed && currentCount <= lastMessageCountRef.current)) {
+  // Don't show if no unread messages, manually dismissed, or no userRole
+  if (!isVisible || currentCount === 0 || (isDismissed && currentCount <= lastMessageCountRef.current) || !userRole) {
     return null;
   }
 
