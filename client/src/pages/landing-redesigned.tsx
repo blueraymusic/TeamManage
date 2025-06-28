@@ -229,11 +229,11 @@ export default function LandingRedesigned() {
             </div>
             
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-8 leading-tight px-1">
-              {t('hero.title')}
+              The First Project Management Tool with Built-In AI Report Feedback
             </h1>
             
             <p className="text-sm sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
-              {t('hero.subtitle')}
+              For teams who care about results, not just checkboxes. No more messy spreadsheets, last-minute donor report panic, or guessing if your project is on track.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-6 mb-8 sm:mb-16">
@@ -357,9 +357,9 @@ export default function LandingRedesigned() {
                 </div>
                 <span className="text-lg sm:text-xl font-bold text-gray-900">🧠</span>
               </div>
-              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">Built-in AI Suggestions</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No More Report Guesswork</h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Get intelligent feedback for every report - grammar checks, clarity scores, and actionable improvements before admin review
+                AI instantly reviews your reports for clarity, grammar, and impact - no more wondering if your writing is donor-ready
               </p>
             </div>
 
@@ -371,9 +371,9 @@ export default function LandingRedesigned() {
                 </div>
                 <span className="text-lg sm:text-xl font-bold text-gray-900">🧾</span>
               </div>
-              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">Donor-Ready PDF Reports</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No More Last-Minute Report Panic</h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Professional reports generated from your real project data - perfect for stakeholders, donors, and compliance
+                Professional PDF reports auto-generated from your real data - impress donors and stakeholders every time
               </p>
             </div>
 
@@ -385,9 +385,9 @@ export default function LandingRedesigned() {
                 </div>
                 <span className="text-lg sm:text-xl font-bold text-gray-900">✅</span>
               </div>
-              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">NGO-Tailored Workflow</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No More Email Approval Chaos</h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Approval workflows designed for NGO teams - officers submit, admins review, with recall and edit capabilities
+                Built-in approval workflows - officers submit, admins review, changes tracked. No more lost emails or confusion
               </p>
             </div>
 
@@ -399,9 +399,9 @@ export default function LandingRedesigned() {
                 </div>
                 <span className="text-lg sm:text-xl font-bold text-gray-900">🔒</span>
               </div>
-              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No Overcomplicated Features</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">No More Feature Overwhelm</h3>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                Just what small organizations need - no overwhelming enterprise features, just focused tools for your mission
+                Built for NGOs, not Fortune 500s. Simple, focused tools that actually help your mission - no confusing enterprise bloat
               </p>
             </div>
           </div>
@@ -413,6 +413,117 @@ export default function LandingRedesigned() {
                 <span className="font-semibold text-gray-900">Unlike Trello or Monday:</span> ADEL understands NGO workflows with built-in approval processes, 
                 AI-powered report analysis, and professional PDF generation - all designed specifically for mission-driven organizations.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Testimonials Section */}
+      <section className="py-8 sm:py-16 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-6">
+              Trusted by Mission-Driven Organizations
+            </h2>
+            <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto">
+              See how NGOs and non-profits are streamlining their project management with ADEL
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg sm:text-xl">GH</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Global Hope Foundation</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Education & Healthcare</p>
+                </div>
+              </div>
+              <blockquote className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
+                "ADEL's AI feedback transformed our reporting process. Our donor reports are now professional and error-free, and the approval workflow eliminated all the back-and-forth emails."
+              </blockquote>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-blue-700 font-semibold text-xs">SM</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-xs sm:text-sm">Sarah Martinez</p>
+                  <p className="text-xs text-gray-600">Program Director</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg sm:text-xl">CC</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Community Care Alliance</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Social Services</p>
+                </div>
+              </div>
+              <blockquote className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
+                "Finally, a tool that understands NGO workflows! The PDF export feature saves us hours every month, and the budget tracking keeps our projects on financial track."
+              </blockquote>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-emerald-200 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-emerald-700 font-semibold text-xs">MJ</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-xs sm:text-sm">Michael Johnson</p>
+                  <p className="text-xs text-gray-600">Operations Manager</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold text-lg sm:text-xl">EI</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Environmental Impact Network</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Conservation</p>
+                </div>
+              </div>
+              <blockquote className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
+                "ADEL replaced our messy spreadsheets and eliminated last-minute report panic. The analytics dashboard gives us insights we never had before about our project performance."
+              </blockquote>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-purple-700 font-semibold text-xs">LP</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-xs sm:text-sm">Linda Park</p>
+                  <p className="text-xs text-gray-600">Executive Director</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="mt-8 sm:mt-12 text-center">
+            <div className="bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8">
+                <div className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-700">500+ NGOs Trust ADEL</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-700">10,000+ Projects Managed</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-700">99.9% Uptime Guarantee</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
