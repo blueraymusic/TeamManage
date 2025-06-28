@@ -122,29 +122,29 @@ export default function LandingRedesigned() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Ultra-Mobile Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+      {/* Ultra-Compact Mobile Header */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between px-2 sm:px-6 lg:px-8 xl:px-12 h-14 sm:h-20">
-            {/* Ultra-Compact Mobile Logo */}
-            <div className="flex items-center space-x-1.5 sm:space-x-3">
+          <div className="flex items-center justify-between px-2 sm:px-6 lg:px-8 xl:px-12 h-10 sm:h-20">
+            {/* Micro-Compact Mobile Logo */}
+            <div className="flex items-center space-x-1 sm:space-x-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl blur-sm opacity-75"></div>
-                <div className="relative p-1 sm:p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl shadow-lg">
-                  <AdelLogo size="sm" className="filter brightness-0 invert w-4 h-4 sm:w-6 sm:h-6" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-sm sm:rounded-xl blur-sm opacity-75"></div>
+                <div className="relative p-0.5 sm:p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-sm sm:rounded-xl shadow-lg">
+                  <AdelLogo size="sm" className="filter brightness-0 invert w-3 h-3 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-base sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 ADEL
               </span>
             </div>
 
-            {/* Ultra-Compact Mobile Menu */}
+            {/* Micro-Compact Mobile Menu */}
             <div className="flex items-center lg:hidden">
               <Button
                 onClick={() => setShowAuthModal("register")}
                 size="sm"
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-2 py-1.5 text-xs font-semibold rounded-md"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-1.5 py-1 text-xs font-semibold rounded-sm"
               >
                 Start
               </Button>
