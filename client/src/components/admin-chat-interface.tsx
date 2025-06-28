@@ -19,6 +19,10 @@ interface Message {
   urgency: string;
   isRead: boolean;
   createdAt: string;
+  fileUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 interface Member {
@@ -120,51 +124,59 @@ export default function AdminChatInterface() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Admin handleSendMessage called");
-    console.log("selectedMemberId:", selectedMemberId);
-    console.log("newMessage:", newMessage.trim());
-    console.log("selectedFile:", selectedFile);
     
     if (!selectedMemberId || (!newMessage.trim() && !selectedFile)) return;
 
-    if (selectedFile) {
-      // Handle file upload via the upload endpoint
-      console.log("Sending file message via upload endpoint");
-      const formData = new FormData();
-      formData.append('recipientId', selectedMemberId.toString());
-      formData.append('content', newMessage || `📎 Document: ${selectedFile.name}`);
-      formData.append('file', selectedFile);
+    try {
+      if (selectedFile) {
+        // Handle file upload
+        const formData = new FormData();
+        formData.append('recipientId', selectedMemberId.toString());
+        formData.append('urgency', selectedUrgency);
+        formData.append('file', selectedFile);
+        
+        // Add text content if provided, otherwise use file name
+        const messageContent = newMessage.trim() || `Shared document: ${selectedFile.name}`;
+        formData.append('content', messageContent);
 
-      try {
-        const response = await apiRequest("POST", "/api/messages/upload", formData);
+        const response = await fetch('/api/messages/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
         const result = await response.json();
-        console.log("File upload result:", result);
         
         setNewMessage("");
         setSelectedFile(null);
         setSelectedUrgency("normal");
         if (fileInputRef.current) fileInputRef.current.value = '';
+        
         queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
         
         toast({
-          title: "Success",
-          description: "File sent successfully",
+          title: "File shared successfully",
+          description: `${selectedFile.name} has been sent`,
         });
-      } catch (error: any) {
-        console.error("File upload error:", error);
-        toast({
-          title: "Error",
-          description: error.message || "Failed to send file",
-          variant: "destructive",
+      } else {
+        // Handle text message
+        sendMessageMutation.mutate({
+          content: newMessage,
+          recipientId: selectedMemberId,
+          urgency: selectedUrgency,
         });
       }
-    } else {
-      // Handle text message
-      console.log("Sending text message");
-      sendMessageMutation.mutate({
-        content: newMessage,
-        recipientId: selectedMemberId,
-        urgency: selectedUrgency,
+    } catch (error: any) {
+      console.error("Message send error:", error);
+      toast({
+        title: "Failed to send message",
+        description: error.message || "Please try again",
+        variant: "destructive",
       });
     }
   };
@@ -178,8 +190,21 @@ export default function AdminChatInterface() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       setSelectedFile(file);
-      setNewMessage(`📎 Document: ${file.name}`);
+      // Don't automatically set message content, let user add their own message
+      if (!newMessage.trim()) {
+        setNewMessage("");
+      }
     }
   };
 
@@ -351,6 +376,7 @@ export default function AdminChatInterface() {
                       const isCurrentUser = message.senderId === user?.id;
                       const urgencyConfig = getUrgencyConfig(message.urgency || "normal");
                       const UrgencyIcon = urgencyConfig.icon;
+                      const isFileMessage = message.content.includes('📎') || message.content.includes('Shared document:');
                       
                       return (
                         <div
@@ -358,14 +384,14 @@ export default function AdminChatInterface() {
                           className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
-                            className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+                            className={`max-w-xs lg:max-w-md rounded-2xl shadow-sm ${
                               isCurrentUser
                                 ? 'bg-blue-500 text-white'
                                 : 'bg-white text-gray-800 border'
                             }`}
                           >
                             {message.urgency !== 'normal' && (
-                              <div className={`flex items-center gap-1 mb-2 text-xs ${
+                              <div className={`flex items-center gap-1 mb-2 px-4 pt-3 text-xs ${
                                 isCurrentUser ? 'text-blue-100' : urgencyConfig.color
                               }`}>
                                 <UrgencyIcon className="w-3 h-3" />
@@ -373,15 +399,70 @@ export default function AdminChatInterface() {
                               </div>
                             )}
                             
-                            <p className="text-sm">{message.content}</p>
+                            {isFileMessage ? (
+                              <div className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className={`p-2 rounded-full ${
+                                    isCurrentUser ? 'bg-blue-400' : 'bg-blue-100'
+                                  }`}>
+                                    <FileText className={`w-4 h-4 ${
+                                      isCurrentUser ? 'text-white' : 'text-blue-600'
+                                    }`} />
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-sm font-medium">
+                                      {message.fileName || message.content.replace(/^(📎|Shared document:)\s*/, '')}
+                                    </div>
+                                    <div className={`text-xs ${
+                                      isCurrentUser ? 'text-blue-100' : 'text-gray-500'
+                                    }`}>
+                                      {message.fileSize ? 
+                                        `${(message.fileSize / 1024 / 1024).toFixed(2)} MB` : 
+                                        'Document attachment'
+                                      }
+                                    </div>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      // Use the fileUrl from the message if available, otherwise construct it
+                                      let downloadUrl;
+                                      if (message.fileUrl) {
+                                        downloadUrl = message.fileUrl;
+                                      } else {
+                                        // Extract filename from message content and construct URL
+                                        const filename = message.content.replace(/^(📎|Shared document:)\s*/, '');
+                                        downloadUrl = `/api/files/${encodeURIComponent(filename)}`;
+                                      }
+                                      window.open(downloadUrl, '_blank');
+                                    }}
+                                    className={`p-2 ${
+                                      isCurrentUser 
+                                        ? 'text-white hover:bg-blue-400' 
+                                        : 'text-blue-600 hover:bg-blue-50'
+                                    }`}
+                                  >
+                                    <Download className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="px-4 py-3">
+                                <p className="text-sm break-words">{message.content}</p>
+                              </div>
+                            )}
                             
-                            <div className={`text-xs mt-2 ${
+                            <div className={`px-4 pb-3 text-xs ${
                               isCurrentUser ? 'text-blue-100' : 'text-gray-500'
                             }`}>
                               {new Date(message.createdAt).toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit'
                               })}
+                              {isCurrentUser && (
+                                <span className="ml-2">Sent</span>
+                              )}
                             </div>
                           </div>
                         </div>
