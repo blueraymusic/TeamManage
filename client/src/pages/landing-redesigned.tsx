@@ -122,31 +122,31 @@ export default function LandingRedesigned() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Mobile-Responsive Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+      {/* Ultra-Mobile Header */}
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between px-3 sm:px-6 lg:px-8 xl:px-12 h-16 sm:h-20">
-            {/* Mobile-Responsive Logo */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center justify-between px-2 sm:px-6 lg:px-8 xl:px-12 h-14 sm:h-20">
+            {/* Ultra-Compact Mobile Logo */}
+            <div className="flex items-center space-x-1.5 sm:space-x-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl blur-sm opacity-75"></div>
-                <div className="relative p-1.5 sm:p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl shadow-lg">
-                  <AdelLogo size="sm" className="filter brightness-0 invert" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl blur-sm opacity-75"></div>
+                <div className="relative p-1 sm:p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl shadow-lg">
+                  <AdelLogo size="sm" className="filter brightness-0 invert w-4 h-4 sm:w-6 sm:h-6" />
                 </div>
               </div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 ADEL
               </span>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Ultra-Compact Mobile Menu */}
             <div className="flex items-center lg:hidden">
               <Button
                 onClick={() => setShowAuthModal("register")}
                 size="sm"
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 text-sm font-semibold rounded-lg mr-2"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-2 py-1.5 text-xs font-semibold rounded-md"
               >
-                Get Started
+                Start
               </Button>
             </div>
 
@@ -214,118 +214,118 @@ export default function LandingRedesigned() {
         </div>
       </header>
 
-      {/* Mobile-Responsive Hero Section */}
-      <section ref={heroRef} className="relative py-16 sm:py-24 lg:py-32 transition-all duration-700 ease-in-out">
+      {/* Ultra-Mobile Hero Section */}
+      <section ref={heroRef} className="relative py-8 sm:py-24 lg:py-32 transition-all duration-700 ease-in-out">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10 transition-all duration-700"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
           <div className={`text-center max-w-5xl mx-auto transition-all duration-1000 ${
             heroInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            <div className="mb-6 sm:mb-8">
-              <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-lg font-medium mb-6 sm:mb-8 inline-block">
+            <div className="mb-4 sm:mb-8">
+              <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 sm:px-6 py-1 sm:py-2 text-xs sm:text-lg font-medium mb-4 sm:mb-8 inline-block">
                 <span className="hidden sm:inline">NGO Project Management Platform</span>
                 <span className="sm:hidden">Project Management</span>
               </Badge>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-8 leading-tight px-1">
               {t('hero.title')}
             </h1>
             
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
+            <p className="text-sm sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
               {t('hero.subtitle')}
             </p>
             
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12 sm:mb-16">
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-6 mb-8 sm:mb-16">
               <Button
                 onClick={() => setShowAuthModal("register")}
-                size="lg"
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl sm:rounded-2xl w-full sm:w-auto"
+                size="sm"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 px-6 sm:px-12 py-2.5 sm:py-4 text-sm sm:text-lg font-semibold rounded-lg sm:rounded-2xl w-full sm:w-auto"
               >
                 {t('hero.startTrial')}
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 sm:ml-3" />
+                <ArrowRight className="w-4 h-4 sm:w-6 sm:h-6 ml-2 sm:ml-3" />
               </Button>
               
               <Button
                 variant="outline"
-                size="lg"
-                className="bg-white/50 border-2 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl sm:rounded-2xl w-full sm:w-auto"
+                size="sm"
+                className="bg-white/50 border-2 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 px-6 sm:px-12 py-2.5 sm:py-4 text-sm sm:text-lg font-semibold rounded-lg sm:rounded-2xl w-full sm:w-auto"
               >
-                <Play className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+                <Play className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
                 {t('hero.watchDemo')}
               </Button>
             </div>
 
-            {/* Mobile-Responsive Hero Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto px-4">
-              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">500+</div>
-                <div className="text-gray-700 font-medium">NGOs Trust Us</div>
+            {/* Ultra-Mobile Hero Stats */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-8 max-w-4xl mx-auto px-2">
+              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-lg sm:rounded-2xl p-2 sm:p-6 shadow-xl">
+                <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-0.5 sm:mb-2">500+</div>
+                <div className="text-gray-700 font-medium text-xs sm:text-base">NGOs Trust Us</div>
               </div>
-              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
-                <div className="text-2xl sm:text-3xl font-bold text-emerald-600 mb-1 sm:mb-2">10K+</div>
-                <div className="text-gray-700 font-medium text-sm sm:text-base">Projects Managed</div>
+              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-lg sm:rounded-2xl p-2 sm:p-6 shadow-xl">
+                <div className="text-lg sm:text-3xl font-bold text-emerald-600 mb-0.5 sm:mb-2">10K+</div>
+                <div className="text-gray-700 font-medium text-xs sm:text-base">Projects</div>
               </div>
-              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">99.9%</div>
-                <div className="text-gray-700 font-medium text-sm sm:text-base">Uptime Guarantee</div>
+              <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-lg sm:rounded-2xl p-2 sm:p-6 shadow-xl">
+                <div className="text-lg sm:text-3xl font-bold text-purple-600 mb-0.5 sm:mb-2">99.9%</div>
+                <div className="text-gray-700 font-medium text-xs sm:text-base">Uptime</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mobile-Responsive Features Section */}
-      <section ref={featuresRef} id="features" className="py-16 sm:py-24 lg:py-32 mt-12 sm:mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className={`text-center mb-12 sm:mb-16 transition-all duration-1000 delay-200 ${
+      {/* Ultra-Mobile Features Section */}
+      <section ref={featuresRef} id="features" className="py-8 sm:py-24 lg:py-32 mt-6 sm:mt-16 lg:mt-20 transition-all duration-700 ease-in-out">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
+          <div className={`text-center mb-6 sm:mb-16 transition-all duration-1000 delay-200 ${
             featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-6 px-1">
               {t('features.title')}
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+            <p className="text-sm sm:text-xl text-gray-600 max-w-3xl mx-auto px-2">
               {t('features.subtitle')}
             </p>
           </div>
 
-          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16 transition-all duration-1000 delay-300 ${
+          <div className={`grid grid-cols-1 gap-4 sm:gap-8 mb-8 sm:mb-16 transition-all duration-1000 delay-300 ${
             featuresInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            {/* Mobile-Responsive Project Management */}
+            {/* Ultra-Compact Project Management */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <CardContent className="p-6 sm:p-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl shadow-lg mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-                  <Target className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              <CardContent className="p-3 sm:p-8">
+                <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
+                  <Target className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-3 sm:mb-4">{t('features.budgetManagement')}</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-sm sm:text-base">
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.budgetManagement')}</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.budgetManagementDesc')}
                 </p>
               </CardContent>
             </Card>
 
-            {/* Mobile-Responsive Team Collaboration */}
+            {/* Ultra-Compact Team Collaboration */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <CardContent className="p-6 sm:p-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl sm:rounded-2xl shadow-lg mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              <CardContent className="p-3 sm:p-8">
+                <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
+                  <Users className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-3 sm:mb-4">{t('features.teamManagement')}</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-sm sm:text-base">
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.teamManagement')}</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.teamManagementDesc')}
                 </p>
               </CardContent>
             </Card>
 
-            {/* Mobile-Responsive Progress Tracking */}
+            {/* Ultra-Compact Progress Tracking */}
             <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <CardContent className="p-6 sm:p-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl sm:rounded-2xl shadow-lg mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              <CardContent className="p-3 sm:p-8">
+                <div className="w-8 h-8 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg sm:rounded-2xl shadow-lg mx-auto mb-2 sm:mb-6 flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-3 sm:mb-4">{t('features.progressTracking')}</h3>
-                <p className="text-gray-600 text-center leading-relaxed text-sm sm:text-base">
+                <h3 className="text-sm sm:text-2xl font-bold text-gray-900 text-center mb-2 sm:mb-4">{t('features.progressTracking')}</h3>
+                <p className="text-gray-600 text-center leading-relaxed text-xs sm:text-base">
                   {t('features.progressTrackingDesc')}
                 </p>
               </CardContent>
@@ -482,35 +482,35 @@ export default function LandingRedesigned() {
         </div>
       </section>
 
-      {/* Mobile-Responsive Footer */}
-      <footer className="bg-slate-900 text-white py-12 sm:py-16 mt-8 lg:mt-12 transition-all duration-700 ease-in-out">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mb-8 sm:mb-12">
-            {/* Mobile-Responsive Brand Section */}
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
+      {/* Ultra-Mobile Footer */}
+      <footer className="bg-slate-900 text-white py-6 sm:py-16 mt-6 lg:mt-12 transition-all duration-700 ease-in-out">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 xl:px-12">
+          <div className="grid grid-cols-1 gap-6 sm:gap-12 mb-6 sm:mb-12">
+            {/* Ultra-Compact Brand Section */}
+            <div className="text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start space-x-2 sm:space-x-4 mb-3 sm:mb-6">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl blur-md opacity-75"></div>
-                  <div className="relative p-2 sm:p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl shadow-xl">
-                    <AdelLogo size="sm" className="filter brightness-0 invert sm:w-6 sm:h-6" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl blur-md opacity-75"></div>
+                  <div className="relative p-1.5 sm:p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md sm:rounded-xl shadow-xl">
+                    <AdelLogo size="sm" className="filter brightness-0 invert w-4 h-4 sm:w-6 sm:h-6" />
                   </div>
                 </div>
-                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                <span className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                   ADEL
                 </span>
               </div>
-              <p className="text-gray-400 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+              <p className="text-gray-400 mb-3 sm:mb-6 leading-relaxed text-xs sm:text-base">
                 {t('footer.description')}
               </p>
-              {/* Mobile-Responsive Social Media Links */}
-              <div className="flex flex-wrap gap-3 sm:gap-4">
+              {/* Ultra-Compact Social Media Links */}
+              <div className="flex justify-center sm:justify-start gap-2 sm:gap-4">
                 <a
                   href="https://linkedin.com/company/adel-ngo"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 sm:p-2.5 bg-slate-800 hover:bg-blue-600 rounded-lg transition-colors duration-300 group"
+                  className="p-1.5 sm:p-2.5 bg-slate-800 hover:bg-blue-600 rounded-md transition-colors duration-300 group"
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
                 </a>
@@ -518,9 +518,9 @@ export default function LandingRedesigned() {
                   href="https://twitter.com/adel_ngo"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 sm:p-2.5 bg-slate-800 hover:bg-blue-400 rounded-lg transition-colors duration-300 group"
+                  className="p-1.5 sm:p-2.5 bg-slate-800 hover:bg-blue-400 rounded-md transition-colors duration-300 group"
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                   </svg>
                 </a>
@@ -528,97 +528,90 @@ export default function LandingRedesigned() {
                   href="https://github.com/adel-ngo"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 sm:p-2.5 bg-slate-800 hover:bg-gray-600 rounded-lg transition-colors duration-300 group"
+                  className="p-1.5 sm:p-2.5 bg-slate-800 hover:bg-gray-600 rounded-md transition-colors duration-300 group"
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 </a>
                 <a
                   href="mailto:sissokoadel057@gmail.com?subject=ADEL Inquiry"
-                  className="p-2 sm:p-2.5 bg-slate-800 hover:bg-green-600 rounded-lg transition-colors duration-300 group"
+                  className="p-1.5 sm:p-2.5 bg-slate-800 hover:bg-green-600 rounded-md transition-colors duration-300 group"
                 >
-                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" />
+                  <Mail className="w-3 h-3 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors" />
                 </a>
               </div>
             </div>
 
-            {/* Mobile-Responsive Quick Links */}
-            <div>
-              <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">
+            {/* Ultra-Compact Quick Links */}
+            <div className="text-center sm:text-left">
+              <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-6 text-white">
                 Quick Links
               </h3>
-              <ul className="space-y-2 sm:space-y-3">
-                <li>
-                  <a href="#features" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm sm:text-base">
-                    {t('nav.features')}
-                  </a>
-                </li>
-                <li>
-                  <a href="#how-it-works" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm sm:text-base">
-                    How It Works
-                  </a>
-                </li>
-                <li>
-                  <a 
-                    href="mailto:sissokoadel057@gmail.com?subject=ADEL Demo Request"
-                    className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm sm:text-base"
-                  >
-                    Request Demo
-                  </a>
-                </li>
-              </ul>
+              <div className="flex justify-center sm:justify-start flex-wrap gap-3 sm:gap-0 sm:block sm:space-y-2">
+                <a href="#features" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xs sm:text-base">
+                  {t('nav.features')}
+                </a>
+                <span className="text-gray-600 sm:hidden">•</span>
+                <a href="#how-it-works" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xs sm:text-base">
+                  How It Works
+                </a>
+                <span className="text-gray-600 sm:hidden">•</span>
+                <a 
+                  href="mailto:sissokoadel057@gmail.com?subject=ADEL Demo Request"
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xs sm:text-base"
+                >
+                  Request Demo
+                </a>
+              </div>
             </div>
 
-            {/* Mobile-Responsive Contact */}
-            <div>
-              <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">
+            {/* Ultra-Compact Contact */}
+            <div className="text-center sm:text-left">
+              <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-6 text-white">
                 Contact
               </h3>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                  <button 
-                    onClick={() => setShowContactModal(true)}
-                    className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm sm:text-base"
-                  >
-                    Contact Support
-                  </button>
-                </div>
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                  <button 
-                    onClick={() => setShowContactModal(true)}
-                    className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm sm:text-base"
-                  >
-                    Schedule a Meeting
-                  </button>
-                </div>
+              <div className="flex justify-center sm:justify-start flex-wrap gap-2 sm:gap-0 sm:block sm:space-y-2">
+                <button 
+                  onClick={() => setShowContactModal(true)}
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xs sm:text-base flex items-center"
+                >
+                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-400" />
+                  Support
+                </button>
+                <span className="text-gray-600 sm:hidden">•</span>
+                <button 
+                  onClick={() => setShowContactModal(true)}
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xs sm:text-base flex items-center"
+                >
+                  <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-400" />
+                  Meeting
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Mobile-Responsive Bottom Footer */}
-          <div className="border-t border-slate-800 pt-6 sm:pt-8">
-            <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-              <div className="text-gray-500 text-xs sm:text-sm order-2 sm:order-1">
+          {/* Ultra-Compact Bottom Footer */}
+          <div className="border-t border-slate-800 pt-3 sm:pt-8">
+            <div className="text-center space-y-2 sm:space-y-0 sm:flex sm:justify-between sm:items-center">
+              <div className="text-gray-500 text-xs order-1">
                 © 2025 ADEL. All rights reserved.
               </div>
-              <div className="text-gray-500 text-xs sm:text-sm order-3 sm:order-2">
+              <div className="text-gray-500 text-xs order-2">
                 Blueray Inc.
               </div>
-              <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6 text-xs sm:text-sm order-1 sm:order-3">
+              <div className="flex justify-center gap-3 sm:gap-6 text-xs order-3">
                 <a 
                   href="/privacy-policy"
                   className="text-gray-500 hover:text-blue-400 transition-colors duration-300"
                 >
-                  Privacy Policy
+                  Privacy
                 </a>
                 <a 
                   href="/terms-of-service"
                   className="text-gray-500 hover:text-blue-400 transition-colors duration-300"
                 >
-                  Terms of Service
+                  Terms
                 </a>
               </div>
             </div>
