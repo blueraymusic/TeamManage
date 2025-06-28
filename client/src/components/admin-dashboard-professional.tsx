@@ -725,10 +725,11 @@ ${orgData.name || 'Organization'} Team`;
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
         onNavigateToMessages={() => {
-          // Switch to messages tab
-          const messagesTab = document.querySelector('[value="messages"]');
-          if (messagesTab) {
-            (messagesTab as HTMLElement).click();
+          // Switch to team tab (contains messaging interface for admin)
+          const teamTab = document.querySelector('button[data-state="inactive"][value="team"]') || 
+                          document.querySelector('button[value="team"]');
+          if (teamTab) {
+            (teamTab as HTMLElement).click();
           }
         }}
       />

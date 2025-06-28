@@ -37,15 +37,13 @@ export default function FloatingMessageNotification({
       return () => clearTimeout(timeout);
     }
     
-    setLastMessageCount(currentCount);
-  }, [currentCount, lastMessageCount]);
-
-  useEffect(() => {
-    // Hide notification when no unread messages
-    if (currentCount === 0) {
+    // Hide notification immediately when messages are read
+    if (currentCount === 0 && isVisible) {
       setIsVisible(false);
     }
-  }, [currentCount]);
+    
+    setLastMessageCount(currentCount);
+  }, [currentCount, lastMessageCount, isVisible]);
 
   const handleDismiss = () => {
     setIsVisible(false);

@@ -520,8 +520,9 @@ export default function OfficerDashboard() {
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
         onNavigateToMessages={() => {
-          // Switch to messages tab
-          const messagesTab = document.querySelector('[value="messages"]');
+          // Switch to messages tab using proper selector
+          const messagesTab = document.querySelector('button[data-state="inactive"][value="messages"]') || 
+                              document.querySelector('button[value="messages"]');
           if (messagesTab) {
             (messagesTab as HTMLElement).click();
           }
