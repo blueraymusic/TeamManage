@@ -19,9 +19,9 @@ export default function FloatingMessageNotification({
   activeTab,
   userRole 
 }: FloatingMessageNotificationProps) {
-  // Use our own auth hook to get user role
+  // Use our own auth hook to get user role, but prioritize passed userRole
   const { user } = useAuth();
-  const currentUserRole = user?.role || userRole;
+  const currentUserRole = userRole || user?.role;
   
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -53,6 +53,15 @@ export default function FloatingMessageNotification({
   const shouldHideNotification = activeTab === "messages";
   
   console.log("🔥 FloatingNotification - HIDE CHECK - Should Hide:", shouldHideNotification, "ActiveTab exact match:", activeTab === "messages", "ActiveTab value:", `"${activeTab}"`);
+  
+  // Force log render decision
+  console.log("🔥 FloatingNotification - RENDER DECISION - Will render:", currentCount > 0 && currentUserRole && !shouldHideNotification, "Reasons:", {
+    hasMessages: currentCount > 0,
+    hasUserRole: !!currentUserRole,
+    notViewingMessages: !shouldHideNotification,
+    isVisible: isVisible,
+    isDismissed: isDismissed
+  });
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
@@ -130,8 +139,8 @@ export default function FloatingMessageNotification({
   };
 
   // Don't show if no unread messages, manually dismissed, no userRole, OR viewing messages tab
-  if (!isVisible || currentCount === 0 || (isDismissed && currentCount <= lastMessageCountRef.current) || !userRole || shouldHideNotification) {
-    console.log("FloatingNotification - HIDING NOTIFICATION - Visible:", isVisible, "Count:", currentCount, "Dismissed:", isDismissed, "UserRole:", userRole, "ShouldHide:", shouldHideNotification);
+  if (!isVisible || currentCount === 0 || (isDismissed && currentCount <= lastMessageCountRef.current) || !currentUserRole || shouldHideNotification) {
+    console.log("🔥 FloatingNotification - HIDING NOTIFICATION - Visible:", isVisible, "Count:", currentCount, "Dismissed:", isDismissed, "UserRole:", currentUserRole, "ShouldHide:", shouldHideNotification);
     return null;
   }
 
