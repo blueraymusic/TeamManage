@@ -501,17 +501,20 @@ export default function AdminDashboard() {
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="text-gray-900">Add Team Member</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    onClick={() => {
-                      const orgData = organization as any;
-                      if (orgData?.code) {
-                        const subject = "Invitation to Join Organization - ADEL Platform";
-                        const body = `Hello,
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Left Column - Team Management */}
+                <div className="space-y-6">
+                  <Card className="bg-white border border-gray-200">
+                    <CardHeader>
+                      <CardTitle className="text-gray-900">Add Team Member</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        onClick={() => {
+                          const orgData = organization as any;
+                          if (orgData?.code) {
+                            const subject = "Invitation to Join Organization - ADEL Platform";
+                            const body = `Hello,
 
 You are invited to join our organization on the ADEL platform.
 
@@ -529,28 +532,43 @@ The ADEL platform helps NGOs manage projects, track progress, and collaborate ef
 
 Best regards,
 ${orgData.name || 'Organization'} Team`;
-                        
-                        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                      } else {
-                        toast({
-                          title: "Error",
-                          description: "Organization data not loaded yet. Please try again.",
-                          variant: "destructive",
-                        });
-                      }
-                    }}
-                    className="w-full"
-                    disabled={!organization}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Send Invitation Email
-                  </Button>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Opens your email client with a pre-written invitation containing the organization code
-                  </p>
-                </CardContent>
-              </Card>
-              <OrganizationInfo />
+                            
+                            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                          } else {
+                            toast({
+                              title: "Error",
+                              description: "Organization data not loaded yet. Please try again.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                        className="w-full"
+                        disabled={!organization}
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        Send Invitation Email
+                      </Button>
+                      <p className="text-sm text-gray-600 mt-2">
+                        Opens your email client with a pre-written invitation containing the organization code
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <OrganizationInfo />
+                </div>
+                
+                {/* Right Column - Team Chat Interface */}
+                <div className="lg:col-span-2">
+                  <Card className="bg-white border border-gray-200 h-full">
+                    <CardHeader>
+                      <CardTitle className="text-gray-900">Team Communication</CardTitle>
+                      <p className="text-sm text-gray-600">Chat with your team members</p>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <AdminChatInterface />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="settings" className="p-6">
