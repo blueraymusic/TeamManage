@@ -54,21 +54,17 @@ export default function FloatingMessageNotification({
     // If user is viewing messages tab, hide the notification immediately
     const isViewingMessages = activeTab === "messages";
     
-    console.log("FloatingNotification - Role:", currentUserRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
+    console.log("FloatingNotification DEBUG - ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount, "IsVisible:", isVisible, "IsDismissed:", isDismissed);
     
     if (isViewingMessages) {
-      console.log("FloatingNotification - User is viewing messages, hiding notification immediately");
+      console.log("FloatingNotification - User is viewing messages, hiding notification and marking as read");
       setIsVisible(false);
-      setIsDismissed(true); // Mark as dismissed to prevent it from showing again
+      setIsDismissed(true);
       
-      // Mark messages as read after a short delay
+      // Immediately mark messages as read when viewing messages tab
       if (currentCount > 0) {
-        const timer = setTimeout(() => {
-          console.log("FloatingNotification - Marking messages as read");
-          markAllAsReadMutation.mutate();
-        }, 1000);
-        
-        return () => clearTimeout(timer);
+        console.log("FloatingNotification - Immediately marking", currentCount, "messages as read");
+        markAllAsReadMutation.mutate();
       }
     }
   }, [activeTab, currentCount]);
