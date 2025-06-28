@@ -519,19 +519,17 @@ export default function AdminDashboard() {
             <TabsContent value="reports" className="p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-slate-800">Report Management</h2>
-                <div className="flex items-center space-x-3">
-                  <Button
-                    onClick={() => setIsPDFPreviewOpen(true)}
-                    variant="outline"
-                    className="flex items-center space-x-2 h-10 px-4 py-2"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>PDF Preview</span>
-                  </Button>
-                  <div className="flex items-center">
-                    <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
-                  </div>
-                </div>
+                <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => setIsPDFPreviewOpen(true)}
+                  variant="outline"
+                  className="flex items-center space-x-2"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>PDF Preview</span>
+                </Button>
               </div>
               {/* Reports List - Shows more reports for admin */}
               <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>

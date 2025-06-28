@@ -988,9 +988,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mark all messages as read for current user
-  app.patch("/api/messages/mark-all-read", requireAuth, async (req: any, res) => {
+  app.post("/api/messages/mark-all-read", requireAuth, async (req: any, res) => {
     try {
+      console.log(`Marking all messages as read for user: ${req.session.userId} org: ${req.session.organizationId}`);
       await storage.markAllMessagesAsReadForUser(req.session.userId, req.session.organizationId);
+      console.log(`Successfully marked all messages as read for user: ${req.session.userId}`);
       res.json({ success: true });
     } catch (error) {
       console.error("Mark all messages as read error:", error);
