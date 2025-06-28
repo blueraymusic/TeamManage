@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageCircle, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 
 interface FloatingMessageNotificationProps {
   onDismiss?: () => void;
@@ -18,6 +19,10 @@ export default function FloatingMessageNotification({
   activeTab,
   userRole 
 }: FloatingMessageNotificationProps) {
+  // Use our own auth hook to get user role
+  const { user } = useAuth();
+  const currentUserRole = user?.role || userRole;
+  
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const lastMessageCountRef = useRef(0);
@@ -42,20 +47,20 @@ export default function FloatingMessageNotification({
   const currentCount = (unreadMessages as { count: number } | undefined)?.count || 0;
 
   // Debug logging for userRole
-  console.log("FloatingNotification - Received userRole:", userRole, "ActiveTab:", activeTab, "Count:", currentCount);
+  console.log("FloatingNotification - Received userRole:", userRole, "CurrentUserRole:", currentUserRole, "ActiveTab:", activeTab, "Count:", currentCount);
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
     // Only proceed if we have a valid userRole
-    if (!userRole) {
-      console.log("FloatingNotification - No userRole yet, skipping check");
+    if (!currentUserRole) {
+      console.log("FloatingNotification - No currentUserRole yet, skipping check");
       return;
     }
     
-    const isViewingMessages = (userRole === "officer" && activeTab === "messages") || 
-                             (userRole === "admin" && activeTab === "messages");
+    const isViewingMessages = (currentUserRole === "officer" && activeTab === "messages") || 
+                             (currentUserRole === "admin" && activeTab === "messages");
     
-    console.log("FloatingNotification - Role:", userRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
+    console.log("FloatingNotification - Role:", currentUserRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
     
     if (isViewingMessages && currentCount > 0) {
       // Add delay to ensure user actually sees the messages interface
@@ -68,7 +73,7 @@ export default function FloatingMessageNotification({
       
       return () => clearTimeout(timer);
     }
-  }, [activeTab, currentCount, userRole]);
+  }, [activeTab, currentCount, currentUserRole]);
 
   useEffect(() => {
     // Clear any existing timeout
