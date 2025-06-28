@@ -46,9 +46,12 @@ export default function FloatingMessageNotification({
     const isViewingMessages = (userRole === "officer" && activeTab === "messages") || 
                              (userRole === "admin" && activeTab === "team");
     
+    console.log("FloatingNotification - Role:", userRole, "ActiveTab:", activeTab, "IsViewing:", isViewingMessages, "Count:", currentCount);
+    
     if (isViewingMessages && currentCount > 0) {
       // Add delay to ensure user actually sees the messages interface
       const timer = setTimeout(() => {
+        console.log("FloatingNotification - Marking messages as read and hiding notification");
         markAllAsReadMutation.mutate();
         setIsVisible(false);
         setIsDismissed(false);
@@ -101,13 +104,23 @@ export default function FloatingMessageNotification({
   };
 
   const handleNavigate = () => {
+    console.log("FloatingNotification - Navigate clicked, userRole:", userRole);
     setIsVisible(false);
     setIsDismissed(true);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    onNavigateToMessages?.();
+    // Navigate based on user role
+    if (userRole === "admin") {
+      // For admin, navigate to team tab where they manage messages
+      console.log("FloatingNotification - Admin navigation: calling onNavigateToMessages to go to team tab");
+      onNavigateToMessages?.();
+    } else {
+      // For officer, navigate to messages tab
+      console.log("FloatingNotification - Officer navigation: calling onNavigateToMessages to go to messages tab");
+      onNavigateToMessages?.();
+    }
   };
 
   // Don't show if no unread messages or manually dismissed
