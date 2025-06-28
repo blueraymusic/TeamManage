@@ -252,17 +252,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-        {/* Simple Header */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-6 space-y-3 md:space-y-6">
+        {/* Mobile-Responsive Header */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-3 md:p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="bg-blue-600 p-1.5 md:p-2 rounded-lg">
                 <AdelLogo size="sm" className="filter brightness-0 invert" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600">Manage projects and team</p>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-sm md:text-base text-gray-600 hidden sm:block">Manage projects and team</p>
               </div>
             </div>
             <AlertDialog>
@@ -270,10 +270,12 @@ export default function AdminDashboard() {
                 <Button
                   variant="outline"
                   disabled={logout.isPending}
-                  className="hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors"
+                  size="sm"
+                  className="hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors text-xs md:text-sm"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  {logout.isPending ? "Signing out..." : "Logout"}
+                  <LogOut className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">{logout.isPending ? "Signing out..." : "Logout"}</span>
+                  <span className="sm:hidden">Exit</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -298,74 +300,81 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Simple Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Mobile-Responsive Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
           <Card className="bg-white border border-gray-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <Projector className="w-8 h-8 text-blue-600" />
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <Projector className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-lg md:text-2xl font-bold text-gray-900">
                     {(stats as any)?.activeProjects || 0}
                   </p>
-                  <p className="text-gray-600">Active Projects</p>
+                  <p className="text-xs md:text-sm text-gray-600">Active</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-gray-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <CheckCircle2 className="w-8 h-8 text-green-600" />
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-lg md:text-2xl font-bold text-gray-900">
                     {(stats as any)?.completedProjects || 0}
                   </p>
-                  <p className="text-gray-600">Completed</p>
+                  <p className="text-xs md:text-sm text-gray-600">Complete</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-gray-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <FileText className="w-8 h-8 text-orange-600" />
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <FileText className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-lg md:text-2xl font-bold text-gray-900">
                     {(pendingReports as any)?.length || 0}
                   </p>
-                  <p className="text-gray-600">Pending Reports</p>
+                  <p className="text-xs md:text-sm text-gray-600">Pending</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-gray-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <Users className="w-8 h-8 text-purple-600" />
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <Users className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-lg md:text-2xl font-bold text-gray-900">
                     {(stats as any)?.teamMembers || 0}
                   </p>
-                  <p className="text-gray-600">Team Members</p>
+                  <p className="text-xs md:text-sm text-gray-600">Team</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Simple Tabs */}
+        {/* Mobile-Responsive Tabs */}
         <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-6 bg-transparent h-12">
-                <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
-                  Overview
+            <div className="border-b border-gray-200 px-2 md:px-4">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 bg-transparent h-10 md:h-12 gap-1 md:gap-0">
+                <TabsTrigger 
+                  value="overview" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 text-xs md:text-sm px-1 md:px-3 h-8 md:h-10"
+                >
+                  <span className="hidden sm:inline">Overview</span>
+                  <span className="sm:hidden">Home</span>
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
+                <TabsTrigger 
+                  value="projects" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative text-xs md:text-sm px-1 md:px-3 h-8 md:h-10"
+                >
                   Projects
                   {(() => {
                     const overdueCount = (projects as any)?.filter((p: any) => 
@@ -375,44 +384,61 @@ export default function AdminDashboard() {
                       (p.progress || 0) < 100
                     ).length || 0;
                     return overdueCount > 0 ? (
-                      <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
+                      <Badge variant="destructive" className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 text-xs flex items-center justify-center">
                         {overdueCount}
                       </Badge>
                     ) : null;
                   })()}
                 </TabsTrigger>
-                <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                <TabsTrigger 
+                  value="reports" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 text-xs md:text-sm px-1 md:px-3 h-8 md:h-10"
+                >
                   Reports
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
-                  Analytics
+                
+                {/* Second row for mobile */}
+                <TabsTrigger 
+                  value="analytics" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 text-xs md:text-sm px-1 md:px-3 h-8 md:h-10 md:col-span-1 col-span-1"
+                >
+                  <span className="hidden sm:inline">Analytics</span>
+                  <span className="sm:hidden">Stats</span>
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
-                  Messages
+                <TabsTrigger 
+                  value="messages" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative text-xs md:text-sm px-1 md:px-3 h-8 md:h-10"
+                >
+                  <span className="hidden sm:inline">Messages</span>
+                  <span className="sm:hidden">Chat</span>
                   {unreadMessages && unreadMessages.count > 0 && !hideMessagesBadge && (
                     <Badge 
                       variant="destructive" 
-                      className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center animate-notificationPulse animate-slideInRight bg-red-500 text-white border-2 border-white shadow-lg"
+                      className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 text-xs flex items-center justify-center animate-notificationPulse animate-slideInRight bg-red-500 text-white border-2 border-white shadow-lg"
                     >
                       {unreadMessages.count}
                     </Badge>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                <TabsTrigger 
+                  value="team" 
+                  className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 text-xs md:text-sm px-1 md:px-3 h-8 md:h-10"
+                >
                   Team
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-slate-800">Dashboard Overview</h2>
+            <TabsContent value="overview" className="p-3 md:p-6 space-y-3 md:space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <h2 className="text-lg md:text-xl font-semibold text-slate-800">Dashboard Overview</h2>
                 <Button
                   onClick={() => setIsPDFPreviewOpen(true)}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  size="sm"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
                 >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Analysis
+                  <FileText className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                  <span className="text-xs md:text-sm">Analysis</span>
                 </Button>
               </div>
               
@@ -426,10 +452,10 @@ export default function AdminDashboard() {
               </Card>
             </TabsContent>
 
-            <TabsContent value="projects" className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-slate-800">Project Management</h2>
-                <div className="flex space-x-3">
+            <TabsContent value="projects" className="p-3 md:p-6 space-y-3 md:space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <h2 className="text-lg md:text-xl font-semibold text-slate-800">Project Management</h2>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                   <BulkProjectOperations projects={projects || []} onRefresh={refetch} />
                   <ProjectForm onSuccess={refetch} />
                 </div>
@@ -438,15 +464,15 @@ export default function AdminDashboard() {
               {/* Overdue Notifications */}
               <OverdueNotifications />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
                 {(projects as any)?.map((project: any) => (
                   <Card key={project.id} className="bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg text-slate-800">{project.name}</CardTitle>
+                    <CardHeader className="pb-2 md:pb-3 p-3 md:p-6">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-base md:text-lg text-slate-800 line-clamp-2">{project.name}</CardTitle>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" className="flex-shrink-0">
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
