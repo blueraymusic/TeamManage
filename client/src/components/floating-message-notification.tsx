@@ -46,13 +46,13 @@ export default function FloatingMessageNotification({
 
   const currentCount = (unreadMessages as { count: number } | undefined)?.count || 0;
 
-  // Debug logging for userRole
-  console.log("FloatingNotification - Received userRole:", userRole, "CurrentUserRole:", currentUserRole, "ActiveTab:", activeTab, "Count:", currentCount);
+  // Debug logging for userRole and tab state
+  console.log("🔥 FloatingNotification - UserRole:", userRole, "CurrentUserRole:", currentUserRole, "ActiveTab:", `"${activeTab}"`, "Count:", currentCount);
   
   // IMMEDIATE VISIBILITY CHECK - Hide notification if viewing messages
   const shouldHideNotification = activeTab === "messages";
   
-  console.log("FloatingNotification - IMMEDIATE CHECK - Should Hide:", shouldHideNotification, "ActiveTab:", activeTab);
+  console.log("🔥 FloatingNotification - HIDE CHECK - Should Hide:", shouldHideNotification, "ActiveTab exact match:", activeTab === "messages", "ActiveTab value:", `"${activeTab}"`);
 
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
