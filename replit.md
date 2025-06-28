@@ -170,6 +170,7 @@ Changelog:
 - June 28, 2025. Fixed notification badge system for admin users. Messages tab badge now disappears after 2-second delay when viewing Messages tab. Individual officer conversation badges disappear immediately when viewing specific conversations. Corrected variable reference from selectedOfficer to selectedMemberId to prevent runtime errors.
 - June 28, 2025. Implemented server-side PDF generation using Puppeteer to replace HTML downloads with actual PDF files. Added new API endpoint (/api/generate-pdf) for server-side PDF creation with proper file downloads. Enhanced PDF download UI with professional card-based design, clear descriptions, and improved visual hierarchy. Fixed Reports section layout to properly align PDF Preview and Bulk Report Operations buttons on the same level.
 - June 28, 2025. Fixed persistent message notifications by implementing automatic message read tracking when conversations are opened in admin chat interface. Added proper message marking as read functionality to eliminate "view message" notifications that continued showing after messages were already seen. Enhanced notification dismissal logic with localStorage persistence for conversation badges.
+- June 28, 2025. Completely removed floating message notification system per user request. Deleted FloatingMessageNotification component and cleaned up all references from admin and officer dashboards to eliminate persistent notification alerts entirely.
 ```
 
 ## User Preferences

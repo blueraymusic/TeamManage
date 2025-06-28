@@ -47,7 +47,6 @@ import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 
 import ProjectTimeline from "./project-timeline";
-import FloatingMessageNotification from "./floating-message-notification";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -521,16 +520,6 @@ export default function OfficerDashboard() {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Floating Message Notification */}
-      <FloatingMessageNotification 
-        activeTab={activeTab}
-        userRole={user?.role}
-        onNavigateToMessages={() => {
-          // Switch to messages tab using state management
-          setActiveTab("messages");
-        }}
-      />
     </div>
   );
 }

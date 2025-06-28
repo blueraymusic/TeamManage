@@ -73,7 +73,6 @@ import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 import ProjectTimeline from "./project-timeline";
 import PDFReportPreview from "./pdf-report-preview";
-import FloatingMessageNotification from "./floating-message-notification";
 
 
 export default function AdminDashboard() {
@@ -757,16 +756,6 @@ ${orgData.name || 'Organization'} Team`;
         projectsData={projects as any[]}
         reportsData={reports as any[]}
         statsData={stats}
-      />
-
-      {/* Floating Message Notification */}
-      <FloatingMessageNotification 
-        activeTab={activeTab}
-        userRole={user?.role}
-        onNavigateToMessages={() => {
-          // Switch to messages tab using state management
-          setActiveTab("messages");
-        }}
       />
     </div>
   );
