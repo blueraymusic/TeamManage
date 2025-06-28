@@ -523,13 +523,14 @@ export default function AdminDashboard() {
                   <Button
                     onClick={() => setIsPDFPreviewOpen(true)}
                     variant="outline"
-                    size="sm"
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 h-10 px-4 py-2"
                   >
                     <Download className="h-4 w-4" />
                     <span>PDF Preview</span>
                   </Button>
-                  <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+                  <div className="flex items-center">
+                    <BulkReportOperations reports={reports || []} onRefresh={refetchReports} />
+                  </div>
                 </div>
               </div>
               {/* Reports List - Shows more reports for admin */}

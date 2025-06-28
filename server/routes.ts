@@ -1262,6 +1262,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // PDF Generation endpoint
+  app.post("/api/generate-pdf", requireAuth, async (req, res) => {
+    try {
+      const { htmlContent, filename, reportType } = req.body;
+      
+      if (!htmlContent || !filename) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      const puppeteer = require('puppeteer');
+      
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+      
+      const page = await browser.newPage();
+      
+      // Set page format and options
+      await page.setContent(htmlContent, { 
+        waitUntil: 'networkidle0',
+        timeout: 30000 
+      });
+      
+      // Generate PDF
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '20px',
+          right: '20px',
+          bottom: '20px',
+          left: '20px'
+        }
+      });
+      
+      await browser.close();
+      
+      // Set response headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      
+      // Send PDF buffer
+      res.send(pdfBuffer);
+      
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      res.status(500).json({ error: "Failed to generate PDF" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

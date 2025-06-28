@@ -47,103 +47,129 @@ export default function PDFReportPreview({
 
   if (!isOpen) return null;
 
-  const downloadPDF = (reportType: string, projectSpecific?: boolean, projectName?: string) => {
-    // Generate the HTML content for the PDF
-    const reportContent = generateReportHTML(reportType, projectSpecific, projectName);
-    
-    // Dynamic filename based on bulk vs specific project
-    let filename: string;
-    let reportTitle: string;
-    
-    if (projectSpecific && projectName) {
-      reportTitle = `${projectName}: ${reportTypes[reportType as keyof typeof reportTypes].title}`;
-      filename = `${projectName}_${reportTypes[reportType as keyof typeof reportTypes].title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
-    } else {
-      reportTitle = `${orgData?.name || 'hjhjhj'}: Project Management Report`;
-      filename = `${orgData?.name || 'Organization'}_Project_Management_Report_${new Date().toISOString().split('T')[0]}.html`;
-    }
-    
-    // Create a blob with the HTML content
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title>${reportTitle}</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              line-height: 1.6; 
-              color: #333;
-              margin: 0;
-              padding: 20px;
-            }
-            .header { 
-              background: linear-gradient(135deg, #2563eb, #7c3aed);
-              color: white; 
-              padding: 30px; 
-              margin: -20px -20px 30px -20px;
-              border-radius: 0;
-            }
-            .org-info { display: flex; justify-content: space-between; align-items: center; }
-            .org-name { font-size: 28px; font-weight: bold; margin-bottom: 5px; }
-            .org-subtitle { opacity: 0.8; }
-            .report-title { font-size: 24px; font-weight: bold; margin: 30px 0 20px 0; }
-            .section { margin: 30px 0; }
-            .section h3 { color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
-            .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
-            .metric-card { 
-              border: 1px solid #e5e7eb; 
-              border-radius: 8px; 
-              padding: 20px; 
-              background: #f9fafb;
-            }
-            .metric-value { font-size: 32px; font-weight: bold; color: #2563eb; }
-            .metric-label { color: #6b7280; font-size: 14px; margin-top: 5px; }
-            .progress-bar { 
-              background: #e5e7eb; 
-              border-radius: 10px; 
-              height: 20px; 
-              overflow: hidden; 
-              margin: 10px 0;
-            }
-            .progress-fill { 
-              background: linear-gradient(90deg, #10b981, #06b6d4); 
-              height: 100%; 
-              transition: width 0.3s ease;
-            }
-            .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-            .table th, .table td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
-            .table th { background: #f3f4f6; font-weight: bold; }
-            .footer { 
-              margin-top: 50px; 
-              padding-top: 20px; 
-              border-top: 1px solid #e5e7eb; 
-              text-align: center; 
-              color: #6b7280; 
-              font-size: 12px;
-            }
-          </style>
-        </head>
-        <body>
-          ${reportContent}
-          <div class="footer">
-            <p>Generated on ${new Date().toLocaleDateString()} | ${orgData?.name || 'Organization'} - Professional Report</p>
-          </div>
-        </body>
-      </html>
-    `;
+  const downloadPDF = async (reportType: string, projectSpecific?: boolean, projectName?: string) => {
+    try {
+      // Generate the HTML content for the PDF
+      const reportContent = generateReportHTML(reportType, projectSpecific, projectName);
+      
+      // Dynamic filename based on bulk vs specific project
+      let filename: string;
+      let reportTitle: string;
+      
+      if (projectSpecific && projectName) {
+        reportTitle = `${projectName}: ${reportTypes[reportType as keyof typeof reportTypes].title}`;
+        filename = `${projectName}_${reportTypes[reportType as keyof typeof reportTypes].title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      } else {
+        reportTitle = `${orgData?.name || 'hjhjhj'}: Project Management Report`;
+        filename = `${orgData?.name || 'Organization'}_Project_Management_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      }
+      
+      // Create complete HTML content for PDF generation
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>${reportTitle}</title>
+            <style>
+              body { 
+                font-family: Arial, sans-serif; 
+                line-height: 1.6; 
+                color: #333;
+                margin: 0;
+                padding: 20px;
+              }
+              .header { 
+                background: linear-gradient(135deg, #2563eb, #7c3aed);
+                color: white; 
+                padding: 30px; 
+                margin: -20px -20px 30px -20px;
+                border-radius: 0;
+              }
+              .org-info { display: flex; justify-content: space-between; align-items: center; }
+              .org-name { font-size: 28px; font-weight: bold; margin-bottom: 5px; }
+              .org-subtitle { opacity: 0.8; }
+              .report-title { font-size: 24px; font-weight: bold; margin: 30px 0 20px 0; }
+              .section { margin: 30px 0; }
+              .section h3 { color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+              .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+              .metric-card { 
+                border: 1px solid #e5e7eb; 
+                border-radius: 8px; 
+                padding: 20px; 
+                background: #f9fafb;
+              }
+              .metric-value { font-size: 32px; font-weight: bold; color: #2563eb; }
+              .metric-label { color: #6b7280; font-size: 14px; margin-top: 5px; }
+              .progress-bar { 
+                background: #e5e7eb; 
+                border-radius: 10px; 
+                height: 20px; 
+                overflow: hidden; 
+                margin: 10px 0;
+              }
+              .progress-fill { 
+                background: linear-gradient(90deg, #10b981, #06b6d4); 
+                height: 100%; 
+                transition: width 0.3s ease;
+              }
+              .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+              .table th, .table td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+              .table th { background: #f3f4f6; font-weight: bold; }
+              .footer { 
+                margin-top: 50px; 
+                padding-top: 20px; 
+                border-top: 1px solid #e5e7eb; 
+                text-align: center; 
+                color: #6b7280; 
+                font-size: 12px;
+              }
+            </style>
+          </head>
+          <body>
+            ${reportContent}
+            <div class="footer">
+              <p>Generated on ${new Date().toLocaleDateString()} | ${orgData?.name || 'Organization'} - Professional Report</p>
+            </div>
+          </body>
+        </html>
+      `;
 
-    // Create and trigger download
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename.replace('.pdf', '.html');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      // Call server endpoint to generate PDF
+      const response = await fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          htmlContent,
+          filename,
+          reportType
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to generate PDF: ${response.statusText}`);
+      }
+
+      // Get PDF blob from response
+      const pdfBlob = await response.blob();
+      
+      // Create and trigger download
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('PDF download error:', error);
+      // Fallback to show error message
+      alert('Failed to generate PDF. Please try again.');
+    }
   };
 
   const generateReportHTML = (reportType: string, projectSpecific?: boolean, projectName?: string) => {
@@ -634,7 +660,7 @@ export default function PDFReportPreview({
                       <ul className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
                         <li className="flex items-center">
                           <CheckCircle2 className="w-3 h-3 mr-2 text-green-500" />
-                          Reports are generated in HTML format for easy viewing and printing
+                          Reports are generated in PDF format for professional sharing
                         </li>
                         <li className="flex items-center">
                           <CheckCircle2 className="w-3 h-3 mr-2 text-green-500" />

@@ -168,6 +168,7 @@ Changelog:
 - June 28, 2025. Implemented comprehensive PDF download functionality with dual options: bulk reports for entire organization (named as "hjhjhj: Project Management Report") and project-specific reports (named as "ProjectName: Report Type"). Added dropdown selection for individual project downloads with professional HTML export format and real-time data integration.
 - June 28, 2025. Removed widgets functionality from both admin and officer dashboards to simplify the interface. Restored original tab structure with 5 tabs: Overview, Projects, Reports, Analytics, and Messages for officers; Overview, Projects, Reports, Analytics, and Team for admins. Fixed PDF report preview layout with improved spacing and responsive design.
 - June 28, 2025. Fixed notification badge system for admin users. Messages tab badge now disappears after 2-second delay when viewing Messages tab. Individual officer conversation badges disappear immediately when viewing specific conversations. Corrected variable reference from selectedOfficer to selectedMemberId to prevent runtime errors.
+- June 28, 2025. Implemented server-side PDF generation using Puppeteer to replace HTML downloads with actual PDF files. Added new API endpoint (/api/generate-pdf) for server-side PDF creation with proper file downloads. Enhanced PDF download UI with professional card-based design, clear descriptions, and improved visual hierarchy. Fixed Reports section layout to properly align PDF Preview and Bulk Report Operations buttons on the same level.
 ```
 
 ## User Preferences
