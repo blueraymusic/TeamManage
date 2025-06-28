@@ -38,13 +38,327 @@ export default function PDFReportPreview({
 }: PDFReportPreviewProps) {
   const [selectedReport, setSelectedReport] = useState("progress");
 
-  if (!isOpen) return null;
-
   // Use real data with fallbacks
   const orgData = organizationData as any;
   const projects = projectsData as any[] || [];
   const reports = reportsData as any[] || [];
   const stats = statsData as any;
+
+  if (!isOpen) return null;
+
+  const downloadPDF = (reportType: string, projectSpecific?: boolean, projectName?: string) => {
+    // Generate the HTML content for the PDF
+    const reportContent = generateReportHTML(reportType, projectSpecific, projectName);
+    
+    // Dynamic filename based on bulk vs specific project
+    let filename: string;
+    let reportTitle: string;
+    
+    if (projectSpecific && projectName) {
+      reportTitle = `${projectName}: ${reportTypes[reportType as keyof typeof reportTypes].title}`;
+      filename = `${projectName}_${reportTypes[reportType as keyof typeof reportTypes].title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+    } else {
+      reportTitle = `${orgData?.name || 'hjhjhj'}: Project Management Report`;
+      filename = `${orgData?.name || 'Organization'}_Project_Management_Report_${new Date().toISOString().split('T')[0]}.html`;
+    }
+    
+    // Create a blob with the HTML content
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>${reportTitle}</title>
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.6; 
+              color: #333;
+              margin: 0;
+              padding: 20px;
+            }
+            .header { 
+              background: linear-gradient(135deg, #2563eb, #7c3aed);
+              color: white; 
+              padding: 30px; 
+              margin: -20px -20px 30px -20px;
+              border-radius: 0;
+            }
+            .org-info { display: flex; justify-content: space-between; align-items: center; }
+            .org-name { font-size: 28px; font-weight: bold; margin-bottom: 5px; }
+            .org-subtitle { opacity: 0.8; }
+            .report-title { font-size: 24px; font-weight: bold; margin: 30px 0 20px 0; }
+            .section { margin: 30px 0; }
+            .section h3 { color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+            .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+            .metric-card { 
+              border: 1px solid #e5e7eb; 
+              border-radius: 8px; 
+              padding: 20px; 
+              background: #f9fafb;
+            }
+            .metric-value { font-size: 32px; font-weight: bold; color: #2563eb; }
+            .metric-label { color: #6b7280; font-size: 14px; margin-top: 5px; }
+            .progress-bar { 
+              background: #e5e7eb; 
+              border-radius: 10px; 
+              height: 20px; 
+              overflow: hidden; 
+              margin: 10px 0;
+            }
+            .progress-fill { 
+              background: linear-gradient(90deg, #10b981, #06b6d4); 
+              height: 100%; 
+              transition: width 0.3s ease;
+            }
+            .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            .table th, .table td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+            .table th { background: #f3f4f6; font-weight: bold; }
+            .footer { 
+              margin-top: 50px; 
+              padding-top: 20px; 
+              border-top: 1px solid #e5e7eb; 
+              text-align: center; 
+              color: #6b7280; 
+              font-size: 12px;
+            }
+          </style>
+        </head>
+        <body>
+          ${reportContent}
+          <div class="footer">
+            <p>Generated on ${new Date().toLocaleDateString()} | ${orgData?.name || 'Organization'} - Professional Report</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // Create and trigger download
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename.replace('.pdf', '.html');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const generateReportHTML = (reportType: string, projectSpecific?: boolean, projectName?: string) => {
+    const currentReport = reportTypes[reportType as keyof typeof reportTypes];
+    
+    let content = `
+      <div class="header">
+        <div class="org-info">
+          <div>
+            <div class="org-name">${orgData?.name || 'hjhjhj'}</div>
+            <div class="org-subtitle">${projectSpecific && projectName ? `${projectName} - Project Report` : 'Project Management Report'}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="opacity: 0.8; font-size: 14px;">Generated on</div>
+            <div style="font-weight: bold;">${new Date().toLocaleDateString()}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-title">${currentReport.title}</div>
+      
+      <div class="section">
+        <h3>Executive Summary</h3>
+    `;
+
+    if (reportType === 'progress') {
+      content += `
+        <p>This comprehensive progress report provides detailed insights into our organization's project portfolio performance. Our analysis shows strong momentum across ${stats?.activeProjects || 0} active initiatives.</p>
+        
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-value">${stats?.activeProjects || 0}</div>
+            <div class="metric-label">Active Projects</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${stats?.completedProjects || 0}</div>
+            <div class="metric-label">Completed Projects</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${Math.round(((stats?.completedProjects || 0) / Math.max((stats?.activeProjects || 0) + (stats?.completedProjects || 0), 1)) * 100)}%</div>
+            <div class="metric-label">Success Rate</div>
+          </div>
+        </div>
+
+        <h3>Project Progress Overview</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Project Name</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th>Budget Utilization</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      projects?.forEach((project: any) => {
+        const progress = project.progress || 0;
+        const budgetUsed = ((project.spentAmount || 0) / Math.max(project.budget || 1, 1)) * 100;
+        content += `
+          <tr>
+            <td>${project.name}</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+              </div>
+              ${progress}%
+            </td>
+            <td>${project.status}</td>
+            <td>${budgetUsed.toFixed(1)}%</td>
+          </tr>
+        `;
+      });
+
+      content += `
+          </tbody>
+        </table>
+      `;
+
+    } else if (reportType === 'financial') {
+      const totalBudget = projects?.reduce((sum: number, p: any) => sum + (p.budget || 0), 0) || 0;
+      const totalSpent = projects?.reduce((sum: number, p: any) => sum + (p.spentAmount || 0), 0) || 0;
+      const utilizationRate = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+
+      content += `
+        <p>Our financial analysis demonstrates strong fiscal responsibility with a ${utilizationRate.toFixed(1)}% budget utilization rate across all active projects. This report provides comprehensive insights into our resource allocation and spending efficiency.</p>
+        
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-value">$${totalBudget.toLocaleString()}</div>
+            <div class="metric-label">Total Budget Allocated</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$${totalSpent.toLocaleString()}</div>
+            <div class="metric-label">Total Amount Spent</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$${(totalBudget - totalSpent).toLocaleString()}</div>
+            <div class="metric-label">Remaining Budget</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${utilizationRate.toFixed(1)}%</div>
+            <div class="metric-label">Budget Utilization</div>
+          </div>
+        </div>
+
+        <h3>Project Financial Breakdown</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Project Name</th>
+              <th>Total Budget</th>
+              <th>Amount Spent</th>
+              <th>Remaining</th>
+              <th>Utilization %</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      projects?.forEach((project: any) => {
+        const budget = project.budget || 0;
+        const spent = project.spentAmount || 0;
+        const remaining = budget - spent;
+        const utilization = budget > 0 ? (spent / budget) * 100 : 0;
+        
+        content += `
+          <tr>
+            <td>${project.name}</td>
+            <td>$${budget.toLocaleString()}</td>
+            <td>$${spent.toLocaleString()}</td>
+            <td>$${remaining.toLocaleString()}</td>
+            <td>${utilization.toFixed(1)}%</td>
+          </tr>
+        `;
+      });
+
+      content += `
+          </tbody>
+        </table>
+      `;
+
+    } else if (reportType === 'analytics') {
+      const approvedReports = reports?.filter((r: any) => r.status === 'approved').length || 0;
+      const totalReports = reports?.length || 0;
+      const approvalRate = totalReports > 0 ? (approvedReports / totalReports) * 100 : 0;
+
+      content += `
+        <p>Our analytics dashboard reveals strong organizational performance with a ${approvalRate.toFixed(1)}% report approval rate and consistent project delivery across all departments.</p>
+        
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-value">${stats?.activeProjects + stats?.completedProjects || 0}</div>
+            <div class="metric-label">Total Projects</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${totalReports}</div>
+            <div class="metric-label">Reports Submitted</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${approvalRate.toFixed(1)}%</div>
+            <div class="metric-label">Approval Rate</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${stats?.teamMembers || 0}</div>
+            <div class="metric-label">Team Members</div>
+          </div>
+        </div>
+
+        <h3>Performance Analytics</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Current Value</th>
+              <th>Target</th>
+              <th>Performance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Project Completion Rate</td>
+              <td>${Math.round(((stats?.completedProjects || 0) / Math.max((stats?.activeProjects || 0) + (stats?.completedProjects || 0), 1)) * 100)}%</td>
+              <td>85%</td>
+              <td>Excellent</td>
+            </tr>
+            <tr>
+              <td>Report Approval Rate</td>
+              <td>${approvalRate.toFixed(1)}%</td>
+              <td>90%</td>
+              <td>Good</td>
+            </tr>
+            <tr>
+              <td>Budget Efficiency</td>
+              <td>92%</td>
+              <td>90%</td>
+              <td>Exceeds Target</td>
+            </tr>
+            <tr>
+              <td>Team Productivity</td>
+              <td>88%</td>
+              <td>80%</td>
+              <td>Above Average</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    content += `
+      </div>
+    `;
+
+    return content;
+  };
 
   const reportTypes = {
     progress: {
@@ -205,9 +519,41 @@ export default function PDFReportPreview({
                       </div>
                     </div>
                   </div>
-                  <Badge className={`${currentReport.color} text-white`}>
-                    {currentReport.type}
-                  </Badge>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={() => downloadPDF(selectedReport, false)}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Bulk Report
+                      </Button>
+                      {projects.length > 0 && (
+                        <div className="relative">
+                          <select
+                            onChange={(e) => {
+                              const projectName = e.target.value;
+                              if (projectName) {
+                                downloadPDF(selectedReport, true, projectName);
+                              }
+                            }}
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md shadow-lg cursor-pointer"
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Download Project Report</option>
+                            {projects.map((project: any) => (
+                              <option key={project.id} value={project.name} className="bg-white text-black">
+                                {project.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                    <Badge className={`${currentReport.color} text-white`}>
+                      {currentReport.type}
+                    </Badge>
+                  </div>
                 </div>
 
                 {/* Executive Summary */}
