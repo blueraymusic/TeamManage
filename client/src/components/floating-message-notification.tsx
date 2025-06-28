@@ -41,6 +41,9 @@ export default function FloatingMessageNotification({
 
   const currentCount = (unreadMessages as { count: number } | undefined)?.count || 0;
 
+  // Debug logging for userRole
+  console.log("FloatingNotification - Received userRole:", userRole, "ActiveTab:", activeTab, "Count:", currentCount);
+
   // Automatically mark messages as read when user is viewing messages tab
   useEffect(() => {
     // Only proceed if we have a valid userRole
