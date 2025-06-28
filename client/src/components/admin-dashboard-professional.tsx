@@ -73,6 +73,7 @@ import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 import ProjectTimeline from "./project-timeline";
 import PDFReportPreview from "./pdf-report-preview";
+import CustomizableDashboard from "./customizable-dashboard";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -356,6 +357,9 @@ export default function AdminDashboard() {
                 <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Analytics
                 </TabsTrigger>
+                <TabsTrigger value="widgets" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Widgets
+                </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
                 </TabsTrigger>
@@ -509,6 +513,15 @@ export default function AdminDashboard() {
                   <ProjectTimeline />
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="widgets" className="p-6">
+              <CustomizableDashboard 
+                organizationData={organization}
+                projectsData={projects as any[]}
+                reportsData={reports as any[]}
+                statsData={stats}
+              />
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">

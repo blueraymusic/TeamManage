@@ -481,34 +481,34 @@ export default function PDFReportPreview({
 
           {/* Main Preview Area */}
           <div className="flex-1 bg-gray-100 dark:bg-gray-900 p-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg h-full overflow-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg h-full overflow-auto max-h-[600px]">
               {/* PDF Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 sticky top-0 z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="bg-white/20 rounded-lg p-3">
                       <Building className="h-8 w-8" />
                     </div>
                     <div>
-                      <h1 className="text-2xl font-bold">{orgData?.name || 'Organization'}</h1>
+                      <h1 className="text-2xl font-bold">{orgData?.name || 'hjhjhj'}</h1>
                       <p className="text-blue-100">Project Management Report</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-blue-100 text-sm">Generated on</p>
-                    <p className="font-semibold">{new Date().toLocaleDateString()}</p>
+                    <p className="font-semibold">{new Date().toLocaleDateString('en-GB')}</p>
                   </div>
                 </div>
               </div>
 
               {/* Report Content */}
-              <div className="p-6">
+              <div className="p-6 space-y-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                       {currentReport.title}
                     </h2>
-                    <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
                         {currentReport.date}
