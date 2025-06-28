@@ -57,6 +57,7 @@ export default function OfficerDashboard() {
   const { toast } = useToast();
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
   
   const [reportSearchTerm, setReportSearchTerm] = useState("");
   
@@ -228,7 +229,7 @@ export default function OfficerDashboard() {
 
         {/* Simple Tabs */}
         <div className="bg-white border border-gray-200 rounded-lg">
-          <Tabs defaultValue="overview" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="border-b border-gray-200 px-4">
               <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
@@ -519,13 +520,10 @@ export default function OfficerDashboard() {
 
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
+        activeTab={activeTab}
         onNavigateToMessages={() => {
-          // Switch to messages tab using proper selector
-          const messagesTab = document.querySelector('button[data-state="inactive"][value="messages"]') || 
-                              document.querySelector('button[value="messages"]');
-          if (messagesTab) {
-            (messagesTab as HTMLElement).click();
-          }
+          // Switch to messages tab using state management
+          setActiveTab("messages");
         }}
       />
     </div>

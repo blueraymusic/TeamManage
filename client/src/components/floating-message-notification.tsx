@@ -1,22 +1,26 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageCircle, X } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface FloatingMessageNotificationProps {
   onDismiss?: () => void;
   onNavigateToMessages?: () => void;
+  activeTab?: string; // Track which tab is currently active
 }
 
 export default function FloatingMessageNotification({ 
   onDismiss, 
-  onNavigateToMessages 
+  onNavigateToMessages,
+  activeTab 
 }: FloatingMessageNotificationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const lastMessageCountRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const queryClient = useQueryClient();
 
   // Get unread message count
   const { data: unreadMessages } = useQuery({
@@ -24,7 +28,28 @@ export default function FloatingMessageNotification({
     refetchInterval: 3000, // Poll every 3 seconds for new messages
   });
 
+  // Mark all messages as read mutation
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () => apiRequest("/api/messages/mark-all-read", "POST", {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+    },
+  });
+
   const currentCount = (unreadMessages as { count: number } | undefined)?.count || 0;
+
+  // Automatically mark messages as read when user is viewing messages tab
+  useEffect(() => {
+    if (activeTab === "messages" || activeTab === "team") {
+      if (currentCount > 0) {
+        // Mark all messages as read when viewing messages
+        markAllAsReadMutation.mutate();
+        setIsVisible(false);
+        setIsDismissed(false);
+      }
+    }
+  }, [activeTab, currentCount]);
 
   useEffect(() => {
     // Clear any existing timeout

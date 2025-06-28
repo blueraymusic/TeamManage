@@ -79,6 +79,7 @@ import FloatingMessageNotification from "./floating-message-notification";
 export default function AdminDashboard() {
   const { toast } = useToast();
   const logout = useLogout();
+  const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
@@ -322,7 +323,7 @@ export default function AdminDashboard() {
 
         {/* Simple Tabs */}
         <div className="bg-white border border-gray-200 rounded-lg">
-          <Tabs defaultValue="overview" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="border-b border-gray-200 px-4">
               <TabsList className="grid w-full grid-cols-6 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
@@ -724,13 +725,10 @@ ${orgData.name || 'Organization'} Team`;
 
       {/* Floating Message Notification */}
       <FloatingMessageNotification 
+        activeTab={activeTab}
         onNavigateToMessages={() => {
-          // Switch to team tab (contains messaging interface for admin)
-          const teamTab = document.querySelector('button[data-state="inactive"][value="team"]') || 
-                          document.querySelector('button[value="team"]');
-          if (teamTab) {
-            (teamTab as HTMLElement).click();
-          }
+          // Switch to team tab using state management
+          setActiveTab("team");
         }}
       />
     </div>
