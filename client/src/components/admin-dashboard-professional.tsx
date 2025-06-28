@@ -73,7 +73,7 @@ import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 import ProjectTimeline from "./project-timeline";
 import PDFReportPreview from "./pdf-report-preview";
-import CustomizableDashboard from "./customizable-dashboard";
+
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -323,7 +323,7 @@ export default function AdminDashboard() {
         <div className="bg-white border border-gray-200 rounded-lg">
           <Tabs defaultValue="overview" className="w-full">
             <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-6 bg-transparent h-12">
+              <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
@@ -356,9 +356,6 @@ export default function AdminDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Analytics
-                </TabsTrigger>
-                <TabsTrigger value="widgets" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
-                  Widgets
                 </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
@@ -513,15 +510,6 @@ export default function AdminDashboard() {
                   <ProjectTimeline />
                 </div>
               </div>
-            </TabsContent>
-
-            <TabsContent value="widgets" className="p-6">
-              <CustomizableDashboard 
-                organizationData={organization}
-                projectsData={projects as any[]}
-                reportsData={reports as any[]}
-                statsData={stats}
-              />
             </TabsContent>
 
             <TabsContent value="team" className="p-6 space-y-6">
