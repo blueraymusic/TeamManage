@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MessageCircle, X, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { MessageCircle, X } from "lucide-react";
 
 interface FloatingMessageNotificationProps {
   onDismiss?: () => void;
@@ -14,48 +14,74 @@ export default function FloatingMessageNotification({
   onNavigateToMessages 
 }: FloatingMessageNotificationProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [lastMessageCount, setLastMessageCount] = useState(0);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const lastMessageCountRef = useRef(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get unread message count
   const { data: unreadMessages } = useQuery({
     queryKey: ["/api/messages/unread"],
-    refetchInterval: 5000, // Poll every 5 seconds for new messages
+    refetchInterval: 3000, // Poll every 3 seconds for new messages
   });
 
   const currentCount = (unreadMessages as { count: number } | undefined)?.count || 0;
 
   useEffect(() => {
-    // Show notification when new messages arrive
-    if (currentCount > lastMessageCount && currentCount > 0) {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    // Show notification when new messages arrive (and not manually dismissed)
+    if (currentCount > lastMessageCountRef.current && currentCount > 0 && !isDismissed) {
       setIsVisible(true);
       
-      // Auto-hide after 5 seconds
-      const timeout = setTimeout(() => {
+      // Auto-hide after 6 seconds
+      timeoutRef.current = setTimeout(() => {
         setIsVisible(false);
-      }, 5000);
-
-      return () => clearTimeout(timeout);
+      }, 6000);
     }
     
-    // Hide notification immediately when messages are read
-    if (currentCount === 0 && isVisible) {
+    // Hide notification immediately when all messages are read
+    if (currentCount === 0) {
       setIsVisible(false);
+      setIsDismissed(false); // Reset dismiss state when no unread messages
     }
     
-    setLastMessageCount(currentCount);
-  }, [currentCount, lastMessageCount, isVisible]);
+    lastMessageCountRef.current = currentCount;
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [currentCount, isDismissed]);
 
   const handleDismiss = () => {
     setIsVisible(false);
+    setIsDismissed(true);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     onDismiss?.();
   };
 
   const handleNavigate = () => {
     setIsVisible(false);
+    setIsDismissed(true);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     onNavigateToMessages?.();
   };
 
-  if (!isVisible || currentCount === 0) return null;
+  // Don't show if no unread messages or manually dismissed
+  if (!isVisible || currentCount === 0 || (isDismissed && currentCount <= lastMessageCountRef.current)) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-50 animate-slideInRight">
