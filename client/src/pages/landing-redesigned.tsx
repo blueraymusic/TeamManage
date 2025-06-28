@@ -228,7 +228,7 @@ export default function LandingRedesigned() {
               </Badge>
             </div>
             
-            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-8 leading-tight px-1">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-8 leading-relaxed px-1">
               The First Project Management Tool with Built-In AI Report Feedback
             </h1>
             
