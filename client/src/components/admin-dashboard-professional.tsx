@@ -83,11 +83,24 @@ export default function AdminDashboard() {
   
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
+  const [hideMessagesBadge, setHideMessagesBadge] = useState(false);
 
   // Debug logging for activeTab changes
   useEffect(() => {
     console.log("AdminDashboard - ActiveTab changed to:", activeTab, "UserRole:", user?.role);
   }, [activeTab, user?.role]);
+
+  // Handle Messages tab badge visibility with 2-second delay
+  useEffect(() => {
+    if (activeTab === "messages") {
+      const timer = setTimeout(() => {
+        setHideMessagesBadge(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setHideMessagesBadge(false);
+    }
+  }, [activeTab]);
   const [editName, setEditName] = useState("");
   const [editProgress, setEditProgress] = useState([0]);
   const [editBudget, setEditBudget] = useState("");
@@ -360,7 +373,7 @@ export default function AdminDashboard() {
                 </TabsTrigger>
                 <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Messages
-                  {unreadMessages && unreadMessages.count > 0 && activeTab !== "messages" && (
+                  {unreadMessages && unreadMessages.count > 0 && !hideMessagesBadge && (
                     <Badge 
                       variant="destructive" 
                       className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center animate-notificationPulse animate-slideInRight bg-red-500 text-white border-2 border-white shadow-lg"

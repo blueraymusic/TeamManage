@@ -363,7 +363,7 @@ export default function AdminChatInterface() {
                               <span className="font-medium text-sm text-gray-900 truncate">
                                 {getMemberName(officer)}
                               </span>
-                              {unreadCount > 0 && (
+                              {unreadCount > 0 && selectedOfficer?.id !== officer.id && (
                                 <Badge variant="destructive" className="text-xs min-w-[20px] h-5">
                                   {unreadCount}
                                 </Badge>
