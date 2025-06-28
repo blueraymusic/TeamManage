@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Send, MessageCircle, AlertCircle, AlertTriangle, Paperclip, File, Image, X } from "lucide-react";
+import { Send, MessageCircle, AlertCircle, AlertTriangle, Paperclip, File, Image, X, Upload, CheckCircle, FileText, Download } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -34,6 +34,8 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
   const [newMessage, setNewMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
@@ -134,6 +136,13 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
     }
   };
 
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('=== SEND MESSAGE DEBUG ===');
@@ -205,6 +214,18 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
           return;
         }
 
+        // Simulate upload progress
+        setUploadProgress(0);
+        const progressInterval = setInterval(() => {
+          setUploadProgress(prev => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 100);
+
         const formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('recipientId', targetRecipientId.toString());
@@ -214,11 +235,22 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
         const response = await apiRequest('POST', '/api/messages/upload', formData);
         console.log('✅ File upload successful:', response);
         
-        setNewMessage("");
-        setSelectedFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
+        // Complete progress and show success
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+        setUploadSuccess(true);
+
+        // Wait briefly to show success animation
+        setTimeout(() => {
+          setNewMessage("");
+          setSelectedFile(null);
+          setUploadSuccess(false);
+          setUploadProgress(0);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        }, 1500);
+
         queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
         
         toast({
@@ -227,6 +259,8 @@ export default function ChatInterface({ recipientId, recipientName }: ChatInterf
         });
       } catch (error) {
         console.error('File upload error:', error);
+        setUploadSuccess(false);
+        setUploadProgress(0);
         toast({
           title: "Error", 
           description: "Failed to send file",

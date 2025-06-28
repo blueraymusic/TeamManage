@@ -73,6 +73,7 @@ import AnalyticsDashboard from "./analytics-dashboard";
 import SmartNotifications from "./smart-notifications";
 import ProjectTimeline from "./project-timeline";
 import PDFReportPreview from "./pdf-report-preview";
+import FloatingMessageNotification from "./floating-message-notification";
 
 
 export default function AdminDashboard() {
@@ -352,7 +353,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
                   Messages
                   {unreadMessages && unreadMessages.count > 0 && (
-                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center animate-notificationPulse animate-slideInRight bg-red-500 text-white border-2 border-white shadow-lg"
+                    >
                       {unreadMessages.count}
                     </Badge>
                   )}
@@ -716,6 +720,17 @@ ${orgData.name || 'Organization'} Team`;
         projectsData={projects as any[]}
         reportsData={reports as any[]}
         statsData={stats}
+      />
+
+      {/* Floating Message Notification */}
+      <FloatingMessageNotification 
+        onNavigateToMessages={() => {
+          // Switch to messages tab
+          const messagesTab = document.querySelector('[value="messages"]');
+          if (messagesTab) {
+            (messagesTab as HTMLElement).click();
+          }
+        }}
       />
     </div>
   );

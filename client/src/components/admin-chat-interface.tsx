@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X, Search } from "lucide-react";
+import { Send, MessageCircle, User, ArrowLeft, Paperclip, Download, FileText, AlertCircle, AlertTriangle, Zap, File, X, Search, CheckCircle, Upload } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -40,6 +40,9 @@ export default function AdminChatInterface() {
   const [selectedUrgency, setSelectedUrgency] = useState<string>("normal");
   const [searchTerm, setSearchTerm] = useState("");
   const [showMembersList, setShowMembersList] = useState(true);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
@@ -88,7 +91,7 @@ export default function AdminChatInterface() {
   // Get officers only
   const officers = organizationMembers.filter(member => member.role === "officer");
   const selectedRecipient = officers.find(o => o.id === selectedMemberId);
-  const isUploading = sendMessageMutation.isPending;
+  const isSendingMessage = sendMessageMutation.isPending;
 
   // Get messages for selected conversation
   const selectedMessages = selectedMemberId 
@@ -129,6 +132,22 @@ export default function AdminChatInterface() {
 
     try {
       if (selectedFile) {
+        // Start upload animation
+        setIsUploading(true);
+        setUploadProgress(0);
+        setUploadSuccess(false);
+
+        // Simulate progress animation
+        const progressInterval = setInterval(() => {
+          setUploadProgress(prev => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 100);
+
         // Handle file upload
         const formData = new FormData();
         formData.append('recipientId', selectedMemberId.toString());
@@ -145,20 +164,32 @@ export default function AdminChatInterface() {
           credentials: 'include'
         });
 
+        clearInterval(progressInterval);
+
         if (!response.ok) {
           throw new Error(`Upload failed: ${response.statusText}`);
         }
 
-        const result = await response.json();
-        
-        setNewMessage("");
-        setSelectedFile(null);
-        setSelectedUrgency("normal");
-        if (fileInputRef.current) fileInputRef.current.value = '';
-        
-        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
-        
+        // Complete progress and show success animation
+        setUploadProgress(100);
+        setTimeout(() => {
+          setUploadSuccess(true);
+          
+          // Success animation with checkmark
+          setTimeout(() => {
+            setIsUploading(false);
+            setUploadSuccess(false);
+            setUploadProgress(0);
+            setNewMessage("");
+            setSelectedFile(null);
+            setSelectedUrgency("normal");
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            
+            queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/messages/unread"] });
+          }, 1000);
+        }, 200);
+
         toast({
           title: "File shared successfully",
           description: `${selectedFile.name} has been sent`,
@@ -173,6 +204,10 @@ export default function AdminChatInterface() {
       }
     } catch (error: any) {
       console.error("Message send error:", error);
+      setIsUploading(false);
+      setUploadSuccess(false);
+      setUploadProgress(0);
+      
       toast({
         title: "Failed to send message",
         description: error.message || "Please try again",
@@ -509,8 +544,21 @@ export default function AdminChatInterface() {
                       <Paperclip className="h-4 w-4" />
                     </Button>
                     
-                    <Button type="submit" size="sm" disabled={!newMessage.trim() && !selectedFile}>
-                      <Send className="h-4 w-4" />
+                    <Button 
+                      type="submit" 
+                      size="sm" 
+                      disabled={(!newMessage.trim() && !selectedFile) || isUploading}
+                      className={`transition-all duration-200 ${
+                        isUploading 
+                          ? 'bg-blue-400 cursor-not-allowed' 
+                          : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
+                    >
+                      {isUploading ? (
+                        <Upload className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
 
@@ -522,19 +570,63 @@ export default function AdminChatInterface() {
                   />
 
                   {selectedFile && (
-                    <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-200">
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm text-gray-700">{selectedFile.name}</span>
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 transition-all duration-300">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className={`relative transition-all duration-300 ${
+                            uploadSuccess ? 'animate-scaleIn' : ''
+                          }`}>
+                            {uploadSuccess ? (
+                              <CheckCircle className="h-4 w-4 text-green-600 animate-successPulse" />
+                            ) : isUploading ? (
+                              <Upload className="h-4 w-4 text-blue-600 animate-spin" />
+                            ) : (
+                              <FileText className="h-4 w-4 text-blue-600" />
+                            )}
+                          </div>
+                          <span className="text-sm text-gray-700">{selectedFile.name}</span>
+                          {uploadSuccess && (
+                            <span className="text-xs text-green-600 font-medium animate-fadeIn">
+                              Uploaded!
+                            </span>
+                          )}
+                        </div>
+                        {!isUploading && !uploadSuccess && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedFile(null)}
+                            className="opacity-60 hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedFile(null)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      
+                      {/* Animated Progress Bar */}
+                      {(isUploading || uploadSuccess) && (
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className={`h-full transition-all duration-300 ease-out ${
+                              uploadSuccess 
+                                ? 'bg-green-500 animate-pulse' 
+                                : 'bg-blue-500'
+                            }`}
+                            style={{ 
+                              width: `${uploadProgress}%`,
+                              transition: 'width 0.3s ease-out'
+                            }}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Upload Status Text */}
+                      {isUploading && !uploadSuccess && (
+                        <div className="mt-2 text-xs text-blue-600 animate-pulse">
+                          Uploading... {uploadProgress}%
+                        </div>
+                      )}
                     </div>
                   )}
                 </form>
