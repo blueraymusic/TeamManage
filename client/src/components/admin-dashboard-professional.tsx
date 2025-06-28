@@ -79,7 +79,10 @@ import FloatingMessageNotification from "./floating-message-notification";
 export default function AdminDashboard() {
   const { toast } = useToast();
   const logout = useLogout();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  
+  // Debug logging for user data
+  console.log("AdminDashboard - User:", user, "IsLoading:", isLoading);
   const [activeTab, setActiveTab] = useState("overview");
   const [editingProject, setEditingProject] = useState<any>(null);
   const [editName, setEditName] = useState("");

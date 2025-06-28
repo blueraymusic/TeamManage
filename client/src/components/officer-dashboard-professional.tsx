@@ -53,7 +53,10 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function OfficerDashboard() {
   const logout = useLogout();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  
+  // Debug logging for user data
+  console.log("OfficerDashboard - User:", user, "IsLoading:", isLoading);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [viewingProject, setViewingProject] = useState<any>(null);
