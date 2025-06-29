@@ -208,29 +208,12 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
     return <div>Loading report data...</div>;
   }
 
-  return (
-    <>
-      {!reportId && (
-        <Button 
-          onClick={() => setIsOpen(true)}
-          className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white font-medium"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Report
-        </Button>
-      )}
-      
-      <Dialog open={reportId ? false : isOpen} onOpenChange={reportId ? () => {} : setIsOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {reportId ? "Edit Report" : "Submit New Report"}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 p-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+  // When editing a report, render form directly without Dialog wrapper
+  if (reportId) {
+    return (
+      <div className="space-y-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="title"
@@ -405,15 +388,6 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
                 )}
 
                 <div className="flex gap-3 pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  
                   {!aiAnalysis ? (
                     <Button
                       type="button"
@@ -453,8 +427,252 @@ export default function ReportForm({ projectId, reportId, onSuccess }: ReportFor
               </form>
             </Form>
           </div>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
+        );
+      }
+
+      return (
+        <>
+          <Button 
+            onClick={() => setIsOpen(true)}
+            className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white font-medium"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Report
+          </Button>
+          
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Submit New Report</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-6 p-6">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Report Title *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter report title"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setAiAnalysis(null);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="content"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Report Content *</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Describe your progress, achievements, challenges, and next steps..."
+                              className="min-h-[120px]"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setAiAnalysis(null);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="projectId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Project *</FormLabel>
+                          <Select onValueChange={(value) => {
+                            field.onChange(value);
+                            setAiAnalysis(null);
+                          }} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a project" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {(projects as any)?.map((project: any) => (
+                                <SelectItem key={project.id} value={project.id.toString()}>
+                                  {project.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* File Upload Section */}
+                    <div>
+                      <FormLabel>Attachments (Optional)</FormLabel>
+                      <div className="mt-2 space-y-4">
+                        <div className="flex items-center justify-center w-full">
+                          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                              <Upload className="w-8 h-8 mb-4 text-gray-500" />
+                              <p className="mb-2 text-sm text-gray-500">
+                                <span className="font-semibold">Click to upload</span> or drag and drop
+                              </p>
+                              <p className="text-xs text-gray-500">PDF, DOC, XLS, IMG (MAX. 10MB each)</p>
+                            </div>
+                            <input
+                              type="file"
+                              className="hidden"
+                              multiple
+                              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.txt,.csv"
+                              onChange={handleFileChange}
+                            />
+                          </label>
+                        </div>
+
+                        {selectedFiles.length > 0 && (
+                          <div className="space-y-2">
+                            {selectedFiles.map((file, index) => (
+                              <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+                                <div className="flex items-center space-x-2">
+                                  {getFileIcon(file)}
+                                  <span className="text-sm text-gray-700">{file.name}</span>
+                                  <span className="text-xs text-gray-500">
+                                    ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                                  </span>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeFile(index)}
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* AI Analysis Results */}
+                    {aiAnalysis && (
+                      <div className="p-4 bg-slate-50 rounded-lg border">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <Brain className="w-5 h-5 text-purple-600" />
+                          <h3 className="font-medium text-slate-800">AI Analysis Results</h3>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-medium">Overall Score:</span>
+                            <span className={`text-sm font-bold ${
+                              aiAnalysis.overallScore >= 80 ? 'text-green-600' :
+                              aiAnalysis.overallScore >= 60 ? 'text-yellow-600' :
+                              'text-red-600'
+                            }`}>
+                              {aiAnalysis.overallScore}%
+                            </span>
+                          </div>
+                          
+                          <p className="text-sm text-slate-600">{aiAnalysis.overallFeedback}</p>
+
+                          {aiAnalysis.strengthsIdentified?.length > 0 && (
+                            <div>
+                              <h4 className="font-medium text-gray-900 mb-2">Strengths Identified</h4>
+                              <ul className="text-sm text-green-700 space-y-1">
+                                {aiAnalysis.strengthsIdentified.map((strength: string, index: number) => (
+                                  <li key={index} className="flex items-start">
+                                    <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                                    {strength}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {aiAnalysis.priorityImprovements?.length > 0 && (
+                            <div>
+                              <h4 className="font-medium text-gray-900 mb-2">Priority Improvements</h4>
+                              <ul className="text-sm text-orange-700 space-y-1">
+                                {aiAnalysis.priorityImprovements.map((improvement: string, index: number) => (
+                                  <li key={index} className="flex items-start">
+                                    <span className="w-4 h-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0">⚡</span>
+                                    {improvement}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1"
+                      >
+                        Cancel
+                      </Button>
+                      
+                      {!aiAnalysis ? (
+                        <Button
+                          type="button"
+                          onClick={analyzeReport}
+                          disabled={isAnalyzing || !form.watch("title") || !form.watch("content")}
+                          className="flex-1 bg-purple-600 hover:bg-purple-700"
+                        >
+                          <Brain className="w-4 h-4 mr-2" />
+                          {isAnalyzing ? "Analyzing..." : "Analyze Report"}
+                        </Button>
+                      ) : isReadyForSubmission() ? (
+                        <Button
+                          type="submit"
+                          disabled={submitReportMutation.isPending}
+                          className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          {submitReportMutation.isPending ? "Submitting..." : "Submit Report"}
+                        </Button>
+                      ) : (
+                        <div className="flex-1 space-y-2">
+                          <Button
+                            type="button"
+                            onClick={analyzeReport}
+                            disabled={isAnalyzing}
+                            className="w-full bg-purple-600 hover:bg-purple-700"
+                          >
+                            <Brain className="w-4 h-4 mr-2" />
+                            {isAnalyzing ? "Re-analyzing..." : "Re-analyze Report"}
+                          </Button>
+                          <p className="text-xs text-orange-600 text-center">
+                            Please improve your report based on AI feedback before submitting
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
+      );
+    }
