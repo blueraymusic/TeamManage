@@ -1,9 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useState } from "react";
 import { 
   Users, 
@@ -55,9 +60,20 @@ export default function AdminDashboardSimple() {
   const { user } = useAuth();
   const logout = useLogout();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("overview");
   const [aiInsights, setAiInsights] = useState<AIProjectSummary | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    description: '',
+    status: '',
+    progress: 0,
+    budget: '',
+    budgetUsed: '',
+    deadline: ''
+  });
 
   const { data: projects } = useQuery({
     queryKey: ["/api/projects"],
@@ -74,6 +90,53 @@ export default function AdminDashboardSimple() {
   const { data: teamMembers } = useQuery({
     queryKey: ["/api/organization/members"],
   });
+
+  // Edit project mutation
+  const editProjectMutation = useMutation({
+    mutationFn: async (projectData: any) => {
+      return await apiRequest('PATCH', `/api/projects/${editingProject.id}`, {
+        name: projectData.name,
+        description: projectData.description,
+        status: projectData.status,
+        progress: parseInt(projectData.progress),
+        budget: parseFloat(projectData.budget),
+        budgetUsed: parseFloat(projectData.budgetUsed),
+        deadline: projectData.deadline
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Project updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      setEditingProject(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update project",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const openEditModal = (project: any) => {
+    setEditingProject(project);
+    setEditForm({
+      name: project.name || '',
+      description: project.description || '',
+      status: project.status || 'active',
+      progress: project.progress || 0,
+      budget: project.budget?.toString() || '',
+      budgetUsed: project.budgetUsed?.toString() || '',
+      deadline: project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : ''
+    });
+  };
+
+  const handleSaveProject = () => {
+    editProjectMutation.mutate(editForm);
+  };
 
   // Generate AI insights
   const generateAIInsights = async () => {
@@ -701,7 +764,7 @@ export default function AdminDashboardSimple() {
                                   {project.status}
                                 </Badge>
                                 <Button size="sm" variant="ghost"
-                                  onClick={() => window.alert(`Editing project: ${project.name || project.title}\nStatus: ${project.status}\nProgress: ${project.progress || 0}%\nBudget: $${parseFloat(project.budget || 0).toLocaleString()}`)}>
+                                  onClick={() => openEditModal(project)}>
                                   Edit
                                 </Button>
                               </div>
@@ -1057,6 +1120,124 @@ export default function AdminDashboardSimple() {
             </TabsContent>
           </Tabs>
         </Card>
+
+        {/* Edit Project Modal */}
+        <Dialog open={!!editingProject} onOpenChange={() => setEditingProject(null)}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Edit Project</DialogTitle>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Project Name
+                </Label>
+                <Input
+                  id="name"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-right">
+                  Description
+                </Label>
+                <Textarea
+                  id="description"
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <Select value={editForm.status} onValueChange={(value) => setEditForm({...editForm, status: value})}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="on-hold">On Hold</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="progress" className="text-right">
+                  Progress (%)
+                </Label>
+                <Input
+                  id="progress"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={editForm.progress}
+                  onChange={(e) => setEditForm({...editForm, progress: parseInt(e.target.value) || 0})}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="budget" className="text-right">
+                  Budget ($)
+                </Label>
+                <Input
+                  id="budget"
+                  type="number"
+                  value={editForm.budget}
+                  onChange={(e) => setEditForm({...editForm, budget: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="budgetUsed" className="text-right">
+                  Budget Used ($)
+                </Label>
+                <Input
+                  id="budgetUsed"
+                  type="number"
+                  value={editForm.budgetUsed}
+                  onChange={(e) => setEditForm({...editForm, budgetUsed: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="deadline" className="text-right">
+                  Deadline
+                </Label>
+                <Input
+                  id="deadline"
+                  type="date"
+                  value={editForm.deadline}
+                  onChange={(e) => setEditForm({...editForm, deadline: e.target.value})}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditingProject(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveProject}
+                disabled={editProjectMutation.isPending}
+              >
+                {editProjectMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
