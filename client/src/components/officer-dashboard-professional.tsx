@@ -145,18 +145,22 @@ export default function OfficerDashboard() {
   const pendingReports = (reports as any)?.filter((r: any) => r.status === 'submitted')?.length || 0;
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-blue-50/40 to-indigo-50/60">
       <div className="max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-6 space-y-3 md:space-y-6">
-        {/* Mobile-Responsive Header */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-3 md:p-6">
+        {/* Enhanced Header with Modern Design */}
+        <div className="bg-white/90 backdrop-blur-sm border border-white/50 rounded-2xl shadow-lg p-4 md:p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="bg-blue-600 p-1.5 md:p-2 rounded-lg">
+            <div className="flex items-center space-x-3 md:space-x-4">
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 md:p-3 rounded-xl shadow-lg">
                 <AdelLogo size="sm" className="filter brightness-0 invert" />
               </div>
               <div>
-                <h1 className="text-lg md:text-xl font-bold text-gray-900">Officer Dashboard</h1>
-                <p className="text-sm md:text-base text-gray-600 hidden sm:block">Submit reports and track projects</p>
+                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Officer Dashboard
+                </h1>
+                <p className="text-sm md:text-base text-gray-600 hidden sm:block">
+                  Submit reports and track project progress
+                </p>
               </div>
             </div>
             <Button
@@ -173,67 +177,75 @@ export default function OfficerDashboard() {
           </div>
         </div>
 
-        {/* Mobile-Responsive Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
-          <Card className="bg-white border border-gray-200">
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <Projector className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
+        {/* Enhanced Stats Cards with Modern Design */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100/60 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Projector className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  <p className="text-2xl md:text-3xl font-bold text-gray-900">
                     {activeProjects.length}
                   </p>
-                  <p className="text-xs md:text-sm text-gray-600">Active</p>
+                  <p className="text-sm text-gray-600">Active Projects</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-gray-200">
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
+          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100/60 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <CheckCircle2 className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  <p className="text-2xl md:text-3xl font-bold text-gray-900">
                     {completedProjects.length}
                   </p>
-                  <p className="text-xs md:text-sm text-gray-600">Complete</p>
+                  <p className="text-sm text-gray-600">Completed</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-gray-200">
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <FileText className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100/60 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  <p className="text-2xl md:text-3xl font-bold text-gray-900">
                     {submittedReports}
                   </p>
-                  <p className="text-xs md:text-sm text-gray-600">Reports</p>
+                  <p className="text-sm text-gray-600">Reports</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-gray-200">
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <Clock className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100/60 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  <p className="text-2xl md:text-3xl font-bold text-gray-900">
                     {pendingReports}
                   </p>
-                  <p className="text-xs md:text-sm text-gray-600">Pending</p>
+                  <p className="text-sm text-gray-600">Pending</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Simple Tabs */}
-        <div className="bg-white border border-gray-200 rounded-lg">
+        {/* Enhanced Tabs with Modern Design */}
+        <div className="bg-white/90 backdrop-blur-sm border border-white/50 rounded-2xl shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="border-b border-gray-200 px-4">
               <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
