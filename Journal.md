@@ -1,4 +1,4 @@
-##Journal
+Journal
 - June 24, 2025. Initial setup
 - June 24, 2025. Implemented message notification system with unread badges
 - June 24, 2025. Fixed file upload UI consistency between admin and officer
