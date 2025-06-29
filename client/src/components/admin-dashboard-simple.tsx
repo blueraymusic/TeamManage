@@ -700,7 +700,8 @@ export default function AdminDashboardSimple() {
                                 }>
                                   {project.status}
                                 </Badge>
-                                <Button size="sm" variant="ghost">
+                                <Button size="sm" variant="ghost"
+                                  onClick={() => window.alert(`Editing project: ${project.name || project.title}\nStatus: ${project.status}\nProgress: ${project.progress || 0}%\nBudget: $${parseFloat(project.budget || 0).toLocaleString()}`)}>
                                   Edit
                                 </Button>
                               </div>
@@ -800,7 +801,8 @@ export default function AdminDashboardSimple() {
                                   Submitted: {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
                                 </p>
                               </div>
-                              <Button size="sm" variant="outline" className="text-red-600 border-red-200">
+                              <Button size="sm" variant="outline" className="text-red-600 border-red-200" 
+                                onClick={() => window.alert(`Reviewing report: ${report.title}`)}>
                                 Review
                               </Button>
                             </div>
@@ -839,7 +841,8 @@ export default function AdminDashboardSimple() {
                             }>
                               {report.status}
                             </Badge>
-                            <Button size="sm" variant="ghost">
+                            <Button size="sm" variant="ghost"
+                              onClick={() => window.alert(`Viewing report: ${report.title}\nStatus: ${report.status}\nSubmitted: ${new Date(report.submittedAt || report.createdAt).toLocaleDateString()}`)}>
                               View
                             </Button>
                           </div>

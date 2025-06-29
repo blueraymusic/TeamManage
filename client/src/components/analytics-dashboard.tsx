@@ -64,21 +64,27 @@ export default function AnalyticsDashboard({ userRole }: AnalyticsDashboardProps
       { name: 'Cancelled', value: projects.filter((p: any) => p.status === 'cancelled').length, color: '#ef4444', darkColor: '#dc2626' },
     ];
 
-    // Report approval trends (last 30 days)
+    // Report approval trends (last 7 days with current dates)
     const recentReports = reports.filter((r: any) => 
-      new Date(r.createdAt) >= thirtyDaysAgo
+      new Date(r.submittedAt || r.createdAt) >= thirtyDaysAgo
     );
 
     const reportTrendData = [];
     for (let i = 6; i >= 0; i--) {
-      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      
       const dayReports = recentReports.filter((r: any) => {
-        const reportDate = new Date(r.createdAt);
+        const reportDate = new Date(r.submittedAt || r.createdAt);
         return reportDate.toDateString() === date.toDateString();
       });
 
+      // Use current month abbreviations
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const currentMonth = monthNames[date.getMonth()];
+
       reportTrendData.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        date: `${currentMonth} ${date.getDate()}`,
         submitted: dayReports.filter((r: any) => r.status === 'submitted').length,
         approved: dayReports.filter((r: any) => r.status === 'approved').length,
         rejected: dayReports.filter((r: any) => r.status === 'rejected').length,

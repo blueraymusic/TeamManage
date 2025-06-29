@@ -214,19 +214,47 @@ Respond with JSON containing:
   }
 
   private calculateBudgetEfficiency(data: DashboardAnalysisData): number {
-    if (data.totalBudget === 0) return 100;
-    const efficiency = (data.averageProgress / 100) / (data.usedBudget / data.totalBudget);
-    return Math.min(100, Math.round(efficiency * 100));
+    if (data.totalBudget === 0 || data.usedBudget === 0) return 85; // Default reasonable score
+    
+    const utilizationRate = data.usedBudget / data.totalBudget;
+    const progressRate = data.averageProgress / 100;
+    
+    // Efficiency: progress achieved vs budget spent
+    let efficiency = 0;
+    if (utilizationRate > 0) {
+      efficiency = (progressRate / utilizationRate) * 80;
+      // Add bonus for optimal utilization (60-85%)
+      if (utilizationRate >= 0.6 && utilizationRate <= 0.85) {
+        efficiency += 15;
+      }
+    }
+    
+    return Math.round(Math.max(25, Math.min(98, efficiency)));
   }
 
   private calculateTeamEngagement(data: DashboardAnalysisData): number {
-    // Base engagement on recent activity and report submission rate
-    const baseScore = Math.min(100, data.recentActivity * 10);
-    const reportScore = data.totalProjects > 0 ? 
-      Math.min(100, ((data.approvedReports + data.pendingReports) / data.totalProjects) * 50) : 
-      50;
+    if (!data.teamMembers || data.teamMembers === 0) return 75; // Default reasonable score
     
-    return Math.round((baseScore + reportScore) / 2);
+    // Calculate based on activity per team member
+    const reportsPerMember = data.recentActivity / data.teamMembers;
+    const projectsPerMember = data.activeProjects / data.teamMembers;
+    
+    // Base engagement score
+    let engagement = Math.min(100, (reportsPerMember * 15) + (projectsPerMember * 10) + 50);
+    
+    // Bonus for good completion rate
+    if (data.totalProjects > 0) {
+      const completionRate = data.completedProjects / data.totalProjects;
+      engagement += completionRate * 20;
+    }
+    
+    // Penalty for overdue projects
+    if (data.totalProjects > 0) {
+      const overdueRate = data.overdueProjects / data.totalProjects;
+      engagement -= overdueRate * 15;
+    }
+    
+    return Math.round(Math.max(35, Math.min(95, engagement)));
   }
 
   private generateDefaultSummary(data: DashboardAnalysisData): string {
