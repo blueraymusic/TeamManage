@@ -58,6 +58,8 @@ export default function OfficerDashboardRedesigned() {
   const [aiInsights, setAiInsights] = useState<AIProjectSummary | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
   const [showReportForm, setShowReportForm] = useState(false);
+  const [editingReport, setEditingReport] = useState<any>(null);
+  const [viewingReport, setViewingReport] = useState<any>(null);
 
   const { data: projects } = useQuery({
     queryKey: ["/api/projects"],
@@ -614,12 +616,25 @@ export default function OfficerDashboardRedesigned() {
                             }>
                               {report.status}
                             </Badge>
-                            {report.status === 'draft' && (
-                              <Button size="sm" variant="outline">
-                                <Edit3 className="w-3 h-3 mr-1" />
-                                Edit
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => setViewingReport(report)}
+                              >
+                                View
                               </Button>
-                            )}
+                              {(report.status === 'draft' || report.status === 'rejected') && (
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setEditingReport(report)}
+                                >
+                                  <Edit3 className="w-3 h-3 mr-1" />
+                                  Edit
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <p className="text-sm text-gray-600">
@@ -658,6 +673,102 @@ export default function OfficerDashboardRedesigned() {
                     refetchReports();
                   }}
                 />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Report Modal */}
+        {editingReport && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold">Edit Report</h2>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEditingReport(null)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+                <ReportForm 
+                  reportId={editingReport.id}
+                  onSuccess={() => {
+                    setEditingReport(null);
+                    refetchReports();
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* View Report Modal */}
+        {viewingReport && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold">{viewingReport.title}</h2>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setViewingReport(null)}
+                  >
+                    Close
+                  </Button>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant={
+                        viewingReport.status === 'approved' ? 'default' : 
+                        viewingReport.status === 'submitted' ? 'secondary' : 
+                        'outline'
+                      }>
+                        {viewingReport.status}
+                      </Badge>
+                      <span className="text-sm text-gray-600">
+                        Submitted: {new Date(viewingReport.submittedAt || viewingReport.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-medium mb-2">Report Content</h3>
+                    <div className="prose max-w-none">
+                      <p className="whitespace-pre-wrap">{viewingReport.content}</p>
+                    </div>
+                  </div>
+
+                  {viewingReport.files && Array.isArray(viewingReport.files) && viewingReport.files.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Attachments</h3>
+                      <div className="space-y-2">
+                        {viewingReport.files.map((file: any, index: number) => (
+                          <div key={index} className="flex items-center gap-2 p-2 bg-white rounded border">
+                            <FileText className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm">{file.filename || `Attachment ${index + 1}`}</span>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => window.open(`/api/reports/${viewingReport.id}/files/${file.filename || index}`, '_blank')}
+                            >
+                              Download
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {viewingReport.reviewNotes && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <h3 className="font-medium mb-2 text-yellow-800">Review Notes</h3>
+                      <p className="text-yellow-700 whitespace-pre-wrap">{viewingReport.reviewNotes}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
