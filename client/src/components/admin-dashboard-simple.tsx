@@ -194,14 +194,41 @@ export default function AdminDashboardSimple() {
     spent: project.budgetUsed ? parseFloat(project.budgetUsed) : 0
   }));
 
-  const monthlyData = [
-    { month: 'Jan', projects: 2, reports: 5, budget: 15000 },
-    { month: 'Feb', projects: 3, reports: 8, budget: 22000 },
-    { month: 'Mar', projects: 4, reports: 12, budget: 18000 },
-    { month: 'Apr', projects: 3, reports: 10, budget: 25000 },
-    { month: 'May', projects: 5, reports: 15, budget: 30000 },
-    { month: 'Jun', projects: activeProjects.length, reports: reportsData.length, budget: 28000 }
-  ];
+  // Generate real monthly data based on actual project budgets
+  const monthlyData = (() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const currentMonth = new Date().getMonth();
+    
+    return months.map((month, index) => {
+      if (index > currentMonth) {
+        return { month, projects: 0, reports: 0, budget: 0 };
+      }
+      
+      // Calculate total budget for projects created in this month
+      const monthProjects = projectsData.filter((project: any) => {
+        if (!project.createdAt) return index === currentMonth; // Include current projects if no date
+        const projectDate = new Date(project.createdAt);
+        return projectDate.getMonth() === index;
+      });
+      
+      const monthReports = reportsData.filter((report: any) => {
+        if (!report.submittedAt) return false;
+        const reportDate = new Date(report.submittedAt);
+        return reportDate.getMonth() === index;
+      });
+      
+      const monthBudget = monthProjects.reduce((total: number, project: any) => {
+        return total + (parseFloat(project.budget) || 0);
+      }, 0);
+      
+      return {
+        month,
+        projects: monthProjects.length,
+        reports: monthReports.length,
+        budget: monthBudget
+      };
+    });
+  })();
 
   const getHealthColor = (health: string) => {
     switch (health) {
