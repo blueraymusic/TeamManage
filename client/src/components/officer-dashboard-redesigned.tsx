@@ -20,7 +20,12 @@ import {
   AlertTriangle,
   MessageSquare,
   Edit3,
-  Lightbulb
+  Lightbulb,
+  Eye,
+  Briefcase,
+  Paperclip,
+  Download,
+  ArrowDown
 } from "lucide-react";
 import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -582,36 +587,99 @@ export default function OfficerDashboardRedesigned() {
             </TabsContent>
 
             <TabsContent value="projects" className="p-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">My Projects</h3>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900">My Projects</h3>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Briefcase className="w-4 h-4" />
+                    <span>{projectsData.length} total projects</span>
+                  </div>
+                </div>
                 
-                <div className="grid gap-4">
+                <div className="grid gap-4 max-h-[500px] overflow-y-auto">
                   {projectsData.map((project: any) => (
-                    <Card key={project.id} className="border border-gray-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">{project.title}</h4>
-                          <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
-                            {project.status}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{project.description}</p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Progress</span>
-                            <span>{project.progress || 0}%</span>
-                          </div>
-                          <Progress value={project.progress || 0} className="h-2" />
-                          {project.deadline && (
-                            <div className="flex items-center text-sm text-gray-600">
-                              <Calendar className="w-4 h-4 mr-1" />
-                              Due: {new Date(project.deadline).toLocaleDateString()}
+                    <Card key={project.id} className="border border-gray-100 hover:border-blue-200 transition-all duration-200 bg-gradient-to-r from-white to-gray-50 hover:shadow-md">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-semibold text-lg text-gray-900 truncate">{project.name}</h4>
+                              <Badge 
+                                variant="outline"
+                                className={
+                                  project.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' : 
+                                  project.status === 'completed' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
+                                  project.status === 'on-hold' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                  'bg-gray-50 text-gray-700 border-gray-200'
+                                }
+                              >
+                                {project.status === 'on-hold' ? 'On Hold' : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                              </Badge>
                             </div>
+                            <p className="text-gray-600 mb-4 line-clamp-2">
+                              {project.description || 'No description available'}
+                            </p>
+                          </div>
+                          
+                          {project.isOverdue && project.status !== 'completed' && (
+                            <Badge variant="destructive" className="ml-4">
+                              <AlertTriangle className="w-3 h-3 mr-1" />
+                              Overdue
+                            </Badge>
                           )}
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-medium text-gray-700">Progress</span>
+                              <span className="text-sm font-semibold text-gray-900">{project.progress || 0}%</span>
+                            </div>
+                            <Progress 
+                              value={project.progress || 0} 
+                              className="h-3 bg-gray-200"
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                            <div className="flex items-center text-sm">
+                              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                <Calendar className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <div>
+                                <p className="text-gray-500">Deadline</p>
+                                <p className="font-medium text-gray-900">
+                                  {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No deadline'}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center text-sm">
+                              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                <TrendingUp className="w-4 h-4 text-green-600" />
+                              </div>
+                              <div>
+                                <p className="text-gray-500">Budget</p>
+                                <p className="font-medium text-gray-900">
+                                  ${(project.budget || 0).toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
                   ))}
+                  
+                  {projectsData.length === 0 && (
+                    <Card className="border-dashed border-2 border-gray-200">
+                      <CardContent className="p-8 text-center">
+                        <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <h4 className="text-lg font-medium text-gray-900 mb-2">No Projects Yet</h4>
+                        <p className="text-gray-600">Contact your admin to get started with projects.</p>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </div>
             </TabsContent>
@@ -626,44 +694,64 @@ export default function OfficerDashboardRedesigned() {
                   </Button>
                 </div>
                 
-                <div className="grid gap-4">
-                  {reportsData.map((report: any) => (
-                    <Card key={report.id} className="border border-gray-200">
+                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                  {reportsData.slice(0, 6).map((report: any) => (
+                    <Card key={report.id} className="border border-gray-100 hover:border-blue-200 transition-colors bg-gradient-to-r from-white to-gray-50">
                       <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium">{report.title}</h4>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={
-                              report.status === 'approved' ? 'default' : 
-                              report.status === 'submitted' ? 'secondary' : 
-                              'outline'
-                            }>
-                              {report.status}
-                            </Badge>
-                            <div className="flex gap-2">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-semibold text-gray-900 truncate">{report.title}</h4>
+                              <Badge 
+                                variant="outline"
+                                className={
+                                  report.status === 'approved' ? 'bg-green-50 text-green-700 border-green-200' : 
+                                  report.status === 'submitted' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
+                                  report.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                                  'bg-gray-50 text-gray-700 border-gray-200'
+                                }
+                              >
+                                {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center text-sm text-gray-500 mb-3">
+                              <Calendar className="w-4 h-4 mr-1" />
+                              Submitted: {new Date(report.submittedAt).toLocaleDateString()}
+                              {report.reviewedAt && (
+                                <>
+                                  <span className="mx-2">•</span>
+                                  <span>Reviewed: {new Date(report.reviewedAt).toLocaleDateString()}</span>
+                                </>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                              {report.content ? report.content.substring(0, 120) + '...' : 'No content available'}
+                            </p>
+                          </div>
+                          
+                          <div className="flex flex-col gap-2 ml-4">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setViewingReport(report)}
+                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            >
+                              <Eye className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                            {(report.status === 'draft' || report.status === 'rejected') && (
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => setViewingReport(report)}
+                                onClick={() => setEditingReport(report)}
+                                className="text-orange-600 border-orange-200 hover:bg-orange-50"
                               >
-                                View
+                                <Edit3 className="w-3 h-3 mr-1" />
+                                Edit
                               </Button>
-                              {(report.status === 'draft' || report.status === 'rejected') && (
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => setEditingReport(report)}
-                                >
-                                  <Edit3 className="w-3 h-3 mr-1" />
-                                  Edit
-                                </Button>
-                              )}
-                            </div>
+                            )}
                           </div>
                         </div>
-                        <p className="text-sm text-gray-600">
-                          {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
-                        </p>
                       </CardContent>
                     </Card>
                   ))}
@@ -731,53 +819,82 @@ export default function OfficerDashboardRedesigned() {
         {/* View Report Modal */}
         {viewingReport && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold">{viewingReport.title}</h2>
+            <div className="bg-white rounded-2xl shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{viewingReport.title}</h2>
+                    <div className="flex items-center gap-3">
+                      <Badge 
+                        variant="outline"
+                        className={
+                          viewingReport.status === 'approved' ? 'bg-green-50 text-green-700 border-green-200' : 
+                          viewingReport.status === 'submitted' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
+                          viewingReport.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                          'bg-gray-50 text-gray-700 border-gray-200'
+                        }
+                      >
+                        {viewingReport.status.charAt(0).toUpperCase() + viewingReport.status.slice(1)}
+                      </Badge>
+                      <span className="text-sm text-gray-600 flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        Submitted: {new Date(viewingReport.submittedAt || Date.now()).toLocaleDateString()}
+                      </span>
+                      {viewingReport.reviewedAt && (
+                        <span className="text-sm text-gray-600 flex items-center gap-1">
+                          <Eye className="w-4 h-4" />
+                          Reviewed: {new Date(viewingReport.reviewedAt).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   <Button 
                     variant="outline" 
                     onClick={() => setViewingReport(null)}
+                    className="shrink-0"
                   >
                     Close
                   </Button>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant={
-                        viewingReport.status === 'approved' ? 'default' : 
-                        viewingReport.status === 'submitted' ? 'secondary' : 
-                        'outline'
-                      }>
-                        {viewingReport.status}
-                      </Badge>
-                      <span className="text-sm text-gray-600">
-                        Submitted: {new Date(viewingReport.submittedAt || viewingReport.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-medium mb-2">Report Content</h3>
+                
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 border border-gray-100">
+                    <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-blue-600" />
+                      Report Content
+                    </h3>
                     <div className="prose max-w-none">
-                      <p className="whitespace-pre-wrap">{viewingReport.content}</p>
+                      <p className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                        {viewingReport.content || 'No content available'}
+                      </p>
                     </div>
                   </div>
 
                   {viewingReport.files && Array.isArray(viewingReport.files) && viewingReport.files.length > 0 && (
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium mb-2">Attachments</h3>
-                      <div className="space-y-2">
+                    <div className="bg-gradient-to-r from-blue-50 to-white rounded-xl p-6 border border-blue-100">
+                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                        <Paperclip className="w-5 h-5 text-blue-600" />
+                        Attachments ({viewingReport.files.length})
+                      </h3>
+                      <div className="grid gap-3">
                         {viewingReport.files.map((file: any, index: number) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-white rounded border">
-                            <FileText className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm">{file.filename || `Attachment ${index + 1}`}</span>
+                          <div key={index} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <FileText className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-gray-900">{file.filename || `Attachment ${index + 1}`}</p>
+                                <p className="text-sm text-gray-500">Click to download</p>
+                              </div>
+                            </div>
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => window.open(`/api/reports/${viewingReport.id}/files/${file.filename || index}`, '_blank')}
+                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
                             >
+                              <ArrowDown className="w-4 h-4 mr-1" />
                               Download
                             </Button>
                           </div>
@@ -787,9 +904,31 @@ export default function OfficerDashboardRedesigned() {
                   )}
 
                   {viewingReport.reviewNotes && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <h3 className="font-medium mb-2 text-yellow-800">Review Notes</h3>
-                      <p className="text-yellow-700 whitespace-pre-wrap">{viewingReport.reviewNotes}</p>
+                    <div className="bg-gradient-to-r from-yellow-50 to-white rounded-xl p-6 border border-yellow-200">
+                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-yellow-800">
+                        <MessageSquare className="w-5 h-5" />
+                        Admin Review Notes
+                      </h3>
+                      <div className="bg-white rounded-lg p-4 border border-yellow-200">
+                        <p className="text-yellow-800 whitespace-pre-wrap leading-relaxed">
+                          {viewingReport.reviewNotes}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {(viewingReport.status === 'draft' || viewingReport.status === 'rejected') && (
+                    <div className="flex justify-end pt-4 border-t border-gray-200">
+                      <Button 
+                        onClick={() => {
+                          setViewingReport(null);
+                          setEditingReport(viewingReport);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Edit3 className="w-4 h-4 mr-2" />
+                        Edit Report
+                      </Button>
                     </div>
                   )}
                 </div>
