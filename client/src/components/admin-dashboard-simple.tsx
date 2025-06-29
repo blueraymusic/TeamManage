@@ -220,23 +220,23 @@ export default function AdminDashboardSimple() {
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>On-Time Delivery</span>
-                      <span className="font-medium">{aiInsights.keyMetrics.onTimeDelivery}%</span>
+                      <span className="font-medium">{aiInsights?.keyMetrics?.onTimeDelivery || 0}%</span>
                     </div>
-                    <Progress value={aiInsights.keyMetrics.onTimeDelivery} className="h-2" />
+                    <Progress value={aiInsights?.keyMetrics?.onTimeDelivery || 0} className="h-2" />
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>Budget Efficiency</span>
-                      <span className="font-medium">{aiInsights.keyMetrics.budgetEfficiency}%</span>
+                      <span className="font-medium">{aiInsights?.keyMetrics?.budgetEfficiency || 0}%</span>
                     </div>
-                    <Progress value={aiInsights.keyMetrics.budgetEfficiency} className="h-2" />
+                    <Progress value={aiInsights?.keyMetrics?.budgetEfficiency || 0} className="h-2" />
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Risk Level</span>
-                  <Badge className={`${getRiskColor(aiInsights.keyMetrics.riskLevel)} border-0`}>
-                    {aiInsights.keyMetrics.riskLevel.toUpperCase()}
+                  <Badge className={`${getRiskColor(aiInsights?.keyMetrics?.riskLevel || 'low')} border-0`}>
+                    {(aiInsights?.keyMetrics?.riskLevel || 'low').toUpperCase()}
                   </Badge>
                 </div>
               </CardContent>
@@ -251,7 +251,7 @@ export default function AdminDashboardSimple() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {aiInsights.insights.slice(0, 3).map((insight, index) => (
+                {(aiInsights?.insights || []).slice(0, 3).map((insight, index) => (
                   <div key={index} className="flex gap-3 p-3 rounded-lg bg-gray-50">
                     <div className="flex-shrink-0 mt-0.5">
                       {insight.type === 'warning' && <AlertTriangle className="w-4 h-4 text-orange-500" />}
@@ -273,7 +273,7 @@ export default function AdminDashboardSimple() {
           </div>
         )}
 
-        {/* Key Metrics */}
+        {/* Key Metrics with Pending Items Highlighted */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
@@ -283,7 +283,7 @@ export default function AdminDashboardSimple() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{activeProjects.length}</p>
-                  <p className="text-sm text-gray-600">Active</p>
+                  <p className="text-sm text-gray-600">Active Projects</p>
                 </div>
               </div>
             </CardContent>
@@ -297,21 +297,28 @@ export default function AdminDashboardSimple() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{completedProjects.length}</p>
-                  <p className="text-sm text-gray-600">Complete</p>
+                  <p className="text-sm text-gray-600">Completed</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0 shadow-sm hover:shadow-md transition-shadow">
+          <Card className={`border-0 shadow-sm hover:shadow-md transition-shadow ${pendingReports > 0 ? 'bg-gradient-to-br from-red-50 to-red-100 ring-2 ring-red-200' : 'bg-gradient-to-br from-purple-50 to-purple-100'}`}>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${pendingReports > 0 ? 'bg-red-500' : 'bg-purple-500'}`}>
                   <FileText className="w-5 h-5 text-white" />
+                  {pendingReports > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full flex items-center justify-center">
+                      <span className="text-xs text-white font-bold">{pendingReports}</span>
+                    </div>
+                  )}
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{pendingReports}</p>
-                  <p className="text-sm text-gray-600">Pending</p>
+                  <p className={`text-2xl font-bold ${pendingReports > 0 ? 'text-red-700' : 'text-gray-900'}`}>{pendingReports}</p>
+                  <p className={`text-sm ${pendingReports > 0 ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
+                    {pendingReports > 0 ? 'PENDING REVIEW' : 'Pending'}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -325,7 +332,7 @@ export default function AdminDashboardSimple() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{teamData.length}</p>
-                  <p className="text-sm text-gray-600">Team</p>
+                  <p className="text-sm text-gray-600">Team Members</p>
                 </div>
               </div>
             </CardContent>
@@ -626,63 +633,232 @@ export default function AdminDashboardSimple() {
             <TabsContent value="projects" className="p-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold">All Projects</h3>
-                  <Button size="sm">
+                  <h3 className="text-lg font-semibold">Project Management</h3>
+                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700">
                     <Plus className="w-4 h-4 mr-2" />
                     New Project
                   </Button>
                 </div>
                 
-                <div className="grid gap-4">
-                  {projectsData.map((project: any) => (
-                    <Card key={project.id} className="border border-gray-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">{project.title}</h4>
-                          <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
-                            {project.status}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{project.description}</p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Progress</span>
-                            <span>{project.progress || 0}%</span>
-                          </div>
-                          <Progress value={project.progress || 0} className="h-2" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                {/* Project Status Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <Card className="bg-blue-50 border-blue-200">
+                    <CardContent className="p-4 text-center">
+                      <div className="text-2xl font-bold text-blue-600">{activeProjects.length}</div>
+                      <div className="text-sm text-blue-700">Active</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-green-50 border-green-200">
+                    <CardContent className="p-4 text-center">
+                      <div className="text-2xl font-bold text-green-600">{completedProjects.length}</div>
+                      <div className="text-sm text-green-700">Completed</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-orange-50 border-orange-200">
+                    <CardContent className="p-4 text-center">
+                      <div className="text-2xl font-bold text-orange-600">{onHoldProjects.length}</div>
+                      <div className="text-sm text-orange-700">On Hold</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-gray-50 border-gray-200">
+                    <CardContent className="p-4 text-center">
+                      <div className="text-2xl font-bold text-gray-600">{projectsData.length}</div>
+                      <div className="text-sm text-gray-700">Total</div>
+                    </CardContent>
+                  </Card>
                 </div>
+                
+                {/* Projects List - Scrollable */}
+                <Card className="bg-white border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>All Projects ({projectsData.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                      {projectsData.map((project: any, index) => (
+                        <Card key={project.id} className="border border-gray-200 hover:shadow-md transition-shadow">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">#{index + 1}</span>
+                                  <h4 className="font-semibold text-gray-900">{project.name || project.title}</h4>
+                                </div>
+                                <p className="text-sm text-gray-600 mb-3">{project.description || 'No description provided'}</p>
+                              </div>
+                              <div className="flex items-center gap-2 ml-4">
+                                <Badge variant={
+                                  project.status === 'active' ? 'default' : 
+                                  project.status === 'completed' ? 'secondary' :
+                                  project.status === 'on-hold' ? 'outline' :
+                                  'destructive'
+                                } className={
+                                  project.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                                  project.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                  project.status === 'on-hold' ? 'bg-orange-100 text-orange-800' :
+                                  'bg-red-100 text-red-800'
+                                }>
+                                  {project.status}
+                                </Badge>
+                                <Button size="sm" variant="ghost">
+                                  Edit
+                                </Button>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {/* Progress */}
+                              <div>
+                                <div className="flex justify-between text-sm mb-1">
+                                  <span className="text-gray-600">Progress</span>
+                                  <span className="font-medium">{project.progress || 0}%</span>
+                                </div>
+                                <Progress value={project.progress || 0} className="h-2" />
+                              </div>
+                              
+                              {/* Budget */}
+                              {project.budget && (
+                                <div>
+                                  <div className="flex justify-between text-sm mb-1">
+                                    <span className="text-gray-600">Budget</span>
+                                    <span className="font-medium">${parseFloat(project.budget).toLocaleString()}</span>
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Used: ${parseFloat(project.budgetUsed || 0).toLocaleString()}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Deadline */}
+                              {project.deadline && (
+                                <div>
+                                  <div className="text-sm text-gray-600 mb-1">Deadline</div>
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3 text-gray-500" />
+                                    <span className="text-sm font-medium">
+                                      {new Date(project.deadline).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  <div className={`text-xs ${
+                                    new Date(project.deadline) < new Date() ? 'text-red-600' : 'text-gray-500'
+                                  }`}>
+                                    {new Date(project.deadline) < new Date() ? 'Overdue' : `${Math.ceil((new Date(project.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left`}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                      
+                      {projectsData.length === 0 && (
+                        <div className="text-center py-8">
+                          <FolderOpen className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                          <p className="text-gray-500">No projects found</p>
+                          <Button className="mt-3" size="sm">
+                            <Plus className="w-4 h-4 mr-2" />
+                            Create First Project
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
             <TabsContent value="reports" className="p-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Report Management</h3>
-                
-                <div className="grid gap-4">
-                  {reportsData.map((report: any) => (
-                    <Card key={report.id} className="border border-gray-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium">{report.title}</h4>
-                          <Badge variant={
-                            report.status === 'approved' ? 'default' : 
-                            report.status === 'submitted' ? 'secondary' : 
-                            'outline'
-                          }>
-                            {report.status}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          Submitted: {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Report Management</h3>
+                  {pendingReports > 0 && (
+                    <Badge variant="destructive" className="text-sm">
+                      {pendingReports} Pending Review
+                    </Badge>
+                  )}
                 </div>
+                
+                {/* Pending Reports Section */}
+                {pendingReports > 0 && (
+                  <Card className="border-red-200 bg-red-50">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-red-700 flex items-center gap-2">
+                        <AlertTriangle className="w-5 h-5" />
+                        Reports Requiring Immediate Review
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {reportsData
+                          .filter((report: any) => report.status === 'submitted')
+                          .slice(0, 3)
+                          .map((report: any) => (
+                            <div key={report.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-red-200">
+                              <div>
+                                <h4 className="font-medium text-gray-900">{report.title}</h4>
+                                <p className="text-sm text-gray-600">
+                                  Submitted: {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <Button size="sm" variant="outline" className="text-red-600 border-red-200">
+                                Review
+                              </Button>
+                            </div>
+                          ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {/* All Reports - Scrollable */}
+                <Card className="bg-white border-0 shadow-sm">
+                  <CardHeader>
+                    <CardTitle>All Reports ({reportsData.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                      {reportsData.slice(0, 20).map((report: any, index) => (
+                        <div key={report.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm text-gray-500 w-8">#{index + 1}</span>
+                              <div>
+                                <h4 className="font-medium text-gray-900">{report.title}</h4>
+                                <p className="text-sm text-gray-600">
+                                  {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Badge variant={
+                              report.status === 'approved' ? 'default' : 
+                              report.status === 'submitted' ? 'secondary' : 
+                              report.status === 'rejected' ? 'destructive' :
+                              'outline'
+                            }>
+                              {report.status}
+                            </Badge>
+                            <Button size="sm" variant="ghost">
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {reportsData.length > 20 && (
+                        <div className="text-center py-3">
+                          <p className="text-sm text-gray-500">
+                            Showing 20 of {reportsData.length} reports
+                          </p>
+                          <Button variant="outline" size="sm" className="mt-2">
+                            Load More
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
