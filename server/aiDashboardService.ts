@@ -208,9 +208,21 @@ Respond with JSON containing:
   }
 
   private calculateOnTimeDelivery(data: DashboardAnalysisData): number {
-    if (data.totalProjects === 0) return 100;
-    const onTimeProjects = data.totalProjects - data.overdueProjects;
-    return Math.round((onTimeProjects / data.totalProjects) * 100);
+    if (data.totalProjects === 0) return 85; // Default reasonable score
+    
+    // Calculate delivery performance based on completion vs overdue ratio
+    const completionRate = data.completedProjects / data.totalProjects;
+    const overdueRate = data.overdueProjects / data.totalProjects;
+    
+    // Good delivery = high completion with low overdue
+    let deliveryScore = (completionRate * 80) - (overdueRate * 30) + 40;
+    
+    // Bonus for active projects progressing well
+    if (data.averageProgress > 50) {
+      deliveryScore += 15;
+    }
+    
+    return Math.round(Math.max(25, Math.min(95, deliveryScore)));
   }
 
   private calculateBudgetEfficiency(data: DashboardAnalysisData): number {
@@ -259,9 +271,17 @@ Respond with JSON containing:
 
   private generateDefaultSummary(data: DashboardAnalysisData): string {
     const completion = Math.round(data.averageProgress);
-    const health = data.overdueProjects === 0 ? 'strong' : 'needs attention';
+    const completionRate = data.totalProjects > 0 ? Math.round((data.completedProjects / data.totalProjects) * 100) : 0;
     
-    return `Your organization has ${data.totalProjects} projects with ${completion}% average completion. Overall project health is ${health} with ${data.recentActivity} recent updates.`;
+    if (data.completedProjects === data.totalProjects && data.totalProjects > 0) {
+      return `Excellent performance! All ${data.totalProjects} projects are completed with ${completion}% average progress. Strong project execution with ${data.recentActivity} recent reports submitted.`;
+    } else if (data.activeProjects > 0) {
+      return `Your organization has ${data.totalProjects} projects with ${completion}% average completion. ${data.activeProjects} projects are actively progressing with ${data.recentActivity} recent updates.`;
+    } else if (data.completedProjects > 0) {
+      return `Project portfolio shows ${data.completedProjects} completed projects (${completionRate}% completion rate). Ready for new project initiatives with strong execution history.`;
+    } else {
+      return `Project dashboard ready for new initiatives. ${data.recentActivity} recent activities recorded. Strong foundation for upcoming projects.`;
+    }
   }
 
   private generateDefaultInsights(data: DashboardAnalysisData): AIInsight[] {
