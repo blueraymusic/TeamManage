@@ -365,12 +365,49 @@ export default function AdminDashboardSimple() {
                   </div>
                   
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Progress So Far</h4>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Accomplishments & Numbers</h4>
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="bg-gradient-to-r from-green-50 to-green-100 p-3 rounded-lg border border-green-200">
+                        <div className="text-lg font-bold text-green-800">
+                          {completedProjects.length}
+                        </div>
+                        <div className="text-xs text-green-700">Projects Completed</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-3 rounded-lg border border-blue-200">
+                        <div className="text-lg font-bold text-blue-800">
+                          {Math.round(projectsData.reduce((acc: number, p: any) => acc + p.progress, 0) / projectsData.length || 0)}%
+                        </div>
+                        <div className="text-xs text-blue-700">Average Progress</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-3 rounded-lg border border-purple-200">
+                        <div className="text-lg font-bold text-purple-800">
+                          {reportsData.filter((r: any) => r.status === 'approved').length}
+                        </div>
+                        <div className="text-xs text-purple-700">Reports Approved</div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg border border-orange-200">
+                        <div className="text-lg font-bold text-orange-800">
+                          ${projectsData.reduce((acc: number, p: any) => acc + (parseFloat(p.budgetUsed) || 0), 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-orange-700">Total Budget Spent</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-lg border border-teal-200">
+                        <div className="text-lg font-bold text-teal-800">
+                          {reportsData.length}
+                        </div>
+                        <div className="text-xs text-teal-700">Total Reports Generated</div>
+                      </div>
+                    </div>
+                    
                     <div className="space-y-2">
+                      <h5 className="text-xs font-semibold text-gray-700 mb-1">Project Status Breakdown:</h5>
                       {projectsData.map((project: any, index: number) => (
-                        <div key={index} className="bg-gray-50 border rounded-lg p-3">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="font-medium text-gray-800">{project.name}</span>
+                        <div key={index} className="bg-white border rounded-lg p-2 shadow-sm">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-medium text-gray-800 text-sm">{project.name}</span>
                             <span className={`text-xs px-2 py-1 rounded-full ${
                               project.status === 'completed' ? 'bg-green-100 text-green-800' :
                               project.status === 'active' ? 'bg-blue-100 text-blue-800' :
@@ -380,20 +417,10 @@ export default function AdminDashboardSimple() {
                               {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                            <div 
-                              className={`h-2 rounded-full ${
-                                project.progress >= 100 ? 'bg-green-500' :
-                                project.progress >= 75 ? 'bg-blue-500' :
-                                project.progress >= 50 ? 'bg-yellow-500' :
-                                'bg-red-500'
-                              }`}
-                              style={{ width: `${Math.min(project.progress, 100)}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-xs text-gray-600">
-                            <span>{project.progress}% Complete</span>
-                            <span>Budget Used: ${project.budgetUsed || 0} / ${project.budget || 0}</span>
+                          <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+                            <span><strong>{project.progress}%</strong> Complete</span>
+                            <span><strong>${project.budgetUsed || 0}</strong> Spent</span>
+                            <span><strong>${(parseFloat(project.budget) - parseFloat(project.budgetUsed || '0')).toLocaleString()}</strong> Remaining</span>
                           </div>
                         </div>
                       ))}
