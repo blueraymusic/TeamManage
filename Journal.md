@@ -66,9 +66,3 @@ Journal
 - June 29, 2025. Fixed officer reports section with enhanced edit and view functionality. Added proper View button for all reports, Edit button for draft and rejected reports, comprehensive view modal with report content, attachments display with download functionality, and review notes display. Enhanced edit modal with proper ReportForm integration for seamless report editing workflow.
 - June 29, 2025. Implemented comprehensive Intuitive Onboarding Walkthrough feature for both admin and officer roles. Created interactive guided tour with step-by-step navigation highlighting key dashboard features including overview metrics, project management, report submission, analytics insights, and team collaboration tools. Added Tour button to dashboard headers with first-time user detection via localStorage. Enhanced user onboarding experience with role-specific walkthrough content and smooth modal transitions.
 ```
-
-## User Preferences
-```
-Preferred communication style: Simple, everyday language.
-Preferred styling: Professional appearance without emojis, use proper icons instead.
-```
