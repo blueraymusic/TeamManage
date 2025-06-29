@@ -387,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update project
+  // Update project (PUT)
   app.put("/api/projects/:id", requireAuth, async (req: any, res) => {
     try {
       if (req.session.userRole !== "admin") {
@@ -407,6 +407,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(project);
     } catch (error) {
       console.error("Update project error:", error);
+      res.status(500).json({ message: "Failed to update project" });
+    }
+  });
+
+  // Update project (PATCH) - for edit modal
+  app.patch("/api/projects/:id", requireAuth, async (req: any, res) => {
+    try {
+      if (req.session.userRole !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const projectId = parseInt(req.params.id);
+      
+      // Clean update data with proper type conversion
+      const updateData: any = {};
+      
+      if (req.body.name !== undefined) updateData.name = req.body.name;
+      if (req.body.description !== undefined) updateData.description = req.body.description;
+      if (req.body.status !== undefined) updateData.status = req.body.status;
+      if (req.body.progress !== undefined) updateData.progress = parseInt(req.body.progress);
+      if (req.body.budget !== undefined) updateData.budget = String(req.body.budget);
+      if (req.body.budgetUsed !== undefined) updateData.budgetUsed = String(req.body.budgetUsed);
+      if (req.body.deadline !== undefined) {
+        updateData.deadline = req.body.deadline ? new Date(req.body.deadline) : null;
+      }
+
+      console.log("PATCH project update data:", updateData);
+      const project = await storage.updateProject(projectId, updateData);
+      console.log("Updated project:", project);
+      res.json(project);
+    } catch (error) {
+      console.error("PATCH project error:", error);
       res.status(500).json({ message: "Failed to update project" });
     }
   });
