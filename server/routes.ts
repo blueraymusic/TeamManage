@@ -1066,6 +1066,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const reports = await storage.getReportsByOrganization(req.session.organizationId);
       const users = await storage.getUsersByOrganization(req.session.organizationId);
       
+      // Get detailed project information for comprehensive analysis
+      const projectDetails = projects.map(p => ({
+        name: p.name,
+        description: p.description,
+        goals: p.goals,
+        status: p.status,
+        progress: p.progress,
+        budget: p.budget,
+        budgetUsed: p.budgetUsed
+      }));
+      
       // Prepare comprehensive analysis data
       const analysisData = {
         totalProjects: projects.length,
@@ -1089,7 +1100,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return reportDate > weekAgo;
         }).length,
         teamMembers: users.length,
-        projectDeadlines: projects.map(p => p.deadline).filter(Boolean)
+        projectDeadlines: projects.map(p => p.deadline).filter(Boolean),
+        projectDetails: projectDetails
       };
 
       const insights = await aiDashboardService.generateDashboardInsights(analysisData);

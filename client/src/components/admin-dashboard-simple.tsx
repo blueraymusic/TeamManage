@@ -325,7 +325,45 @@ export default function AdminDashboardSimple() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">{aiInsights.executiveSummary}</p>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Executive Summary</h4>
+                    <p className="text-gray-700 leading-relaxed text-sm">{aiInsights.executiveSummary}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Project Objectives</h4>
+                    <div className="text-sm text-gray-700 space-y-1">
+                      {projectsData.map((project: any, index: number) => (
+                        <div key={index} className="bg-gray-50 p-2 rounded border-l-2 border-blue-400">
+                          <span className="font-medium">{project.name}:</span> {project.goals || project.description || 'Objectives to be defined'}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Key Inputs & Activities</h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="bg-blue-50 p-2 rounded">
+                        <span className="font-medium text-blue-800">Budget Allocated:</span>
+                        <p className="text-blue-700">${projectsData.reduce((acc: number, p: any) => acc + parseFloat(p.budget || '0'), 0).toLocaleString()}</p>
+                      </div>
+                      <div className="bg-green-50 p-2 rounded">
+                        <span className="font-medium text-green-800">Team Members:</span>
+                        <p className="text-green-700">{teamData.length} active members</p>
+                      </div>
+                      <div className="bg-purple-50 p-2 rounded">
+                        <span className="font-medium text-purple-800">Reports Generated:</span>
+                        <p className="text-purple-700">{reportsData.length} total reports</p>
+                      </div>
+                      <div className="bg-orange-50 p-2 rounded">
+                        <span className="font-medium text-orange-800">Active Projects:</span>
+                        <p className="text-orange-700">{activeProjects.length} in progress</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>

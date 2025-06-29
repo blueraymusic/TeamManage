@@ -17,6 +17,7 @@ export interface DashboardAnalysisData {
   recentActivity: number;
   teamMembers?: number;
   projectDeadlines?: any[];
+  projectDetails?: any[];
 }
 
 export interface AIInsight {
@@ -99,13 +100,25 @@ PROJECT DATA:
 - Recent Activity: ${data.recentActivity} reports this week
 - Team Members: ${data.teamMembers || 'Unknown'}
 
+PROJECT DETAILS:
+${data.projectDetails?.map(p => `
+- ${p.name}: ${p.description || 'No description'}
+  Goals: ${p.goals || 'Not specified'}
+  Status: ${p.status} (${p.progress}% complete)
+  Budget: $${p.budget || 0} (Used: $${p.budgetUsed || 0})
+`).join('') || 'No project details available'}
+
 ANALYSIS REQUIREMENTS:
 1. Assess overall project health
 2. Identify completion trends
 3. Calculate risk factors
 4. Evaluate team productivity
 5. Provide 3-5 actionable insights
-6. Generate executive summary
+6. Generate comprehensive executive summary including:
+   - Project objectives overview
+   - Key inputs and activities
+   - Progress highlights
+   - Resource utilization
 7. Give strategic recommendations
 
 Respond with JSON containing:
