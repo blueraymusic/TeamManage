@@ -17,8 +17,13 @@ import {
   Brain,
   Zap,
   AlertTriangle,
-  MessageSquare
+  MessageSquare,
+  PieChart,
+  Activity,
+  DollarSign,
+  Calendar
 } from "lucide-react";
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, Area, AreaChart } from "recharts";
 import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import AdelLogo from "./adel-logo";
@@ -77,7 +82,7 @@ export default function AdminDashboardSimple() {
     setLoadingAI(true);
     try {
       const response = await apiRequest('POST', '/api/ai/dashboard-insights', {});
-      setAiInsights(response as AIProjectSummary);
+      setAiInsights(response as unknown as AIProjectSummary);
     } catch (error) {
       console.error('AI insights error:', error);
       toast({
@@ -96,9 +101,43 @@ export default function AdminDashboardSimple() {
   const teamData = teamMembers as any[] || [];
   const activeProjects = projectsData.filter(p => p.status === 'active');
   const completedProjects = projectsData.filter(p => p.status === 'completed');
+  const onHoldProjects = projectsData.filter(p => p.status === 'on-hold');
+  const cancelledProjects = projectsData.filter(p => p.status === 'cancelled');
   const pendingReports = reportsData.filter(r => r.status === 'submitted').length;
+  const approvedReports = reportsData.filter(r => r.status === 'approved').length;
+  const draftReports = reportsData.filter(r => r.status === 'draft').length;
   const avgProgress = projectsData.length > 0 ? 
     Math.round(projectsData.reduce((acc, p) => acc + (p.progress || 0), 0) / projectsData.length) : 0;
+
+  // Chart data
+  const projectStatusData = [
+    { name: 'Active', value: activeProjects.length, color: '#3b82f6' },
+    { name: 'Completed', value: completedProjects.length, color: '#10b981' },
+    { name: 'On Hold', value: onHoldProjects.length, color: '#f59e0b' },
+    { name: 'Cancelled', value: cancelledProjects.length, color: '#ef4444' }
+  ];
+
+  const reportStatusData = [
+    { name: 'Approved', value: approvedReports, color: '#10b981' },
+    { name: 'Pending', value: pendingReports, color: '#f59e0b' },
+    { name: 'Draft', value: draftReports, color: '#6b7280' }
+  ];
+
+  const progressData = projectsData.map((project, index) => ({
+    name: `P${index + 1}`,
+    progress: project.progress || 0,
+    budget: project.budget ? parseFloat(project.budget) : 0,
+    spent: project.budgetUsed ? parseFloat(project.budgetUsed) : 0
+  }));
+
+  const monthlyData = [
+    { month: 'Jan', projects: 2, reports: 5, budget: 15000 },
+    { month: 'Feb', projects: 3, reports: 8, budget: 22000 },
+    { month: 'Mar', projects: 4, reports: 12, budget: 18000 },
+    { month: 'Apr', projects: 3, reports: 10, budget: 25000 },
+    { month: 'May', projects: 5, reports: 15, budget: 30000 },
+    { month: 'Jun', projects: activeProjects.length, reports: reportsData.length, budget: 28000 }
+  ];
 
   const getHealthColor = (health: string) => {
     switch (health) {
@@ -297,7 +336,7 @@ export default function AdminDashboardSimple() {
         <Card className="bg-white border-0 shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="border-b border-gray-200 px-4">
-              <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
+              <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Overview
                 </TabsTrigger>
@@ -307,6 +346,9 @@ export default function AdminDashboardSimple() {
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Analytics
+                </TabsTrigger>
                 <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Team
                 </TabsTrigger>
@@ -314,59 +356,267 @@ export default function AdminDashboardSimple() {
             </div>
 
             <TabsContent value="overview" className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Project Overview */}
-                <Card className="bg-gray-50 border-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                
+                {/* Project Status Distribution */}
+                <Card className="bg-white border-0 shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-green-600" />
-                      Project Overview
+                      <PieChart className="w-5 h-5 text-blue-600" />
+                      Project Status
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Average Progress</span>
-                        <span className="font-medium">{avgProgress}%</span>
-                      </div>
-                      <Progress value={avgProgress} className="h-3" />
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsPieChart>
+                          <Pie
+                            data={projectStatusData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={40}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {projectStatusData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                        </RechartsPieChart>
+                      </ResponsiveContainer>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div>
-                        <p className="text-2xl font-bold text-green-600">{completedProjects.length}</p>
-                        <p className="text-sm text-gray-600">Completed</p>
-                      </div>
-                      <div>
-                        <p className="text-2xl font-bold text-blue-600">{activeProjects.length}</p>
-                        <p className="text-sm text-gray-600">Active</p>
-                      </div>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      {projectStatusData.map((item, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: item.color }}
+                          />
+                          <span className="text-xs text-gray-600">{item.name}: {item.value}</span>
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Team Status */}
-                <Card className="bg-gray-50 border-0">
+                {/* Monthly Trends */}
+                <Card className="bg-white border-0 shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-blue-600" />
-                      Team Status
+                      <Activity className="w-5 h-5 text-green-600" />
+                      Monthly Trends
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Total Members</span>
-                        <span className="font-medium">{teamData.length}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Pending Reports</span>
-                        <Badge variant="secondary">{pendingReports}</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Organization</span>
-                        <span className="text-sm text-gray-600">{(organization as any)?.name || 'ADEL'}</span>
-                      </div>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={monthlyData}>
+                          <defs>
+                            <linearGradient id="projectGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                            </linearGradient>
+                            <linearGradient id="reportGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis hide />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="projects" 
+                            stroke="#3b82f6" 
+                            fillOpacity={1} 
+                            fill="url(#projectGradient)" 
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="reports" 
+                            stroke="#10b981" 
+                            fillOpacity={1} 
+                            fill="url(#reportGradient)" 
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Budget Analysis */}
+                <Card className="bg-white border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-purple-600" />
+                      Budget Overview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={monthlyData}>
+                          <defs>
+                            <linearGradient id="budgetGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis hide />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                            formatter={(value) => [`$${value.toLocaleString()}`, 'Budget']}
+                          />
+                          <Bar 
+                            dataKey="budget" 
+                            fill="url(#budgetGradient)" 
+                            radius={[4, 4, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Project Progress */}
+                <Card className="bg-white border-0 shadow-lg xl:col-span-2">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-orange-600" />
+                      Project Progress Tracking
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={progressData}>
+                          <defs>
+                            <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#f59e0b" />
+                              <stop offset="50%" stopColor="#3b82f6" />
+                              <stop offset="100%" stopColor="#10b981" />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="name" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                            formatter={(value, name) => [
+                              name === 'progress' ? `${value}%` : `$${value.toLocaleString()}`, 
+                              name === 'progress' ? 'Progress' : name === 'budget' ? 'Budget' : 'Spent'
+                            ]}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="progress" 
+                            stroke="url(#progressGradient)" 
+                            strokeWidth={3}
+                            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Report Status */}
+                <Card className="bg-white border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-indigo-600" />
+                      Report Status
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsPieChart>
+                          <Pie
+                            data={reportStatusData}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            {reportStatusData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                        </RechartsPieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="space-y-2 mt-4">
+                      {reportStatusData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-sm text-gray-600">{item.name}</span>
+                          </div>
+                          <span className="font-medium">{item.value}</span>
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -433,6 +683,193 @@ export default function AdminDashboardSimple() {
                     </Card>
                   ))}
                 </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {/* Performance Metrics */}
+                <Card className="bg-white border-0 shadow-lg lg:col-span-2">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-blue-600" />
+                      Performance Dashboard
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                      <div className="text-center p-4 bg-blue-50 rounded-xl">
+                        <div className="text-2xl font-bold text-blue-600">{avgProgress}%</div>
+                        <div className="text-sm text-gray-600">Avg Progress</div>
+                      </div>
+                      <div className="text-center p-4 bg-green-50 rounded-xl">
+                        <div className="text-2xl font-bold text-green-600">{Math.round((completedProjects.length / Math.max(projectsData.length, 1)) * 100)}%</div>
+                        <div className="text-sm text-gray-600">Success Rate</div>
+                      </div>
+                      <div className="text-center p-4 bg-purple-50 rounded-xl">
+                        <div className="text-2xl font-bold text-purple-600">{teamData.length}</div>
+                        <div className="text-sm text-gray-600">Team Size</div>
+                      </div>
+                      <div className="text-center p-4 bg-orange-50 rounded-xl">
+                        <div className="text-2xl font-bold text-orange-600">{reportsData.length}</div>
+                        <div className="text-sm text-gray-600">Total Reports</div>
+                      </div>
+                    </div>
+                    
+                    <div className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={monthlyData}>
+                          <defs>
+                            <linearGradient id="combinedGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="projects" 
+                            stroke="#3b82f6" 
+                            fillOpacity={1} 
+                            fill="url(#combinedGradient)" 
+                            name="Projects"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="reports" 
+                            stroke="#10b981" 
+                            fillOpacity={0.6} 
+                            fill="#10b981" 
+                            name="Reports"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Budget Trends */}
+                <Card className="bg-white border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-green-600" />
+                      Budget Trends
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={monthlyData}>
+                          <defs>
+                            <linearGradient id="budgetTrendGradient" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#10b981" />
+                              <stop offset="100%" stopColor="#3b82f6" />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                            formatter={(value) => [`$${value.toLocaleString()}`, 'Budget']}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="budget" 
+                            stroke="url(#budgetTrendGradient)" 
+                            strokeWidth={3}
+                            dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Activity Timeline */}
+                <Card className="bg-white border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-purple-600" />
+                      Activity Timeline
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={monthlyData}>
+                          <defs>
+                            <linearGradient id="activityGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <YAxis 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 12, fill: '#6b7280' }}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                          <Bar 
+                            dataKey="reports" 
+                            fill="url(#activityGradient)" 
+                            radius={[4, 4, 0, 0]}
+                            name="Reports"
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
