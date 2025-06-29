@@ -363,6 +363,42 @@ export default function AdminDashboardSimple() {
                       </div>
                     </div>
                   </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Progress So Far</h4>
+                    <div className="space-y-2">
+                      {projectsData.map((project: any, index: number) => (
+                        <div key={index} className="bg-gray-50 border rounded-lg p-3">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-medium text-gray-800">{project.name}</span>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              project.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              project.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                              project.status === 'on-hold' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                            <div 
+                              className={`h-2 rounded-full ${
+                                project.progress >= 100 ? 'bg-green-500' :
+                                project.progress >= 75 ? 'bg-blue-500' :
+                                project.progress >= 50 ? 'bg-yellow-500' :
+                                'bg-red-500'
+                              }`}
+                              style={{ width: `${Math.min(project.progress, 100)}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-xs text-gray-600">
+                            <span>{project.progress}% Complete</span>
+                            <span>Budget Used: ${project.budgetUsed || 0} / ${project.budget || 0}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
