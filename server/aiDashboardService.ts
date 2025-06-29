@@ -67,7 +67,10 @@ export class AIDashboardService {
       });
 
       const analysis = JSON.parse(response.choices[0].message.content || '{}');
-      return this.validateAndFormatAnalysis(analysis, data);
+      console.log('Raw AI Analysis Response:', analysis);
+      const validatedAnalysis = this.validateAndFormatAnalysis(analysis, data);
+      console.log('Validated Analysis with keyMetrics:', validatedAnalysis.keyMetrics);
+      return validatedAnalysis;
       
     } catch (error) {
       console.error('AI Dashboard Analysis Error:', error);
