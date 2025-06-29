@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Projector, 
   Clock, 
@@ -19,7 +19,8 @@ import {
   Zap,
   AlertTriangle,
   MessageSquare,
-  Edit3
+  Edit3,
+  Lightbulb
 } from "lucide-react";
 import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +29,7 @@ import ChatInterface from "./chat-interface";
 import ReportForm from "./report-form-fixed";
 import { apiRequest } from "@/lib/queryClient";
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Tooltip } from 'recharts';
+import OnboardingWalkthrough from "./onboarding-walkthrough";
 
 interface AIInsight {
   type: 'success' | 'warning' | 'info' | 'error';
@@ -60,6 +62,7 @@ export default function OfficerDashboardRedesigned() {
   const [showReportForm, setShowReportForm] = useState(false);
   const [editingReport, setEditingReport] = useState<any>(null);
   const [viewingReport, setViewingReport] = useState<any>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const { data: projects } = useQuery({
     queryKey: ["/api/projects"],
@@ -72,6 +75,17 @@ export default function OfficerDashboardRedesigned() {
   const { data: unreadMessages } = useQuery({
     queryKey: ["/api/messages/unread"],
   });
+
+  // Check for first-time user onboarding
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('onboarding-completed');
+    if (!hasCompletedOnboarding && user) {
+      // Show onboarding after a short delay to let the dashboard load
+      setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+    }
+  }, [user]);
 
   // Generate AI insights
   const generateAIInsights = async () => {
@@ -140,6 +154,16 @@ export default function OfficerDashboardRedesigned() {
             </div>
             
             <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setShowOnboarding(true)}
+                variant="outline"
+                size="sm"
+                className="text-blue-600 border-blue-200 hover:bg-blue-50"
+              >
+                <Lightbulb className="w-4 h-4" />
+                Tour
+              </Button>
+              
               <Button
                 onClick={generateAIInsights}
                 disabled={loadingAI}
@@ -773,6 +797,16 @@ export default function OfficerDashboardRedesigned() {
             </div>
           </div>
         )}
+        
+        {/* Onboarding Walkthrough */}
+        <OnboardingWalkthrough
+          isOpen={showOnboarding}
+          onClose={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('onboarding-completed', 'true');
+          }}
+          userRole="officer"
+        />
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Users, 
   Projector, 
@@ -31,7 +31,8 @@ import {
   Brain,
   Zap,
   AlertTriangle,
-  MessageSquare
+  MessageSquare,
+  Lightbulb
 } from "lucide-react";
 import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +40,7 @@ import AdelLogo from "./adel-logo";
 import AdminChatInterface from "./admin-chat-interface";
 // Simple inline project modal
 import { apiRequest } from "@/lib/queryClient";
+import OnboardingWalkthrough from "./onboarding-walkthrough";
 
 interface AIInsight {
   type: 'success' | 'warning' | 'info' | 'error';
@@ -68,6 +70,7 @@ export default function AdminDashboardRedesigned() {
   const [activeTab, setActiveTab] = useState("overview");
   const [aiInsights, setAiInsights] = useState<AIProjectSummary | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const { data: projects, isLoading: projectsLoading, refetch } = useQuery({
     queryKey: ["/api/projects"],
@@ -92,6 +95,17 @@ export default function AdminDashboardRedesigned() {
   const { data: unreadMessages } = useQuery({
     queryKey: ["/api/messages/unread"],
   });
+
+  // Check for first-time user onboarding
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('onboarding-completed');
+    if (!hasCompletedOnboarding && user) {
+      // Show onboarding after a short delay to let the dashboard load
+      setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+    }
+  }, [user]);
 
   // Generate AI insights
   const generateAIInsights = async () => {
@@ -160,6 +174,16 @@ export default function AdminDashboardRedesigned() {
             </div>
             
             <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setShowOnboarding(true)}
+                variant="outline"
+                size="sm"
+                className="text-blue-600 border-blue-200 hover:bg-blue-50"
+              >
+                <Lightbulb className="w-4 h-4" />
+                Tour
+              </Button>
+              
               <Button
                 onClick={generateAIInsights}
                 disabled={loadingAI}
@@ -525,6 +549,16 @@ export default function AdminDashboardRedesigned() {
           </Tabs>
         </Card>
       </div>
+      
+      {/* Onboarding Walkthrough */}
+      <OnboardingWalkthrough
+        isOpen={showOnboarding}
+        onClose={() => {
+          setShowOnboarding(false);
+          localStorage.setItem('onboarding-completed', 'true');
+        }}
+        userRole="admin"
+      />
     </div>
   );
 }
