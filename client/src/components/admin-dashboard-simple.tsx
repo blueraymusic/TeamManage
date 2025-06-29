@@ -162,6 +162,10 @@ export default function AdminDashboardSimple() {
       
       const data = await response.json() as AIProjectSummary;
       console.log('AI Response received in frontend:', data);
+      console.log('Key metrics:', data.keyMetrics);
+      console.log('On-time delivery:', data.keyMetrics?.onTimeDelivery);
+      console.log('Budget efficiency:', data.keyMetrics?.budgetEfficiency);
+      console.log('Team engagement:', data.keyMetrics?.teamEngagement);
       setAiInsights(data);
     } catch (error) {
       console.error('AI insights error:', error);
