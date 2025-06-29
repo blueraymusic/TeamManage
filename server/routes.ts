@@ -1024,6 +1024,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Dashboard Insights
+  app.post("/api/ai/dashboard-insights", requireAuth, async (req: any, res) => {
+    try {
+      const { aiDashboardService } = await import("./aiDashboardService");
+      
+      // Get enhanced project data for AI analysis
+      const projects = await storage.getProjectsByOrganization(req.session.organizationId);
+      const reports = await storage.getReportsByOrganization(req.session.organizationId);
+      const users = await storage.getUsersByOrganization(req.session.organizationId);
+      
+      // Prepare comprehensive analysis data
+      const analysisData = {
+        totalProjects: projects.length,
+        activeProjects: projects.filter(p => p.status === 'active').length,
+        completedProjects: projects.filter(p => p.status === 'completed').length,
+        overdueProjects: projects.filter(p => {
+          if (!p.deadline) return false;
+          return new Date(p.deadline) < new Date() && p.status !== 'completed';
+        }).length,
+        averageProgress: projects.length > 0 ? 
+          projects.reduce((acc, p) => acc + (p.progress || 0), 0) / projects.length : 0,
+        totalBudget: projects.reduce((acc, p) => acc + parseFloat(p.budget || '0'), 0),
+        usedBudget: projects.reduce((acc, p) => acc + parseFloat(p.budgetUsed || '0'), 0),
+        pendingReports: reports.filter(r => r.status === 'submitted').length,
+        approvedReports: reports.filter(r => r.status === 'approved').length,
+        recentActivity: reports.filter(r => {
+          const reportDate = new Date(r.createdAt);
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          return reportDate > weekAgo;
+        }).length,
+        teamMembers: users.length,
+        projectDeadlines: projects.map(p => p.deadline).filter(Boolean)
+      };
+
+      const insights = await aiDashboardService.generateDashboardInsights(analysisData);
+      res.json(insights);
+      
+    } catch (error: any) {
+      console.error("AI Dashboard Insights Error:", error);
+      res.status(500).json({ message: "Failed to generate AI insights" });
+    }
+  });
+
   app.get("/api/messages/:userId", requireAuth, async (req: any, res) => {
     try {
       const { userId } = req.params;

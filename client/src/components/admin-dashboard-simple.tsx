@@ -6,9 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { 
-  Projector, 
-  Clock, 
-  Calendar, 
+  Users, 
+  FolderOpen, 
   FileText,
   BarChart3,
   LogOut,
@@ -18,14 +17,12 @@ import {
   Brain,
   Zap,
   AlertTriangle,
-  MessageSquare,
-  Edit3
+  MessageSquare
 } from "lucide-react";
 import { useLogout, useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import AdelLogo from "./adel-logo";
-import ChatInterface from "./chat-interface";
-import ReportForm from "./report-form-fixed";
+import AdminChatInterface from "./admin-chat-interface";
 import { apiRequest } from "@/lib/queryClient";
 
 interface AIInsight {
@@ -49,25 +46,28 @@ interface AIProjectSummary {
   recommendations: string[];
 }
 
-export default function OfficerDashboardRedesigned() {
+export default function AdminDashboardSimple() {
   const { user } = useAuth();
   const logout = useLogout();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [aiInsights, setAiInsights] = useState<AIProjectSummary | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
-  const [showReportForm, setShowReportForm] = useState(false);
 
   const { data: projects } = useQuery({
     queryKey: ["/api/projects"],
   });
 
-  const { data: reports, refetch: refetchReports } = useQuery({
+  const { data: reports } = useQuery({
     queryKey: ["/api/reports"],
   });
 
-  const { data: unreadMessages } = useQuery({
-    queryKey: ["/api/messages/unread"],
+  const { data: organization } = useQuery({
+    queryKey: ["/api/organization"],
+  });
+
+  const { data: teamMembers } = useQuery({
+    queryKey: ["/api/users/team"],
   });
 
   // Generate AI insights
@@ -77,7 +77,7 @@ export default function OfficerDashboardRedesigned() {
     setLoadingAI(true);
     try {
       const response = await apiRequest('POST', '/api/ai/dashboard-insights', {});
-      setAiInsights(response);
+      setAiInsights(response as AIProjectSummary);
     } catch (error) {
       console.error('AI insights error:', error);
       toast({
@@ -93,10 +93,10 @@ export default function OfficerDashboardRedesigned() {
   // Calculate key metrics
   const projectsData = projects as any[] || [];
   const reportsData = reports as any[] || [];
+  const teamData = teamMembers as any[] || [];
   const activeProjects = projectsData.filter(p => p.status === 'active');
   const completedProjects = projectsData.filter(p => p.status === 'completed');
-  const submittedReports = reportsData.filter(r => r.status === 'submitted').length;
-  const draftReports = reportsData.filter(r => r.status === 'draft').length;
+  const pendingReports = reportsData.filter(r => r.status === 'submitted').length;
   const avgProgress = projectsData.length > 0 ? 
     Math.round(projectsData.reduce((acc, p) => acc + (p.progress || 0), 0) / projectsData.length) : 0;
 
@@ -131,8 +131,8 @@ export default function OfficerDashboardRedesigned() {
                 <AdelLogo size="sm" className="filter brightness-0 invert" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Officer Dashboard</h1>
-                <p className="text-sm text-gray-600">Submit reports and track progress</p>
+                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-sm text-gray-600">Manage projects and team</p>
               </div>
             </div>
             
@@ -149,15 +149,6 @@ export default function OfficerDashboardRedesigned() {
                   <Brain className="w-4 h-4" />
                 )}
                 AI Insights
-              </Button>
-              
-              <Button 
-                onClick={() => setShowReportForm(true)}
-                size="sm"
-                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Report
               </Button>
               
               <Button
@@ -180,7 +171,7 @@ export default function OfficerDashboardRedesigned() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${getHealthColor(aiInsights.overallHealth)}`} />
-                  AI Project Intelligence
+                  AI Executive Summary
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -189,22 +180,22 @@ export default function OfficerDashboardRedesigned() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span>Progress Rate</span>
+                      <span>On-Time Delivery</span>
                       <span className="font-medium">{aiInsights.keyMetrics.onTimeDelivery}%</span>
                     </div>
                     <Progress value={aiInsights.keyMetrics.onTimeDelivery} className="h-2" />
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span>Task Completion</span>
-                      <span className="font-medium">{aiInsights.keyMetrics.teamEngagement}%</span>
+                      <span>Budget Efficiency</span>
+                      <span className="font-medium">{aiInsights.keyMetrics.budgetEfficiency}%</span>
                     </div>
-                    <Progress value={aiInsights.keyMetrics.teamEngagement} className="h-2" />
+                    <Progress value={aiInsights.keyMetrics.budgetEfficiency} className="h-2" />
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Performance Level</span>
+                  <span className="text-sm text-gray-600">Risk Level</span>
                   <Badge className={`${getRiskColor(aiInsights.keyMetrics.riskLevel)} border-0`}>
                     {aiInsights.keyMetrics.riskLevel.toUpperCase()}
                   </Badge>
@@ -212,12 +203,12 @@ export default function OfficerDashboardRedesigned() {
               </CardContent>
             </Card>
 
-            {/* Quick Actions & Alerts */}
+            {/* Priority Actions */}
             <Card className="bg-white border-0 shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-orange-500" />
-                  Action Items
+                  Priority Actions
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -249,7 +240,7 @@ export default function OfficerDashboardRedesigned() {
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <Projector className="w-5 h-5 text-white" />
+                  <FolderOpen className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{activeProjects.length}</p>
@@ -280,8 +271,8 @@ export default function OfficerDashboardRedesigned() {
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{submittedReports}</p>
-                  <p className="text-sm text-gray-600">Submitted</p>
+                  <p className="text-2xl font-bold text-gray-900">{pendingReports}</p>
+                  <p className="text-sm text-gray-600">Pending</p>
                 </div>
               </div>
             </CardContent>
@@ -291,11 +282,11 @@ export default function OfficerDashboardRedesigned() {
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-white" />
+                  <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{draftReports}</p>
-                  <p className="text-sm text-gray-600">Drafts</p>
+                  <p className="text-2xl font-bold text-gray-900">{teamData.length}</p>
+                  <p className="text-sm text-gray-600">Team</p>
                 </div>
               </div>
             </CardContent>
@@ -316,31 +307,26 @@ export default function OfficerDashboardRedesigned() {
                 <TabsTrigger value="reports" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                   Reports
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 relative">
-                  Messages
-                  {(unreadMessages as any)?.count > 0 && (
-                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
-                      {(unreadMessages as any).count}
-                    </Badge>
-                  )}
+                <TabsTrigger value="team" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
+                  Team
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value="overview" className="p-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Progress Overview */}
+                {/* Project Overview */}
                 <Card className="bg-gray-50 border-0">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-green-600" />
-                      My Progress
+                      Project Overview
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span>Overall Progress</span>
+                        <span>Average Progress</span>
                         <span className="font-medium">{avgProgress}%</span>
                       </div>
                       <Progress value={avgProgress} className="h-3" />
@@ -353,38 +339,34 @@ export default function OfficerDashboardRedesigned() {
                       </div>
                       <div>
                         <p className="text-2xl font-bold text-blue-600">{activeProjects.length}</p>
-                        <p className="text-sm text-gray-600">In Progress</p>
+                        <p className="text-sm text-gray-600">Active</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Recent Reports */}
+                {/* Team Status */}
                 <Card className="bg-gray-50 border-0">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <BarChart3 className="w-5 h-5 text-blue-600" />
-                      Recent Reports
+                      Team Status
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {reportsData.slice(0, 3).map((report: any, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg bg-white">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <FileText className="w-4 h-4 text-blue-600" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{report.title}</p>
-                            <p className="text-xs text-gray-600">
-                              {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <Badge variant={report.status === 'approved' ? 'default' : 'secondary'}>
-                            {report.status}
-                          </Badge>
-                        </div>
-                      ))}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Total Members</span>
+                        <span className="font-medium">{teamData.length}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Pending Reports</span>
+                        <Badge variant="secondary">{pendingReports}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Organization</span>
+                        <span className="text-sm text-gray-600">{(organization as any)?.name || 'ADEL'}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -393,7 +375,13 @@ export default function OfficerDashboardRedesigned() {
 
             <TabsContent value="projects" className="p-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">My Projects</h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">All Projects</h3>
+                  <Button size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Project
+                  </Button>
+                </div>
                 
                 <div className="grid gap-4">
                   {projectsData.map((project: any) => (
@@ -412,12 +400,6 @@ export default function OfficerDashboardRedesigned() {
                             <span>{project.progress || 0}%</span>
                           </div>
                           <Progress value={project.progress || 0} className="h-2" />
-                          {project.deadline && (
-                            <div className="flex items-center text-sm text-gray-600">
-                              <Calendar className="w-4 h-4 mr-1" />
-                              Due: {new Date(project.deadline).toLocaleDateString()}
-                            </div>
-                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -428,13 +410,7 @@ export default function OfficerDashboardRedesigned() {
 
             <TabsContent value="reports" className="p-6">
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold">My Reports</h3>
-                  <Button onClick={() => setShowReportForm(true)} size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Report
-                  </Button>
-                </div>
+                <h3 className="text-lg font-semibold">Report Management</h3>
                 
                 <div className="grid gap-4">
                   {reportsData.map((report: any) => (
@@ -442,24 +418,16 @@ export default function OfficerDashboardRedesigned() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium">{report.title}</h4>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={
-                              report.status === 'approved' ? 'default' : 
-                              report.status === 'submitted' ? 'secondary' : 
-                              'outline'
-                            }>
-                              {report.status}
-                            </Badge>
-                            {report.status === 'draft' && (
-                              <Button size="sm" variant="outline">
-                                <Edit3 className="w-3 h-3 mr-1" />
-                                Edit
-                              </Button>
-                            )}
-                          </div>
+                          <Badge variant={
+                            report.status === 'approved' ? 'default' : 
+                            report.status === 'submitted' ? 'secondary' : 
+                            'outline'
+                          }>
+                            {report.status}
+                          </Badge>
                         </div>
                         <p className="text-sm text-gray-600">
-                          {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
+                          Submitted: {new Date(report.submittedAt || report.createdAt).toLocaleDateString()}
                         </p>
                       </CardContent>
                     </Card>
@@ -468,36 +436,11 @@ export default function OfficerDashboardRedesigned() {
               </div>
             </TabsContent>
 
-            <TabsContent value="messages" className="p-6">
-              <ChatInterface />
+            <TabsContent value="team" className="p-6">
+              <AdminChatInterface />
             </TabsContent>
           </Tabs>
         </Card>
-
-        {/* Report Form Modal */}
-        {showReportForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold">Submit New Report</h2>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowReportForm(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-                <ReportForm 
-                  onSuccess={() => {
-                    setShowReportForm(false);
-                    refetchReports();
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
