@@ -72,7 +72,7 @@ export default function AdminDashboardSimple() {
   });
 
   const { data: teamMembers } = useQuery({
-    queryKey: ["/api/users/team"],
+    queryKey: ["/api/organization/members"],
   });
 
   // Generate AI insights
