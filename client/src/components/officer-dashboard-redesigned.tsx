@@ -27,6 +27,7 @@ import AdelLogo from "./adel-logo";
 import ChatInterface from "./chat-interface";
 import ReportForm from "./report-form-fixed";
 import { apiRequest } from "@/lib/queryClient";
+import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Tooltip } from 'recharts';
 
 interface AIInsight {
   type: 'success' | 'warning' | 'info' | 'error';
@@ -184,7 +185,170 @@ export default function OfficerDashboardRedesigned() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">{aiInsights.executiveSummary}</p>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Executive Summary</h4>
+                    <p className="text-gray-700 leading-relaxed text-sm">{aiInsights.executiveSummary}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Project Objectives</h4>
+                    <div className="text-sm text-gray-700 space-y-1">
+                      {projectsData.map((project: any, index: number) => (
+                        <div key={index} className="bg-gray-50 p-2 rounded border-l-2 border-blue-400">
+                          <span className="font-medium">{project.name}:</span> {project.goals || project.description || 'Objectives to be defined'}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Key Inputs & Activities</h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="bg-blue-50 p-2 rounded">
+                        <span className="font-medium text-blue-800">Budget Allocated:</span>
+                        <p className="text-blue-700">${projectsData.reduce((acc: number, p: any) => acc + parseFloat(p.budget || '0'), 0).toLocaleString()}</p>
+                      </div>
+                      <div className="bg-green-50 p-2 rounded">
+                        <span className="font-medium text-green-800">Team Members:</span>
+                        <p className="text-green-700">11 active members</p>
+                      </div>
+                      <div className="bg-purple-50 p-2 rounded">
+                        <span className="font-medium text-purple-800">Reports Generated:</span>
+                        <p className="text-purple-700">{reportsData.length} total reports</p>
+                      </div>
+                      <div className="bg-orange-50 p-2 rounded">
+                        <span className="font-medium text-orange-800">Active Projects:</span>
+                        <p className="text-orange-700">{activeProjects.length} in progress</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-800 mb-2">Accomplishments & Numbers</h4>
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="bg-gradient-to-r from-green-50 to-green-100 p-3 rounded-lg border border-green-200">
+                        <div className="text-lg font-bold text-green-800">
+                          {completedProjects.length}
+                        </div>
+                        <div className="text-xs text-green-700">Projects Completed</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-3 rounded-lg border border-blue-200">
+                        <div className="text-lg font-bold text-blue-800">
+                          {Math.round(projectsData.reduce((acc: number, p: any) => acc + p.progress, 0) / projectsData.length || 0)}%
+                        </div>
+                        <div className="text-xs text-blue-700">Average Progress</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-3 rounded-lg border border-purple-200">
+                        <div className="text-lg font-bold text-purple-800">
+                          {reportsData.filter((r: any) => r.status === 'approved').length}
+                        </div>
+                        <div className="text-xs text-purple-700">Reports Approved</div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg border border-orange-200">
+                        <div className="text-lg font-bold text-orange-800">
+                          ${projectsData.reduce((acc: number, p: any) => acc + (parseFloat(p.budgetUsed) || 0), 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-orange-700">Total Budget Spent</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-lg border border-teal-200">
+                        <div className="text-lg font-bold text-teal-800">
+                          {reportsData.length}
+                        </div>
+                        <div className="text-xs text-teal-700">Total Reports Generated</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-semibold text-gray-700 mb-1">Project Status Breakdown:</h5>
+                      {projectsData.map((project: any, index: number) => (
+                        <div key={index} className="bg-white border rounded-lg p-2 shadow-sm">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-medium text-gray-800 text-sm">{project.name}</span>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              project.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              project.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                              project.status === 'on-hold' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+                            <span><strong>{project.progress}%</strong> Complete</span>
+                            <span><strong>${project.budgetUsed || 0}</strong> Spent</span>
+                            <span><strong>${(parseFloat(project.budget) - parseFloat(project.budgetUsed || '0')).toLocaleString()}</strong> Remaining</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AI Metrics Pie Chart */}
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-4">Performance Metrics</h4>
+                    
+                    <div className="bg-white rounded-lg p-4 border">
+                      <div className="h-48">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsPieChart>
+                            <Pie
+                              data={[
+                                { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                                { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                                { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={30}
+                              outerRadius={70}
+                              paddingAngle={3}
+                              dataKey="value"
+                            >
+                              {[
+                                { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                                { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                                { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                              ].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: '#1f2937', 
+                                border: 'none', 
+                                borderRadius: '8px',
+                                color: 'white'
+                              }}
+                              formatter={(value: any) => [`${value}%`, '']}
+                            />
+                          </RechartsPieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="space-y-2 mt-2">
+                        {[
+                          { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                          { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                          { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2">
+                              <div 
+                                className="w-2 h-2 rounded-full" 
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <span className="text-gray-600">{item.name}</span>
+                            </div>
+                            <span className="font-medium">{item.value}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
