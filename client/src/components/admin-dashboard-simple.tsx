@@ -450,8 +450,15 @@ export default function AdminDashboardSimple() {
                             <Bar 
                               dataKey="value" 
                               radius={[0, 4, 4, 0]}
-                              fill={(entry: any) => entry.color}
-                            />
+                            >
+                              {[
+                                { metric: 'Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                                { metric: 'Budget', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                                { metric: 'Team', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                              ].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Bar>
                           </BarChart>
                         </ResponsiveContainer>
                       </div>

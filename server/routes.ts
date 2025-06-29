@@ -1081,6 +1081,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         usedBudget: projects.reduce((acc, p) => acc + parseFloat(p.budgetUsed || '0'), 0),
         pendingReports: reports.filter(r => r.status === 'submitted').length,
         approvedReports: reports.filter(r => r.status === 'approved').length,
+        rejectedReports: reports.filter(r => r.status === 'rejected').length,
         recentActivity: reports.filter(r => {
           const reportDate = new Date(r.createdAt);
           const weekAgo = new Date();

@@ -13,6 +13,7 @@ export interface DashboardAnalysisData {
   usedBudget: number;
   pendingReports: number;
   approvedReports: number;
+  rejectedReports: number;
   recentActivity: number;
   teamMembers?: number;
   projectDeadlines?: any[];
@@ -77,8 +78,9 @@ export class AIDashboardService {
   private buildAnalysisPrompt(data: DashboardAnalysisData): string {
     const budgetUtilization = data.totalBudget > 0 ? (data.usedBudget / data.totalBudget) * 100 : 0;
     const completionRate = data.totalProjects > 0 ? (data.completedProjects / data.totalProjects) * 100 : 0;
-    const approvalRate = (data.pendingReports + data.approvedReports) > 0 ? 
-      (data.approvedReports / (data.pendingReports + data.approvedReports)) * 100 : 0;
+    const totalReviewedReports = data.approvedReports + (data.rejectedReports || 0);
+    const approvalRate = totalReviewedReports > 0 ? 
+      (data.approvedReports / totalReviewedReports) * 100 : 0;
 
     return `Analyze this NGO project management data and provide insights in JSON format:
 
