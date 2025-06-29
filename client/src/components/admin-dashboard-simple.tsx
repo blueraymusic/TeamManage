@@ -351,7 +351,67 @@ export default function AdminDashboardSimple() {
                   </Badge>
                 </div>
 
-
+                {/* AI Metrics Pie Chart */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">Performance Metrics</h4>
+                  
+                  <div className="bg-white rounded-lg p-4 border">
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsPieChart>
+                          <Pie
+                            data={[
+                              { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                              { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                              { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={30}
+                            outerRadius={70}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            {[
+                              { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                              { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                              { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1f2937', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                            formatter={(value: any) => [`${value}%`, '']}
+                          />
+                        </RechartsPieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="space-y-2 mt-2">
+                      {[
+                        { name: 'On-Time Delivery', value: aiInsights?.keyMetrics?.onTimeDelivery || 0, color: '#3b82f6' },
+                        { name: 'Budget Efficiency', value: aiInsights?.keyMetrics?.budgetEfficiency || 0, color: '#10b981' },
+                        { name: 'Team Engagement', value: aiInsights?.keyMetrics?.teamEngagement || 0, color: '#8b5cf6' }
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-2 h-2 rounded-full" 
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-gray-600">{item.name}</span>
+                          </div>
+                          <span className="font-medium">{item.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
