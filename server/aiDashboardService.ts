@@ -208,65 +208,93 @@ Respond with JSON containing:
   }
 
   private calculateOnTimeDelivery(data: DashboardAnalysisData): number {
-    if (data.totalProjects === 0) return 85; // Default reasonable score
+    if (data.totalProjects === 0) return 82; // Default reasonable score
     
     // Calculate delivery performance based on completion vs overdue ratio
     const completionRate = data.completedProjects / data.totalProjects;
     const overdueRate = data.overdueProjects / data.totalProjects;
     
-    // Good delivery = high completion with low overdue
-    let deliveryScore = (completionRate * 80) - (overdueRate * 30) + 40;
+    // Base score starts at 50 for having projects
+    let deliveryScore = 50;
+    
+    // Add points for completion (up to 35 points)
+    deliveryScore += completionRate * 35;
+    
+    // Subtract points for overdue projects (up to 25 points)
+    deliveryScore -= overdueRate * 25;
     
     // Bonus for active projects progressing well
-    if (data.averageProgress > 50) {
+    if (data.averageProgress > 70) {
       deliveryScore += 15;
+    } else if (data.averageProgress > 50) {
+      deliveryScore += 10;
     }
     
-    return Math.round(Math.max(25, Math.min(95, deliveryScore)));
+    // Bonus for low overdue rate
+    if (overdueRate === 0) {
+      deliveryScore += 5;
+    }
+    
+    return Math.round(Math.max(35, Math.min(95, deliveryScore)));
   }
 
   private calculateBudgetEfficiency(data: DashboardAnalysisData): number {
-    if (data.totalBudget === 0 || data.usedBudget === 0) return 85; // Default reasonable score
+    if (data.totalBudget === 0) return 85; // Default reasonable score when no budget data
     
     const utilizationRate = data.usedBudget / data.totalBudget;
     const progressRate = data.averageProgress / 100;
     
+    // If no budget is used yet, rate based on progress
+    if (data.usedBudget === 0) {
+      return Math.round(Math.max(75, Math.min(90, 75 + (progressRate * 15))));
+    }
+    
     // Efficiency: progress achieved vs budget spent
     let efficiency = 0;
     if (utilizationRate > 0) {
-      efficiency = (progressRate / utilizationRate) * 80;
-      // Add bonus for optimal utilization (60-85%)
-      if (utilizationRate >= 0.6 && utilizationRate <= 0.85) {
-        efficiency += 15;
+      efficiency = (progressRate / utilizationRate) * 70 + 20; // Base score of 20
+      // Add bonus for optimal utilization (40-80%)
+      if (utilizationRate >= 0.4 && utilizationRate <= 0.8) {
+        efficiency += 10;
       }
     }
     
-    return Math.round(Math.max(25, Math.min(98, efficiency)));
+    return Math.round(Math.max(45, Math.min(95, efficiency)));
   }
 
   private calculateTeamEngagement(data: DashboardAnalysisData): number {
-    if (!data.teamMembers || data.teamMembers === 0) return 75; // Default reasonable score
+    if (!data.teamMembers || data.teamMembers === 0) return 78; // Default reasonable score
+    
+    // Base engagement score starts at 60
+    let engagement = 60;
     
     // Calculate based on activity per team member
     const reportsPerMember = data.recentActivity / data.teamMembers;
     const projectsPerMember = data.activeProjects / data.teamMembers;
     
-    // Base engagement score
-    let engagement = Math.min(100, (reportsPerMember * 15) + (projectsPerMember * 10) + 50);
+    // Add points for team activity (up to 25 points)
+    engagement += Math.min(25, (reportsPerMember * 8) + (projectsPerMember * 6));
     
-    // Bonus for good completion rate
+    // Bonus for good completion rate (up to 15 points)
     if (data.totalProjects > 0) {
       const completionRate = data.completedProjects / data.totalProjects;
-      engagement += completionRate * 20;
+      engagement += completionRate * 15;
     }
     
-    // Penalty for overdue projects
+    // Small penalty for overdue projects (up to 10 points)
     if (data.totalProjects > 0) {
       const overdueRate = data.overdueProjects / data.totalProjects;
-      engagement -= overdueRate * 15;
+      engagement -= overdueRate * 10;
     }
     
-    return Math.round(Math.max(35, Math.min(95, engagement)));
+    // Bonus for high average progress
+    if (data.averageProgress > 75) {
+      engagement += 8;
+    } else if (data.averageProgress > 50) {
+      engagement += 5;
+    }
+    
+    return Math.round(Math.max(45, Math.min(95, engagement)));
   }
 
   private generateDefaultSummary(data: DashboardAnalysisData): string {
@@ -287,6 +315,7 @@ Respond with JSON containing:
   private generateDefaultInsights(data: DashboardAnalysisData): AIInsight[] {
     const insights: AIInsight[] = [];
 
+    // Always generate meaningful insights to populate Priority Actions
     if (data.overdueProjects > 0) {
       insights.push({
         type: 'warning',
@@ -297,27 +326,76 @@ Respond with JSON containing:
       });
     }
 
+    if (data.pendingReports > 0) {
+      insights.push({
+        type: 'info',
+        title: 'Reports Pending Review',
+        description: `${data.pendingReports} report${data.pendingReports > 1 ? 's need' : ' needs'} admin approval`,
+        action: 'Review and approve pending reports',
+        priority: data.pendingReports > 3 ? 'high' : 'medium'
+      });
+    }
+
     if (data.averageProgress > 75) {
       insights.push({
         type: 'success',
         title: 'Strong Progress',
         description: `Projects are ${Math.round(data.averageProgress)}% complete on average`,
-        action: 'Maintain current momentum',
+        action: 'Maintain current momentum and celebrate team achievements',
+        priority: 'low'
+      });
+    } else if (data.averageProgress < 50) {
+      insights.push({
+        type: 'warning',
+        title: 'Progress Below Target',
+        description: `Average project progress is ${Math.round(data.averageProgress)}%`,
+        action: 'Assess resource needs and remove blockers',
+        priority: 'medium'
+      });
+    } else {
+      insights.push({
+        type: 'info',
+        title: 'Steady Progress',
+        description: `Projects are progressing at ${Math.round(data.averageProgress)}% completion`,
+        action: 'Continue monitoring and provide team support',
         priority: 'low'
       });
     }
 
-    if (data.pendingReports > 5) {
+    // Budget insight
+    if (data.totalBudget > 0) {
+      const budgetUsed = (data.usedBudget / data.totalBudget) * 100;
+      if (budgetUsed > 80) {
+        insights.push({
+          type: 'warning',
+          title: 'High Budget Utilization',
+          description: `${Math.round(budgetUsed)}% of total budget has been allocated`,
+          action: 'Monitor spending and adjust allocations if needed',
+          priority: 'medium'
+        });
+      } else if (budgetUsed < 30) {
+        insights.push({
+          type: 'info',
+          title: 'Budget Underutilization',
+          description: `Only ${Math.round(budgetUsed)}% of budget is being used`,
+          action: 'Consider accelerating project activities or reallocating funds',
+          priority: 'low'
+        });
+      }
+    }
+
+    // Ensure we always have at least 3 insights for Priority Actions
+    if (insights.length < 3) {
       insights.push({
         type: 'info',
-        title: 'Report Backlog',
-        description: `${data.pendingReports} reports await review`,
-        action: 'Prioritize report approvals',
-        priority: 'medium'
+        title: 'Project Overview',
+        description: `Managing ${data.totalProjects} project${data.totalProjects !== 1 ? 's' : ''} with ${data.activeProjects} currently active`,
+        action: 'Continue regular project monitoring and team coordination',
+        priority: 'low'
       });
     }
 
-    return insights;
+    return insights.slice(0, 5); // Limit to 5 insights max
   }
 
   private generateDefaultRecommendations(data: DashboardAnalysisData): string[] {
