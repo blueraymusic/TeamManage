@@ -25,6 +25,8 @@
   Real-time alerts for pending approvals, rejected reports, and system activity.
 
 ---
+<img width="1426" alt="Capture d’écran 2025-06-28 à 23 37 33" src="https://github.com/user-attachments/assets/351eb2c8-283d-4b0a-9b91-f54cacffe9bd" />
+
 
 ## 👥 Who It’s For
 
@@ -34,6 +36,8 @@
 - Field engineers and technical supervisors
 
 ---
+
+<img width="1439" alt="Capture d’écran 2025-06-28 à 23 37 12" src="https://github.com/user-attachments/assets/d9526430-1b31-40a1-82f7-df2a39c11db9" />
 
 ## 🛠️ Tech Stack
 
@@ -46,6 +50,9 @@
 ---
 
 ## 📦 Installation
+
+<img width="1422" alt="Capture d’écran 2025-06-28 à 23 36 58" src="https://github.com/user-attachments/assets/8fb50bae-bad0-46f2-a062-e36a80482a70" />
+
 
 ```bash
 # Clone the repository
