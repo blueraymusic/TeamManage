@@ -134,6 +134,30 @@ Respond with JSON containing:
   private validateAndFormatAnalysis(analysis: any, data: DashboardAnalysisData): ProjectSummary {
     const budgetUtilization = data.totalBudget > 0 ? Math.round((data.usedBudget / data.totalBudget) * 100) : 0;
     
+    // Debug logging to understand the AI response
+    console.log('AI Analysis received:', JSON.stringify(analysis, null, 2));
+    console.log('Data for fallback calculations:', {
+      totalProjects: data.totalProjects,
+      completedProjects: data.completedProjects,
+      overdueProjects: data.overdueProjects,
+      averageProgress: data.averageProgress,
+      totalBudget: data.totalBudget,
+      usedBudget: data.usedBudget,
+      teamMembers: data.teamMembers,
+      recentActivity: data.recentActivity
+    });
+    
+    // Force fallback calculations for debugging
+    const calculatedOnTime = this.calculateOnTimeDelivery(data);
+    const calculatedBudget = this.calculateBudgetEfficiency(data);
+    const calculatedTeam = this.calculateTeamEngagement(data);
+    
+    console.log('Calculated fallback values:', {
+      onTimeDelivery: calculatedOnTime,
+      budgetEfficiency: calculatedBudget,
+      teamEngagement: calculatedTeam
+    });
+    
     return {
       overallHealth: this.validateHealth(analysis.overallHealth),
       completionTrend: this.validateTrend(analysis.completionTrend),
@@ -143,9 +167,9 @@ Respond with JSON containing:
       teamProductivity: this.validateProductivity(analysis.teamProductivity),
       executiveSummary: analysis.executiveSummary || this.generateDefaultSummary(data),
       keyMetrics: {
-        onTimeDelivery: Math.min(100, Math.max(0, analysis.keyMetrics?.onTimeDelivery || this.calculateOnTimeDelivery(data))),
-        budgetEfficiency: Math.min(100, Math.max(0, analysis.keyMetrics?.budgetEfficiency || this.calculateBudgetEfficiency(data))),
-        teamEngagement: Math.min(100, Math.max(0, analysis.keyMetrics?.teamEngagement || this.calculateTeamEngagement(data))),
+        onTimeDelivery: calculatedOnTime,
+        budgetEfficiency: calculatedBudget,
+        teamEngagement: calculatedTeam,
         riskLevel: this.validateRiskLevel(analysis.keyMetrics?.riskLevel, data)
       },
       insights: this.validateInsights(analysis.insights, data),
