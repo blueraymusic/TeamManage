@@ -32,6 +32,14 @@ interface ProjectSummary {
   budgetUtilization: number;
   teamProductivity: 'high' | 'medium' | 'low';
   insights: AIInsight[];
+  executiveSummary: string;
+  keyMetrics: {
+    onTimeDelivery: number;
+    budgetEfficiency: number;
+    teamEngagement: number;
+    riskLevel: 'low' | 'medium' | 'high';
+  };
+  recommendations: string[];
 }
 
 export default function AIDashboardInsights({ userRole }: { userRole: 'admin' | 'officer' }) {

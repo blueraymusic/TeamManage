@@ -45,6 +45,11 @@ interface AIInsight {
 
 interface AIProjectSummary {
   overallHealth: 'excellent' | 'good' | 'warning' | 'critical';
+  completionTrend: 'improving' | 'stable' | 'declining';
+  riskProjects: number;
+  upcomingDeadlines: number;
+  budgetUtilization: number;
+  teamProductivity: 'high' | 'medium' | 'low';
   executiveSummary: string;
   keyMetrics: {
     onTimeDelivery: number;
@@ -145,8 +150,19 @@ export default function AdminDashboardSimple() {
     
     setLoadingAI(true);
     try {
-      const response = await apiRequest('POST', '/api/ai/dashboard-insights', {});
-      setAiInsights(response as unknown as AIProjectSummary);
+      const response = await fetch('/api/ai/dashboard-insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate AI insights');
+      }
+      
+      const data = await response.json() as AIProjectSummary;
+      console.log('AI Response received in frontend:', data);
+      setAiInsights(data);
     } catch (error) {
       console.error('AI insights error:', error);
       toast({
