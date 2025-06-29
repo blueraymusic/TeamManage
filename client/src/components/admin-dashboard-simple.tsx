@@ -65,6 +65,7 @@ export default function AdminDashboardSimple() {
   const [aiInsights, setAiInsights] = useState<AIProjectSummary | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
+  const [viewingProject, setViewingProject] = useState<any>(null);
   const [editForm, setEditForm] = useState({
     name: '',
     description: '',
@@ -763,6 +764,10 @@ export default function AdminDashboardSimple() {
                                 }>
                                   {project.status}
                                 </Badge>
+                                <Button size="sm" variant="outline"
+                                  onClick={() => setViewingProject(project)}>
+                                  View
+                                </Button>
                                 <Button size="sm" variant="ghost"
                                   onClick={() => openEditModal(project)}>
                                   Edit
@@ -1234,6 +1239,125 @@ export default function AdminDashboardSimple() {
                 disabled={editProjectMutation.isPending}
               >
                 {editProjectMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* View Project Modal */}
+        <Dialog open={!!viewingProject} onOpenChange={() => setViewingProject(null)}>
+          <DialogContent className="sm:max-w-[700px]">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">{viewingProject?.name}</DialogTitle>
+            </DialogHeader>
+            
+            {viewingProject && (
+              <div className="space-y-6 py-4">
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700">Status</Label>
+                    <div className="mt-1">
+                      <Badge variant={
+                        viewingProject.status === 'active' ? 'default' : 
+                        viewingProject.status === 'completed' ? 'secondary' :
+                        viewingProject.status === 'on-hold' ? 'outline' :
+                        'destructive'
+                      } className={
+                        viewingProject.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                        viewingProject.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        viewingProject.status === 'on-hold' ? 'bg-orange-100 text-orange-800' :
+                        'bg-red-100 text-red-800'
+                      }>
+                        {viewingProject.status}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700">Created Date</Label>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {viewingProject.createdAt ? new Date(viewingProject.createdAt).toLocaleDateString() : 'Unknown'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700">Description</Label>
+                  <p className="text-sm text-gray-600 mt-1 bg-gray-50 p-3 rounded-md">
+                    {viewingProject.description || 'No description provided'}
+                  </p>
+                </div>
+
+                {/* Progress */}
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700">Progress</Label>
+                  <div className="mt-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-600">Overall Progress</span>
+                      <span className="text-lg font-bold text-blue-600">{viewingProject.progress || 0}%</span>
+                    </div>
+                    <Progress value={viewingProject.progress || 0} className="h-3" />
+                  </div>
+                </div>
+
+                {/* Budget Information */}
+                {viewingProject.budget && (
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700">Total Budget</Label>
+                      <p className="text-lg font-bold text-green-600 mt-1">
+                        ${parseFloat(viewingProject.budget).toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700">Budget Used</Label>
+                      <p className="text-lg font-bold text-orange-600 mt-1">
+                        ${parseFloat(viewingProject.budgetUsed || 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Deadline */}
+                {viewingProject.deadline && (
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700">Deadline</Label>
+                    <div className="mt-1 flex items-center gap-4">
+                      <p className="text-sm text-gray-600">
+                        {new Date(viewingProject.deadline).toLocaleDateString()}
+                      </p>
+                      {viewingProject.daysLeft !== undefined && (
+                        <Badge variant={viewingProject.isOverdue ? 'destructive' : 'outline'}>
+                          {viewingProject.isOverdue ? 'Overdue' : `${viewingProject.daysLeft} days left`}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Goals */}
+                {viewingProject.goals && (
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700">Goals & Objectives</Label>
+                    <p className="text-sm text-gray-600 mt-1 bg-gray-50 p-3 rounded-md">
+                      {viewingProject.goals}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setViewingProject(null)}>
+                Close
+              </Button>
+              <Button onClick={() => {
+                setViewingProject(null);
+                openEditModal(viewingProject);
+              }}>
+                Edit Project
               </Button>
             </DialogFooter>
           </DialogContent>
