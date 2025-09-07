@@ -15,6 +15,7 @@ import { insertUserSchema, insertProjectSchema, insertReportSchema, insertMessag
 import { deadlineTracker } from "./deadlineTracker";
 import { emailService } from "./emailNotifications";
 import { aiReportReviewer } from "./aiReportReviewer";
+import MemoryStore from "memorystore";
 
 // Extend session types
 declare module "express-session" {
@@ -38,11 +39,17 @@ const upload = multer({
   },
 });
 
+// Create memory store for sessions
+const MemStore = MemoryStore(session);
+
 // Session configuration
 const sessionConfig = {
-  secret: process.env.SESSION_SECRET || "your-secret-key",
+  secret: process.env.SESSION_SECRET || "your-secret-key-replit-adel-2025",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  store: new MemStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
   cookie: {
     secure: false,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -58,7 +65,16 @@ function generateOrgCode(): string {
 
 // Authentication middleware
 function requireAuth(req: any, res: any, next: any) {
+  console.log("RequireAuth - session ID:", req.session.id);
+  console.log("RequireAuth - session data:", {
+    userId: req.session.userId,
+    userRole: req.session.userRole,
+    organizationId: req.session.organizationId
+  });
+  console.log("RequireAuth - cookies:", req.headers.cookie);
+  
   if (!req.session.userId) {
+    console.log("RequireAuth - No userId in session, denying access");
     return res.status(401).json({ message: "Authentication required" });
   }
   next();
@@ -116,19 +132,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         console.log("Session set:", { userId: req.session.userId, userRole: req.session.userRole });
 
-        res.json({
-          user: {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-          },
-          organization: {
-            id: organization.id,
-            name: organization.name,
-            code: organization.code,
-          },
+        // Ensure session is saved before responding
+        req.session.save((err: any) => {
+          if (err) {
+            console.error("Session save error:", err);
+            return res.status(500).json({ message: "Registration failed - session error" });
+          }
+          
+          res.json({
+            user: {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+            },
+            organization: {
+              id: organization.id,
+              name: organization.name,
+              code: organization.code,
+            },
+          });
         });
       } else if (type === "officer") {
         // Officer registration
@@ -161,19 +185,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.session.userRole = user.role;
         req.session.organizationId = user.organizationId;
 
-        res.json({
-          user: {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-          },
-          organization: {
-            id: organization.id,
-            name: organization.name,
-            code: organization.code,
-          },
+        // Ensure session is saved before responding
+        req.session.save((err: any) => {
+          if (err) {
+            console.error("Session save error:", err);
+            return res.status(500).json({ message: "Registration failed - session error" });
+          }
+          
+          res.json({
+            user: {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+            },
+            organization: {
+              id: organization.id,
+              name: organization.name,
+              code: organization.code,
+            },
+          });
         });
       } else {
         return res.status(400).json({ message: "Invalid registration type" });
@@ -207,16 +239,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userRole = user.role;
       req.session.organizationId = user.organizationId;
 
-      const organization = await storage.getOrganizationByCode("");
-      
-      res.json({
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          role: user.role,
-        },
+      console.log("Session data set:", { userId: req.session.userId, userRole: req.session.userRole, organizationId: req.session.organizationId });
+
+      // Ensure session is saved before responding
+      req.session.save((err: any) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.status(500).json({ message: "Login failed - session error" });
+        }
+        
+        console.log("Session saved successfully");
+        res.json({
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+          },
+        });
       });
     } catch (error) {
       console.error("Login error:", error);
