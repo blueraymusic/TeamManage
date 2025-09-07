@@ -158,13 +158,17 @@ export class AIReportReviewer {
       
       return validatedAnalysis;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      const errorName = error instanceof Error ? error.name : 'Unknown';
+      
       console.error('AI Report Analysis Error Details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
+        message: errorMessage,
+        stack: errorStack,
+        name: errorName,
         apiKeyExists: !!process.env.OPENAI_API_KEY
       });
-      throw new Error(`Failed to analyze report: ${error.message}`);
+      throw new Error(`Failed to analyze report: ${errorMessage}`);
     }
   }
 
