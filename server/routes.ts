@@ -45,7 +45,7 @@ const MemStore = MemoryStore(session);
 // Session configuration
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key-replit-adel-2025",
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   store: new MemStore({
     checkPeriod: 86400000 // prune expired entries every 24h
@@ -53,9 +53,11 @@ const sessionConfig = {
   cookie: {
     secure: false,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    httpOnly: false, // Allow frontend access to cookie for debugging
+    httpOnly: false,
     sameSite: 'lax' as const,
+    path: '/',
   },
+  name: 'connect.sid'
 };
 
 // Generate unique organization code
@@ -90,6 +92,19 @@ function requireAdmin(req: any, res: any, next: any) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.use(session(sessionConfig));
+
+  // Debug middleware to check session
+  app.use((req: any, res, next) => {
+    if (req.url.startsWith('/api/')) {
+      console.log(`Session debug for ${req.method} ${req.url}:`, {
+        sessionId: req.session?.id,
+        userId: req.session?.userId,
+        hasSession: !!req.session,
+        cookies: req.headers.cookie
+      });
+    }
+    next();
+  });
 
   // Auth routes
   app.post("/api/auth/register", async (req, res) => {
@@ -240,6 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.organizationId = user.organizationId;
 
       console.log("Session data set:", { userId: req.session.userId, userRole: req.session.userRole, organizationId: req.session.organizationId });
+      console.log("Session ID before save:", req.session.id);
 
       // Ensure session is saved before responding
       req.session.save((err: any) => {
@@ -248,7 +264,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ message: "Login failed - session error" });
         }
         
-        console.log("Session saved successfully");
+        console.log("Session saved successfully, ID:", req.session.id);
         console.log("Response cookies being set:", res.getHeaders()['set-cookie']);
         res.json({
           user: {
