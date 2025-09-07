@@ -22,8 +22,23 @@ interface AuthResponse {
 export function useAuth() {
   const { data, isLoading, error } = useQuery<{ user: User } | null>({
     queryKey: ["/api/auth/me"],
+    queryFn: async () => {
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      if (res.status === 401) {
+        return null; // Not authenticated
+      }
+
+      if (!res.ok) {
+        throw new Error(`${res.status}: ${res.statusText}`);
+      }
+
+      return await res.json();
+    },
     retry: false,
-    staleTime: 5000, // Cache for 5 seconds to prevent excessive requests
+    staleTime: 5000,
     refetchOnWindowFocus: true,
   });
 

@@ -53,7 +53,7 @@ const sessionConfig = {
   cookie: {
     secure: false,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    httpOnly: true,
+    httpOnly: false, // Allow frontend access to cookie for debugging
     sameSite: 'lax' as const,
   },
 };
@@ -249,6 +249,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         console.log("Session saved successfully");
+        console.log("Response cookies being set:", res.getHeaders()['set-cookie']);
         res.json({
           user: {
             id: user.id,
