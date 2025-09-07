@@ -14,11 +14,13 @@ import { useEffect } from "react";
 import { initializeLanguage } from "@/lib/i18n";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     initializeLanguage();
   }, []);
+
+  console.log("Router - isAuthenticated:", isAuthenticated, "isLoading:", isLoading, "user:", user);
 
   if (isLoading) {
     return (
@@ -28,9 +30,18 @@ function Router() {
     );
   }
 
+  // If we have a user object in localStorage but auth query failed, try to use that
+  const storedUser = localStorage.getItem('adel_user');
+  const localUser = storedUser ? JSON.parse(storedUser) : null;
+  
+  const userToUse = user || localUser;
+  const shouldShowDashboard = !!userToUse;
+
+  console.log("Router - shouldShowDashboard:", shouldShowDashboard, "userToUse:", userToUse);
+
   return (
     <Switch>
-      {!isAuthenticated ? (
+      {!shouldShowDashboard ? (
         <>
           <Route path="/" component={Landing} />
           <Route path="/owner-bookings" component={OwnerBookings} />

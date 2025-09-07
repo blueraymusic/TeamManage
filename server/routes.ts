@@ -263,6 +263,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log("Session saved successfully, ID:", req.session.id);
         console.log("Session store keys:", Object.keys(req.sessionStore.sessions || {}));
+        
+        // Force cookie to be set
+        res.cookie('connect.sid', req.session.id, {
+          maxAge: 24 * 60 * 60 * 1000,
+          httpOnly: false,
+          secure: false,
+          sameSite: 'lax',
+          path: '/'
+        });
+        
         console.log("Response cookies being set:", res.getHeaders()['set-cookie']);
         res.json({
           user: {

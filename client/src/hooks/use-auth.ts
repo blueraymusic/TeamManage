@@ -64,7 +64,11 @@ export function useLogin() {
       const response = await apiRequest("POST", "/api/auth/login", credentials);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Store user data locally as backup
+      if (data.user) {
+        localStorage.setItem('adel_user', JSON.stringify(data.user));
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
     },
   });
