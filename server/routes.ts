@@ -42,14 +42,11 @@ const upload = multer({
 // Create memory store for sessions
 const MemStore = MemoryStore(session);
 
-// Session configuration
+// Session configuration - simplified for Replit
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key-replit-adel-2025",
-  resave: true,
-  saveUninitialized: true,
-  store: new MemStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     secure: false,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -265,6 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         console.log("Session saved successfully, ID:", req.session.id);
+        console.log("Session store keys:", Object.keys(req.sessionStore.sessions || {}));
         console.log("Response cookies being set:", res.getHeaders()['set-cookie']);
         res.json({
           user: {
