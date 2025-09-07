@@ -1,0 +1,172 @@
+
+Admin Registration Failed
+500: {"message":"Registration failed"}
+
+ADEL Logo
+ADEL
+Project Management
+
+Features
+
+Analytics
+
+AI Features
+
+Pricing
+
+EN
+login
+Get Started
+AI-Powered Project Management
+Next-Generation
+Project Management
+Streamline your organization with intelligent analytics, AI-powered insights, and comprehensive project tracking for teams of all sizes and industries.
+
+Start Free Trial
+Watch Demo
+500+
+Organizations
+10K+
+Projects Managed
+99.9%
+Uptime
+24/7
+Support
+Everything Your Organization Needs
+From project inception to completion, ADEL provides all the tools you need to succeed.
+Smart Project Tracking
+Comprehensive project lifecycle management with automated status updates and deadline tracking.
+
+Budget monitoring
+Progress tracking
+Team collaboration
+Team Collaboration
+Seamless communication tools with file sharing and role-based access control.
+
+Real-time messaging
+File attachments
+Secure communications
+Advanced Reporting
+Multi-stage approval workflows with comprehensive report management and tracking.
+
+Interactive PDF preview
+Professional donor reports
+Approval workflows
+Advanced Analytics
+Data-Driven Decision Making
+
+Transform your organization with powerful analytics and intelligent insights that help you make informed decisions.
+
+Interactive Dashboards
+Visual charts showing project status, budget utilization, and progress distribution.
+Performance Metrics
+Track completion rates, budget efficiency, and team productivity over time.
+Budget Analytics
+Comprehensive financial tracking with spending analysis and forecasting.
+Analytics Overview
+Live
+24
+Active Projects
+89%
+Success Rate
+Budget Utilization
+78%
+AI-Powered Intelligence
+Intelligent Automation
+Leverage cutting-edge AI to streamline workflows and gain intelligent insights.
+AI Feedback on Reports
+
+ADEL automatically reviews officer reports and gives clear, actionable suggestions before admin approval.
+
+AI Analysis Complete
+85/100
+"Report quality is good. Consider adding more specific metrics in budget section."
+Grammar check
+Clarity score
+Action suggestions
+Smart Notifications
+
+Intelligent alerts system that keeps you informed about critical project milestones and deadlines.
+
+Deadline monitoring
+Budget alerts
+Performance insights
+Simple Yet Powerful Workflow
+Get started in minutes with our intuitive setup process designed for non-profit organizations.
+1. Create Organization
+Set up your NGO profile and get your unique organization code for team members.
+2. Add Your Team
+Invite officers and team members using your organization code for seamless collaboration.
+3. Launch Projects
+Start creating projects, tracking progress, and leveraging AI-powered insights immediately.
+Trusted by Organizations Worldwide
+Join hundreds of organizations that have transformed their project management with ADEL.
+Global Health Initiative
+Healthcare NGO
+"ADEL's AI feedback helped us improve our report quality by 40%. The PDF exports are perfect for our donor presentations."
+EcoVision Foundation
+Environmental Organization
+"The analytics dashboard gives us insights we never had before. Project completion rates increased by 25%."
+Community Impact Network
+Social Enterprise
+"Smart notifications keep our team aligned. We never miss deadlines anymore and collaboration has improved dramatically."
+See What Your Dashboard Could Look Like
+
+Get a preview of the powerful analytics and insights waiting for you.
+
+Active Projects
+12
+Reports Score
+87/100
+Budget Used
+$45,200
+Professional PDF Reports
+Preview before export to donors
+Try Interactive Demo
+Ready to Transform Your Organization?
+Join hundreds of organizations already using ADEL to streamline their operations and maximize their impact.
+
+Start Your Free Trial
+Contact Sales
+No credit card required • 14-day free trial • Cancel anytime
+ADEL Logo
+ADEL
+Next-generation project management platform designed for organizations of all types and sizes.
+Features
+
+Project Management
+AI Report Analysis
+Smart Analytics
+Team Collaboration
+Budget Tracking
+Support
+
+Documentation
+API Reference
+Help Center
+Contact Support
+Connect
+
+Twitter
+LinkedIn
+GitHub
+Blog
+© 2025 ADEL. All rights reserved.
+Privacy Policy
+Terms of Service
+Get Started with ADEL
+Choose your registration type
+Admin
+Register organization
+Create Organization
+Officer
+Join organization
+Join Organization
+First Name
+Last Name
+Organization Name
+Email
+Password
+Create Admin Account & Organization
+Already have an account?Sign in here
+Close
