@@ -13,11 +13,18 @@ export default function Dashboard() {
   const { user, isLoading } = useAuth();
   const logoutMutation = useLogout();
 
-  console.log("Dashboard - User data:", user);
-  console.log("Dashboard - User role:", user?.role);
-  console.log("Dashboard - Is admin:", user?.role === "admin");
+  // Fallback to localStorage if auth hook doesn't have user data
+  const storedUser = localStorage.getItem('adel_user');
+  const localUser = storedUser ? JSON.parse(storedUser) : null;
+  const userToUse = user || localUser;
 
-  if (isLoading || !user) {
+  console.log("Dashboard - User data:", user);
+  console.log("Dashboard - Local user:", localUser);
+  console.log("Dashboard - User to use:", userToUse);
+  console.log("Dashboard - User role:", userToUse?.role);
+  console.log("Dashboard - Is admin:", userToUse?.role === "admin");
+
+  if (isLoading && !localUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
@@ -25,8 +32,19 @@ export default function Dashboard() {
     );
   }
 
+  if (!userToUse) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <p>Please log in to access the dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
   // Force proper role detection
-  const isAdmin = user.role === "admin";
+  const isAdmin = userToUse.role === "admin";
   console.log("Dashboard - Final isAdmin check:", isAdmin);
 
   const handleLogout = () => {
