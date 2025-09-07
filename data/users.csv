@@ -1,0 +1,2 @@
+id,email,password,firstName,lastName,role,organizationId,createdAt
+1,adelgoat@gmail.com,$2b$10$vrsAfYu34btEXCd2nB4aBeg7C4tospzFLYlVcRucR.ZApNkDLyxQq,Adel,Sissoko,admin,1,Sun Sep 07 2025 04:47:22 GMT+0000 (Coordinated Universal Time)
