@@ -6,6 +6,8 @@ import * as schema from "@shared/schema";
 // Configure WebSocket for Neon in serverless environments
 if (typeof window === 'undefined') {
   neonConfig.webSocketConstructor = ws;
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.pipelineConnect = false;
 }
 
 if (!process.env.DATABASE_URL) {
